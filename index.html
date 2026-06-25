@@ -322,7 +322,7 @@
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> MEMPROSES...';
 
   // GANTI URL DI BAWAH DENGAN URL WEB APP GAS ANDA YANG BARU
-  const scriptUrl = 'URL_WEB_APP_ANDA_DISINI?action=login&user=' + user + '&pin=' + pin;
+  const scriptUrl = 'https://script.google.com/macros/s/AKfycbytSUNchsBEgPFA-9bmutWeBvdMTsOt2FHkyy3FzXSEGJodjOGPdHoXDj34Z2fcgF6sHw/exec?action=login&user=' + user + '&pin=' + pin;
 
   fetch(scriptUrl)
     .then(response => response.json())

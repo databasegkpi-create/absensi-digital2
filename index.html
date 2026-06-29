@@ -1,977 +1,717 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Executive Dashboard - GKPI</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <base target="_top">
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+  <style>
+    :root { 
+      --primary-blue: #2D3182; 
+      --bg-light: #F8F9FA;
+      --text-dark: #2D3436;
+      --text-muted: #64748b;
+      
+      /* Warna Status Action */
+      --color-absen: #FF5252;
+      --color-hadir: #1DD1A1;
+      --color-lapangan: #FF9F43;
+      
+      /* Warna Status Minggu Ini Sesuai Contoh Gambar */
+      --week-present: #5B63D3; /* Biru Ungu (Hadir) */
+      --week-absent: #D97782;  /* Merah Bata (Alpha / Kosong) */
+    }
 
-    <style>
-        :root {
-            --primary:       #0c1e35;
-            --primary-mid:   #153252;
-            --primary-light: #1e4a75;
-            --gold:          #c9a84c;
-            --gold-light:    #f0d080;
-            --gold-dim:      rgba(201,168,76,0.12);
-            --bg:            #f0f4f9;
-            --surface:       #ffffff;
-            --surface-2:     #f7f9fc;
-            --border:        #e3e9f0;
-            --text:          #0c1e35;
-            --text-2:        #4a5b72;
-            --text-3:        #8fa3bb;
-            --success:       #0d9f6e;
-            --success-bg:    #e6f9f3;
-            --warning:       #d08a00;
-            --warning-bg:    #fff8e6;
-            --danger:        #d63c5e;
-            --danger-bg:     #fdeef2;
-            --radius-sm:     10px;
-            --radius:        16px;
-            --radius-lg:     22px;
-            --shadow-sm:     0 2px 8px rgba(12,30,53,0.06);
-            --shadow:        0 8px 32px rgba(12,30,53,0.08);
-            --shadow-lg:     0 20px 60px rgba(12,30,53,0.12);
-            --transition:    0.22s cubic-bezier(0.4,0,0.2,1);
-        }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
 
-        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    body { 
+      margin: 0;
+      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; 
+      background-color: var(--bg-light); 
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            display: flex;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
+    .app-container { 
+      width: 100%; max-width: 420px; margin: 0 auto; 
+      background: var(--bg-light); min-height: 100vh;
+      position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.05);
+    }
 
-        /* ── SCROLLBAR ──────────────────────────── */
-        ::-webkit-scrollbar { width:6px; height:6px; }
-        ::-webkit-scrollbar-track { background:transparent; }
-        ::-webkit-scrollbar-thumb { background:#c8d6e5; border-radius:99px; }
-        ::-webkit-scrollbar-thumb:hover { background:#a0b4cc; }
+    /* HEADER MELENGKUNG */
+    .app-header-bg {
+      background: var(--primary-blue); color: white; 
+      padding: 30px 25px 70px 25px; 
+      border-bottom-left-radius: 40px; border-bottom-right-radius: 40px;
+    }
+    .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .header-top h4 { font-weight: 700; margin: 0; font-size: 1.4rem; }
+    .header-top .subtitle { font-size: 0.8rem; opacity: 0.8; font-weight: 500; }
+    
+    .btn-logout {
+      background: rgba(255,255,255,0.2); border: none; color: white;
+      width: 40px; height: 40px; border-radius: 50%; display: flex; 
+      justify-content: center; align-items: center; transition: all 0.2s;
+    }
+    .btn-logout:active { background: rgba(255,255,255,0.4); transform: scale(0.95); }
 
-        /* ── LOGIN SCREEN ───────────────────────── */
-        .login-wrap {
-            position: fixed; inset: 0;
-            background: linear-gradient(145deg, var(--primary) 0%, #071626 100%);
-            display: flex; align-items: center; justify-content: center;
-            z-index: 10000; padding: 20px;
-            /* subtle diagonal lines */
-            background-image:
-                linear-gradient(145deg, var(--primary) 0%, #071626 100%),
-                repeating-linear-gradient(135deg, transparent, transparent 40px, rgba(255,255,255,0.015) 40px, rgba(255,255,255,0.015) 41px);
-        }
+    .app-body { padding: 0 20px 30px 20px; margin-top: -50px; }
+    
+    /* LOGIN */
+    .login-wrapper {
+      padding: 40px 20px; min-height: 100vh; background: var(--primary-blue);
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+    }
+    .login-container { 
+      background: white; padding: 40px 25px; border-radius: 30px;
+      text-align: center; box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+      width: 100%; max-width: 360px;
+    }
+    .logo-gkpi { width: 90px; height: 90px; object-fit: contain; margin-bottom: 15px; }
+    .login-title { font-weight: 800; color: var(--primary-blue); font-size: 1.5rem; margin-bottom: 5px; }
+    .login-subtitle { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 30px; }
+    
+    .input-modern { position: relative; margin-bottom: 15px; }
+    .input-modern i { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: #a4b0be; font-size: 1.1rem; z-index: 2; }
+    .input-modern .form-control {
+      padding-left: 50px; height: 55px; border-radius: 30px; border: 1px solid #dfe4ea; background-color: #f1f2f6;
+      font-size: 0.95rem; font-weight: 600; color: var(--text-dark); transition: all 0.3s ease;
+    }
+    .input-modern .form-control:focus { background-color: #ffffff; border-color: var(--primary-blue); box-shadow: 0 0 0 4px rgba(45, 49, 130, 0.1); outline: none;}
+    
+    .btn-login {
+      background: var(--primary-blue); color: white; height: 55px; border-radius: 30px;
+      font-size: 1rem; font-weight: 700; width: 100%; border: none; margin-top: 15px;
+      box-shadow: 0 8px 20px rgba(45, 49, 130, 0.3); transition: all 0.2s ease;
+    }
+    .btn-login:active { transform: translateY(2px); box-shadow: 0 4px 10px rgba(45, 49, 130, 0.3); }
 
-        .login-card {
-            background: var(--surface);
-            padding: 48px 40px 40px;
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-lg);
-            width: 100%; max-width: 420px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-        .login-card::before {
-            content: '';
-            position: absolute; top: 0; left: 0; right: 0; height: 4px;
-            background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold));
-        }
+    /* COPYRIGHT LOGIN */
+    .copyright-text {
+      margin-top: 40px; font-size: 0.8rem; color: rgba(255, 255, 255, 0.7); 
+      font-weight: 600; letter-spacing: 0.5px; text-align: center;
+    }
+    .copyright-text span { color: #FFD700; font-weight: 700; }
 
-        .login-icon-ring {
-            width: 76px; height: 76px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 24px;
-            box-shadow: 0 8px 24px rgba(12,30,53,0.25);
-        }
-        .login-icon-ring i { font-size: 32px; color: var(--gold); }
+    /* ABSENSI & KARTU */
+    #halamanAbsen { display: none; }
+    .card-modern { background: #ffffff; border-radius: 24px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.04); margin-bottom: 20px; }
+    .welcome-card { text-align: center; }
+    .date-badge { display: inline-block; background: #f1f2f6; color: var(--text-muted); padding: 6px 15px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; margin-bottom: 10px; }
+    .user-name { font-size: 1.3rem; color: var(--text-dark); font-weight: 800; display: block; margin-top: 5px; }
 
-        .login-card h2 {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 22px; font-weight: 700;
-            color: var(--primary); margin-bottom: 4px;
-        }
-        .login-card .login-sub {
-            font-size: 11px; font-weight: 600; letter-spacing: 1.5px;
-            text-transform: uppercase; color: var(--text-3); margin-bottom: 32px;
-        }
+    .section-title { font-size: 0.95rem; font-weight: 700; color: #334155; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;}
 
-        .form-group { text-align: left; margin-bottom: 18px; }
-        .form-group label {
-            display: block; font-size: 11px; font-weight: 700;
-            letter-spacing: 0.8px; text-transform: uppercase;
-            color: var(--text-2); margin-bottom: 7px;
-        }
-        .form-control {
-            width: 100%; padding: 13px 16px;
-            border: 1.5px solid var(--border); border-radius: var(--radius-sm);
-            font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500;
-            color: var(--text); background: var(--surface-2); outline: none;
-            transition: var(--transition);
-        }
-        .form-control:focus {
-            border-color: var(--gold);
-            background: #fff;
-            box-shadow: 0 0 0 4px rgba(201,168,76,0.12);
-        }
+    /* STATUS HARI INI */
+    .stat-row { display: flex; gap: 12px; margin-bottom: 12px; }
+    .stat-box { 
+      flex: 1; padding: 18px 15px; border-radius: 20px; color: white;
+      display: flex; flex-direction: column; position: relative; overflow: hidden;
+    }
+    .stat-box small { font-size: 0.75rem; font-weight: 600; opacity: 0.9; margin-bottom: 5px; }
+    .stat-box strong { font-size: 1.4rem; font-weight: 800; }
+    .stat-box i { position: absolute; right: -10px; bottom: -10px; font-size: 4rem; opacity: 0.15; }
+    .bg-orange { background: linear-gradient(135deg, #FFA726, #FF9800); box-shadow: 0 8px 15px rgba(255, 152, 0, 0.25); }
+    .bg-red { background: linear-gradient(135deg, #EF5350, #F44336); box-shadow: 0 8px 15px rgba(244, 67, 54, 0.25); }
 
-        .btn-login {
-            width: 100%; margin-top: 8px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            color: #fff; border: none;
-            padding: 15px; border-radius: var(--radius-sm);
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 14px; font-weight: 700; letter-spacing: 0.5px;
-            cursor: pointer; transition: var(--transition);
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-        }
-        .btn-login:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(12,30,53,0.22); }
-        .btn-login:disabled { opacity: 0.65; cursor: not-allowed; transform: none; box-shadow: none; }
+    /* THIS WEEK CIRCLES (Persis Sesuai Contoh Gambar Baru) */
+    .week-status-wrapper {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 5px 0;
+    }
+    .day-item {
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+    }
+    .day-label {
+      font-size: 0.9rem; font-weight: 700; color: #475569;
+    }
+    .day-circle-new {
+      width: 36px; height: 36px; border-radius: 50%;
+      display: flex; justify-content: center; align-items: center;
+      font-size: 0.9rem; font-weight: 800;
+      border: 2px solid transparent; background: transparent; color: transparent;
+      transition: all 0.3s ease;
+    }
+    /* Hadir: Biru Ungu & Centang */
+    .day-circle-new.present {
+      background: var(--week-present); border-color: var(--week-present); color: white;
+    }
+    /* Alpha: Merah Bata & huruf A */
+    .day-circle-new.absent {
+      background: var(--week-absent); border-color: var(--week-absent); color: white;
+    }
+    /* Belum terjadi: Outline merah bata */
+    .day-circle-new.future {
+      border-color: var(--week-absent); color: transparent; 
+    }
 
-        /* ── LOADER ─────────────────────────────── */
-        #loader {
-            position: fixed; inset: 0;
-            background: rgba(240,244,249,0.92);
-            backdrop-filter: blur(10px);
-            z-index: 9999; display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-        }
-        .loader-ring {
-            width: 52px; height: 52px;
-            border: 3px solid var(--border);
-            border-top-color: var(--gold);
-            border-radius: 50%;
-            animation: spin 0.9s linear infinite;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        #loader p {
-            margin-top: 18px; font-weight: 700; font-size: 13px;
-            letter-spacing: 0.5px; color: var(--primary);
-        }
+    /* TOMBOL PILIHAN */
+    .toggle-pill {
+        background: #f1f2f6; padding: 5px; border-radius: 30px;
+        display: flex; width: 100%; margin-bottom: 20px;
+    }
+    .toggle-pill input[type="radio"] { display: none; }
+    .toggle-pill label {
+        flex: 1; text-align: center; padding: 12px 0; border-radius: 25px;
+        font-weight: 700; font-size: 0.85rem; color: var(--text-muted); cursor: pointer; transition: all 0.3s ease; margin: 0;
+    }
+    
+    #locKantor:checked + label { background: var(--primary-blue); color: white; box-shadow: 0 4px 10px rgba(45, 49, 130, 0.2); }
+    #locLuar:checked + label { background: var(--color-lapangan); color: white; box-shadow: 0 4px 10px rgba(255, 159, 67, 0.2); }
+    
+    #masuk:checked + label { background: var(--color-hadir); color: white; box-shadow: 0 4px 10px rgba(29, 209, 161, 0.2); }
+    #pulang:checked + label { background: var(--color-absen); color: white; box-shadow: 0 4px 10px rgba(255, 82, 82, 0.2); }
 
-        /* ── SIDEBAR OVERLAY ────────────────────── */
-        .sidebar-overlay {
-            display: none; position: fixed; inset: 0;
-            background: rgba(0,0,0,0.45); backdrop-filter: blur(4px);
-            z-index: 40; opacity: 0; transition: opacity 0.3s;
-        }
-        .sidebar-overlay.active { display: block; opacity: 1; }
+    .status-gps { padding: 12px 15px; border-radius: 16px; font-weight: 700; font-size: 0.8rem; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 8px;}
+    .gps-loading { background: #e2e8f0; color: #64748b; }
+    .gps-success { background: #dcfce7; color: #16a34a; }
+    .gps-danger { background: #fee2e2; color: #dc2626; }
+    .gps-info { background: #fff4e6; color: #e67e22; }
 
-        /* ── SIDEBAR ────────────────────────────── */
-        .sidebar {
-            width: 260px;
-            background: var(--primary);
-            color: #fff;
-            display: flex; flex-direction: column;
-            position: fixed; height: 100vh; z-index: 50;
-            transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
-        }
+    /* AREA KAMERA */
+    .kamera-container { 
+      width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background: #ffffff; border: 2px dashed #cbd5e1; border-radius: 20px; 
+      padding: 35px 20px; text-align: center; cursor: pointer; transition: all 0.3s; 
+      margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); box-sizing: border-box;
+    }
+    .kamera-container i { color: #94a3b8; font-size: 2.5rem; margin-bottom: 10px; transition: 0.3s;}
+    .kamera-container span { color: var(--text-muted); font-size: 0.9rem; font-weight: 600;}
+    .kamera-container.has-photo { background: #f8faff; border-color: var(--primary-blue); border-style: solid;}
+    .kamera-container.has-photo i { color: var(--primary-blue); }
+    #previewGambarStatis { width: 100%; border-radius: 15px; margin-top: 15px; display: none; box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
 
-        .sidebar-header {
-            padding: 36px 24px 28px;
-            border-bottom: 1px solid rgba(255,255,255,0.07);
-        }
-        .sidebar-logo {
-            display: flex; align-items: center; gap: 14px;
-        }
-        .sidebar-logo-icon {
-            width: 44px; height: 44px; border-radius: 12px;
-            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 20px; color: var(--primary);
-            flex-shrink: 0;
-            box-shadow: 0 4px 12px rgba(201,168,76,0.3);
-        }
-        .sidebar-logo-text h3 {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 16px; font-weight: 700; color: #fff; line-height: 1.1;
-        }
-        .sidebar-logo-text span {
-            font-size: 10px; font-weight: 600; letter-spacing: 1px;
-            text-transform: uppercase; color: var(--gold); opacity: 0.9;
-        }
+    .btn-utama { 
+      background: var(--primary-blue); color: white; font-weight: 700; padding: 16px; 
+      border-radius: 30px; width: 100%; border: none; font-size: 1rem;
+      box-shadow: 0 10px 25px rgba(45, 49, 130, 0.3); transition: all 0.2s ease; margin-bottom: 10px;
+    }
+    .btn-utama:active { transform: translateY(2px); box-shadow: 0 5px 10px rgba(45, 49, 130, 0.3);} 
+    .btn-utama:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; background: #94a3b8;}
 
-        .sidebar-section-label {
-            font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
-            text-transform: uppercase; color: rgba(255,255,255,0.25);
-            padding: 20px 24px 8px;
-        }
-
-        .sidebar-nav { padding: 8px 14px; flex-grow: 1; display: flex; flex-direction: column; }
-
-        .nav-item {
-            display: flex; align-items: center; gap: 12px;
-            padding: 13px 16px;
-            color: rgba(255,255,255,0.55);
-            text-decoration: none; border-radius: var(--radius-sm);
-            font-size: 13px; font-weight: 600;
-            cursor: pointer; margin-bottom: 4px;
-            transition: var(--transition);
-            border: 1px solid transparent;
-        }
-        .nav-item i { font-size: 15px; width: 18px; text-align: center; }
-        .nav-item:hover { background: rgba(255,255,255,0.06); color: #fff; transform: translateX(3px); }
-        .nav-item.active {
-            background: var(--gold-dim);
-            color: var(--gold);
-            border-color: rgba(201,168,76,0.2);
-        }
-        .nav-spacer { flex: 1; }
-        .nav-item.logout-btn {
-            color: rgba(255,120,120,0.75); margin-bottom: 0;
-            border-top: 1px solid rgba(255,255,255,0.06);
-            margin-top: 8px; padding-top: 16px; border-radius: 0;
-        }
-        .nav-item.logout-btn:hover { background: rgba(214,60,94,0.1); color: #ff8fa3; transform: none; }
-
-        /* ── MAIN CONTENT ───────────────────────── */
-        .main-content {
-            margin-left: 260px;
-            flex-grow: 1; width: calc(100% - 260px);
-            padding: 36px 40px;
-            display: flex; flex-direction: column; gap: 28px;
-            transition: margin var(--transition), width var(--transition);
-        }
-
-        /* ── MOBILE HEADER ──────────────────────── */
-        .mobile-header {
-            display: none;
-            justify-content: space-between; align-items: center;
-        }
-        .menu-toggle {
-            background: var(--surface); border: 1px solid var(--border);
-            color: var(--primary); font-size: 18px; cursor: pointer;
-            padding: 10px 12px; border-radius: var(--radius-sm);
-            box-shadow: var(--shadow-sm); transition: var(--transition);
-        }
-        .menu-toggle:hover { background: var(--surface-2); }
-
-        /* ── PAGE HEADER ────────────────────────── */
-        .top-header {
-            display: flex; justify-content: space-between;
-            align-items: flex-start; flex-wrap: wrap; gap: 20px;
-        }
-
-        .page-eyebrow {
-            display: flex; align-items: center; gap: 8px;
-            font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
-            text-transform: uppercase; color: var(--gold);
-            margin-bottom: 6px;
-        }
-        .page-eyebrow::before {
-            content: '';
-            width: 20px; height: 2px;
-            background: var(--gold); border-radius: 2px;
-        }
-        .page-title h1 {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 26px; font-weight: 700;
-            color: var(--primary); letter-spacing: -0.5px;
-        }
-        .page-title p {
-            color: var(--text-2); font-size: 13px; font-weight: 500;
-            margin-top: 4px; display: flex; align-items: center; gap: 6px;
-        }
-
-        .header-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-
-        .input-month {
-            padding: 11px 14px;
-            border: 1.5px solid var(--border); border-radius: var(--radius-sm);
-            font-family: 'Inter', sans-serif;
-            font-size: 13px; font-weight: 600; color: var(--primary);
-            background: var(--surface); outline: none; cursor: pointer;
-            transition: var(--transition);
-        }
-        .input-month:focus {
-            border-color: var(--gold);
-            box-shadow: 0 0 0 4px rgba(201,168,76,0.1);
-        }
-
-        .btn-action {
-            background: var(--surface);
-            color: var(--text-2);
-            border: 1.5px solid var(--border);
-            padding: 11px 18px; border-radius: var(--radius-sm);
-            font-family: 'Inter', sans-serif;
-            font-size: 13px; font-weight: 600;
-            cursor: pointer; transition: var(--transition);
-            display: flex; align-items: center; gap: 8px;
-            box-shadow: var(--shadow-sm);
-        }
-        .btn-action:hover { transform: translateY(-2px); box-shadow: var(--shadow); border-color: #c8d6e5; color: var(--text); }
-
-        .btn-pdf { color: var(--danger); border-color: #f5c2ce; background: var(--danger-bg); }
-        .btn-pdf:hover { background: #fad4dc; border-color: #e8a0b0; }
-
-        /* ── KPI CARDS ──────────────────────────── */
-        .kpi-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
-
-        .kpi-card {
-            background: var(--surface);
-            border-radius: var(--radius);
-            padding: 26px;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--border);
-            display: flex; align-items: center; gap: 20px;
-            transition: var(--transition);
-            position: relative; overflow: hidden;
-        }
-        .kpi-card::after {
-            content: '';
-            position: absolute; right: -20px; bottom: -20px;
-            width: 90px; height: 90px; border-radius: 50%;
-            opacity: 0.06;
-        }
-        .kpi-card.blue::after  { background: #0284c7; }
-        .kpi-card.red::after   { background: var(--danger); }
-        .kpi-card.green::after { background: var(--success); }
-
-        .kpi-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
-
-        .kpi-icon {
-            width: 56px; height: 56px; border-radius: var(--radius-sm);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 22px; flex-shrink: 0;
-        }
-        .kpi-card.blue  .kpi-icon { background: #dbeafe; color: #1d6ed8; }
-        .kpi-card.red   .kpi-icon { background: var(--danger-bg); color: var(--danger); }
-        .kpi-card.green .kpi-icon { background: var(--success-bg); color: var(--success); }
-
-        .kpi-data h4 {
-            font-size: 11px; font-weight: 700; letter-spacing: 0.8px;
-            text-transform: uppercase; color: var(--text-3); margin-bottom: 6px;
-        }
-        .kpi-data h2 {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 34px; font-weight: 700; color: var(--primary); line-height: 1;
-        }
-
-        /* ── MIDDLE GRID ────────────────────────── */
-        .middle-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
-
-        /* ── CARD CONTAINER ─────────────────────── */
-        .card-container {
-            background: var(--surface);
-            border-radius: var(--radius);
-            padding: 26px;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--border);
-        }
-
-        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-
-        .card-title {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 15px; font-weight: 700; color: var(--primary);
-            display: flex; align-items: center; gap: 9px;
-        }
-        .card-title-icon {
-            width: 30px; height: 30px; border-radius: 8px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 13px;
-        }
-        .card-title-icon.blue   { background: #dbeafe; color: #1d6ed8; }
-        .card-title-icon.gold   { background: var(--gold-dim); color: var(--gold); }
-        .card-title-icon.orange { background: var(--warning-bg); color: var(--warning); }
-
-        /* ── TOP STAFF LIST ─────────────────────── */
-        .top-staff-list {
-            display: flex; flex-direction: column; gap: 8px;
-            max-height: 230px; overflow-y: auto; padding-right: 4px;
-        }
-        .top-staff-item {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 12px 14px;
-            background: var(--surface-2); border: 1px solid var(--border);
-            border-radius: var(--radius-sm); transition: var(--transition);
-        }
-        .top-staff-item:hover { background: #fff; border-color: #c8d6e5; box-shadow: var(--shadow-sm); transform: translateX(3px); }
-        .top-staff-item:first-child .top-staff-rank { background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--primary); }
-
-        .top-staff-info { display: flex; align-items: center; gap: 12px; }
-        .top-staff-rank {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            color: #fff; width: 26px; height: 26px; min-width: 26px;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 11px; font-weight: 800;
-        }
-        .top-staff-name { font-size: 13px; font-weight: 600; color: var(--text); }
-
-        .top-staff-score {
-            font-size: 12px; font-weight: 700;
-            color: var(--success); background: var(--success-bg);
-            padding: 4px 12px; border-radius: 99px;
-            display: flex; align-items: center; gap: 5px;
-        }
-
-        /* ── ALERT LIST ─────────────────────────── */
-        .alert-list {
-            display: flex; flex-direction: column; gap: 10px;
-            max-height: 230px; overflow-y: auto; padding-right: 4px;
-        }
-        .alert-item {
-            display: flex; align-items: center; gap: 12px;
-            padding: 12px 14px;
-            background: var(--danger-bg); border: 1px solid #f5c2ce;
-            border-radius: var(--radius-sm); transition: var(--transition);
-        }
-        .alert-item:hover { transform: translateX(3px); border-color: #e8a0b0; }
-        .alert-item i { color: var(--danger); font-size: 15px; flex-shrink: 0; }
-        .alert-item span { font-size: 13px; font-weight: 600; color: #a02040; }
-
-        /* ── TABLE SECTION ──────────────────────── */
-        .table-controls {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 20px; flex-wrap: wrap; gap: 14px;
-        }
-
-        .search-box { position: relative; width: 300px; }
-        .search-box i {
-            position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
-            color: var(--text-3); font-size: 13px;
-        }
-        .search-box input {
-            width: 100%; padding: 11px 14px 11px 40px;
-            border: 1.5px solid var(--border); border-radius: var(--radius-sm);
-            font-family: 'Inter', sans-serif;
-            font-size: 13px; font-weight: 500; color: var(--text);
-            background: var(--surface-2); outline: none; transition: var(--transition);
-        }
-        .search-box input:focus {
-            border-color: var(--gold); background: #fff;
-            box-shadow: 0 0 0 4px rgba(201,168,76,0.1);
-        }
-
-        .table-responsive { overflow-x: auto; border-radius: var(--radius-sm); border: 1px solid var(--border); }
-
-        table { width: 100%; border-collapse: collapse; min-width: 780px; }
-
-        thead { background: var(--surface-2); }
-        th {
-            padding: 14px 18px;
-            font-size: 11px; font-weight: 700; letter-spacing: 0.8px;
-            text-transform: uppercase; color: var(--text-2);
-            border-bottom: 1px solid var(--border);
-            cursor: pointer; user-select: none;
-            transition: background var(--transition);
-            white-space: nowrap;
-        }
-        th:hover { background: #eaf0f8; color: var(--primary); }
-        th i { margin-left: 6px; font-size: 10px; opacity: 0.5; }
-
-        td {
-            padding: 16px 18px; font-size: 13px; font-weight: 500;
-            color: var(--text); background: var(--surface);
-            border-bottom: 1px solid var(--border);
-        }
-        tbody tr:last-child td { border-bottom: none; }
-        tbody tr:hover td { background: #f7f9fc; }
-
-        .badge {
-            display: inline-flex; align-items: center; justify-content: center;
-            gap: 4px; padding: 5px 12px; border-radius: 99px;
-            font-size: 12px; font-weight: 700;
-        }
-        .badge-success { background: var(--success-bg); color: var(--success); }
-        .badge-warning { background: var(--warning-bg); color: var(--warning); }
-        .badge-danger  { background: var(--danger-bg); color: var(--danger); }
-
-        .progress-wrapper { display: flex; flex-direction: column; gap: 7px; min-width: 140px; }
-        .progress-text { display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; }
-        .progress-bar-bg { width: 100%; height: 6px; background: var(--border); border-radius: 99px; overflow: hidden; }
-        .progress-bar-fill { height: 100%; border-radius: 99px; transition: width 0.8s cubic-bezier(0.4,0,0.2,1); }
-
-        .nama-cell { font-weight: 700; color: var(--primary); }
-        .num-cell { text-align: center; font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 700; color: var(--primary-light); }
-
-        /* ── RESPONSIVE ─────────────────────────── */
-        @media (max-width: 1100px) {
-            .middle-grid { grid-template-columns: 1fr; }
-        }
-        @media (max-width: 768px) {
-            .sidebar { transform: translateX(-100%); }
-            .sidebar.active { transform: translateX(0); }
-            .main-content { margin-left: 0; width: 100%; padding: 16px; gap: 18px; }
-            .mobile-header { display: flex; }
-            .top-header { flex-direction: column; align-items: flex-start; gap: 14px; margin-top: 6px; }
-            .header-actions { width: 100%; }
-            .input-month { flex: 1; }
-            .kpi-grid { grid-template-columns: 1fr; gap: 14px; }
-            .card-container { padding: 18px; }
-            .table-controls { flex-direction: column; align-items: flex-start; }
-            .search-box { width: 100%; }
-        }
-
-        /* ── PRINT ──────────────────────────────── */
-        .print-header { display: none; }
-
-        @media print {
-            @page { size: A4 portrait; margin: 14mm; }
-            body { background: white !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-            .sidebar, #loader, .header-actions, .search-box, .table-controls .card-title, .mobile-header, .login-wrap { display: none !important; }
-            .main-content { margin-left: 0 !important; width: 100% !important; padding: 0 !important; gap: 12px !important; display: block !important; }
-            .print-header { display: block !important; text-align: center; margin-bottom: 18px; padding-bottom: 14px; border-bottom: 2px solid #0c1e35; }
-            .print-header h2 { font-size: 20px; font-weight: 800; color: #0c1e35; text-transform: uppercase; letter-spacing: 1px; }
-            .print-header h3 { font-size: 15px; color: #0c1e35; margin-top: 4px; }
-            .print-header p { font-size: 12px; color: #4a5b72; margin-top: 4px; font-weight: 600; }
-            .top-header { display: none !important; }
-            .kpi-grid { display: flex; gap: 8px; margin-bottom: 12px; }
-            .kpi-card { border: 1px solid #c8d6e5; padding: 12px; flex: 1; box-shadow: none; }
-            .kpi-icon { width: 32px; height: 32px; font-size: 14px; }
-            .kpi-data h2 { font-size: 20px; }
-            .kpi-data h4 { font-size: 10px; }
-            .middle-grid { display: flex; gap: 12px; margin-bottom: 12px; }
-            .card-container { border: 1px solid #c8d6e5; padding: 12px; box-shadow: none; flex: 1; }
-            .top-staff-list, .alert-list { max-height: none; overflow: visible; }
-            .top-staff-item, .alert-item { padding: 7px 10px; border: 1px solid #c8d6e5; background: white !important; }
-            .top-staff-name, .alert-item span { font-size: 11px; color: black !important; }
-            .top-staff-score { font-size: 10px; color: black !important; background: white !important; border: 1px solid #c8d6e5; }
-            .top-staff-rank { box-shadow: none; }
-            .table-controls { display: none !important; }
-            .table-responsive { border-radius: 0; border: 1px solid #c8d6e5; }
-            table { border: none; }
-            th, td { border: 1px solid #c8d6e5 !important; padding: 7px 10px !important; font-size: 11px !important; color: black !important; }
-            th { background: #f0f4f9 !important; font-weight: 800 !important; text-align: center !important; }
-            tr { break-inside: avoid; }
-            .badge { border: 1px solid #c8d6e5; padding: 2px 6px; }
-            .progress-bar-bg { border: 1px solid #c8d6e5; background: #fff !important; }
-            .nama-cell, .num-cell { color: black !important; }
-        }
-    </style>
+    .table-riwayat { width: 100%; font-size: 0.85rem; border-collapse: separate; border-spacing: 0 8px; }
+    .table-riwayat th { padding: 0 10px 5px 10px; color: #94a3b8; font-weight: 700; text-transform: uppercase; font-size: 0.7rem; border: none;}
+    .table-riwayat tbody tr { background: #f8fafc; box-shadow: 0 2px 5px rgba(0,0,0,0.02); transition: 0.2s; }
+    .table-riwayat td { padding: 12px 10px; border: none; font-weight: 600; color: var(--text-dark);}
+    .table-riwayat td:first-child { border-top-left-radius: 12px; border-bottom-left-radius: 12px; }
+    .table-riwayat td:last-child { border-top-right-radius: 12px; border-bottom-right-radius: 12px; text-align: right;}
+    .badge-tipe { padding: 5px 10px; border-radius: 10px; font-size: 0.7rem; font-weight: 800; }
+  </style>
 </head>
 <body>
 
-    <div id="adminLoginScreen" class="login-wrap">
-        <div class="login-card">
-            <div class="login-icon-ring">
-                <i class="fas fa-user-shield"></i>
-            </div>
-            <h2>Akses Khusus Admin</h2>
-            <p class="login-sub">Sistem Absensi Sinode GKPI</p>
+<div id="halamanLogin" class="login-wrapper">
+  <div class="login-container">
+    <img src="https://upload.wikimedia.org/wikipedia/id/0/0d/Logo_GKPI.png" alt="Logo GKPI" class="logo-gkpi">
+    <h5 class="login-title">Selamat Datang</h5>
+    <p class="login-subtitle">Akses Sistem Absensi Digital</p>
+    
+    <div class="input-modern text-start">
+      <i class="fas fa-user"></i>
+      <input type="text" id="inputUsername" class="form-control" placeholder="Username" autocomplete="off">
+    </div>
+    
+    <div class="input-modern text-start">
+      <i class="fas fa-lock"></i>
+      <input type="password" id="inputPin" class="form-control" placeholder="PIN Akses">
+    </div>
+    
+    <button type="button" id="btnLogin" class="btn-login" onclick="prosesLogin()">
+      <span>MASUK</span>
+    </button>
+  </div>
+  
+  <div class="copyright-text">
+    © 2026 Copyright by <span>Diovery</span>
+  </div>
+</div>
 
-            <div class="form-group">
-                <label>Username Admin</label>
-                <input type="text" id="adminUser" class="form-control" placeholder="Masukkan username" autocomplete="off">
-            </div>
-            <div class="form-group">
-                <label>PIN Keamanan</label>
-                <input type="password" id="adminPin" class="form-control" placeholder="••••••">
-            </div>
+<div id="halamanAbsen" class="app-container">
+  
+  <div class="app-header-bg">
+    <div class="header-top">
+      <div>
+        <h4 id="sapaanWaktu">Dashboard</h4>
+        <span class="subtitle">Kantor Sinode GKPI</span>
+      </div>
+      <button class="btn-logout" onclick="prosesLogout()" title="Keluar">
+        <i class="fas fa-sign-out-alt"></i>
+      </button>
+    </div>
+  </div>
+  
+  <div class="app-body">
+    
+    <div class="card-modern welcome-card">
+      <div id="tanggalHariIni" class="date-badge"><i class="far fa-calendar-alt me-1"></i> Memuat...</div>
+      <div style="font-size: 0.85rem; color: var(--text-muted);">Selamat datang,</div>
+      <div id="tampilNamaLengkap" class="user-name">Nama Pegawai</div>
+    </div>
 
-            <button type="button" id="btnLoginAdmin" class="btn-login" onclick="prosesLoginAdmin()">
-                <i class="fas fa-sign-in-alt"></i> MASUK KE DASHBOARD
-            </button>
+    <div class="section-title"><i class="fas fa-clock"></i> Status Hari Ini</div>
+    <div class="stat-row">
+      <div class="stat-box bg-orange">
+        <i class="fas fa-sign-in-alt"></i>
+        <small>Jam Masuk</small>
+        <strong id="statusMasukTxt">--:--</strong>
+      </div>
+      <div class="stat-box bg-red">
+        <i class="fas fa-sign-out-alt"></i>
+        <small>Jam Pulang</small>
+        <strong id="statusPulangTxt">--:--</strong>
+      </div>
+    </div>
+
+    <div class="card-modern">
+      <div class="section-title" style="margin-bottom: 20px;"><i class="fas fa-calendar-alt"></i> Status Kehadiran Minggu Ini</div>
+      <div class="week-status-wrapper" id="weekStatusContainer">
         </div>
     </div>
 
-    <div id="adminDashboardScreen" style="display:none; width:100%;">
-
-        <div id="loader" style="display:none;">
-            <div class="loader-ring"></div>
-            <p>Memproses Data...</p>
-        </div>
-
-        <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
-
-        <aside class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <div class="sidebar-logo">
-                    <div class="sidebar-logo-icon">
-                        <i class="fas fa-church"></i>
-                    </div>
-                    <div class="sidebar-logo-text">
-                        <h3>SINODE GKPI</h3>
-                        <span>Admin Dashboard</span>
-                    </div>
-                </div>
-            </div>
-
-         <nav class="sidebar-nav">
-                <div class="sidebar-section-label">Navigasi Utama</div>
-                <div class="nav-item active">
-                    <i class="fas fa-chart-pie fa-fw"></i> Overview Analitik
-                </div>
-                <div class="nav-item" onclick="bukaLayarAbsen()">
-                    <i class="fas fa-mobile-alt fa-fw"></i> Layar Absen HP
-                </div>
-
-                <div class="sidebar-section-label" style="margin-top: 20px;">Portal GKPI</div>
-                <a href="https://script.google.com/macros/s/AKfycbx-uXm8JEdQWS_kO_bSRbzn_4WGb3uJzqMKqnc3Xp_8PWq4pNenEH8VWWdhI_LN3eh2VQ/exec" class="nav-item">
-                    <i class="fas fa-home fa-fw"></i> Dashboard Utama
-                </a>
-                <a href="https://script.google.com/macros/s/AKfycbyqaaqf4jdwjJYfduiwttFDRipT2b9suUKVveJeElC7SsIbiRF242_H08DBp4i62P9L/exec" target="_blank" class="nav-item">
-                    <i class="fas fa-user-tie fa-fw"></i> Database Pendeta
-                </a>
-                <a href="https://script.google.com/macros/s/AKfycbxYnIaYGBjpKR8efmRqOGu9FPbydSTh1FeN6im856IWRXdC1QvHDDY8Kp5w3lU0p9T6/exec" target="_blank" class="nav-item">
-                    <i class="fas fa-church fa-fw"></i> Database Jemaat
-                </a>
-                <a href="https://script.google.com/macros/s/AKfycbwiI5UpSuOMctYhEHSFZM1a9gaslLbeP9QBbCUehdQisZXNhOWeNo97mtgVlROvTxG8BQ/exec" target="_blank" class="nav-item">
-                    <i class="fas fa-folder-open fa-fw"></i> E-Arsip Digital
-                </a>
-
-                <div class="nav-spacer"></div>
-                <div class="nav-item logout-btn" onclick="logoutAdmin()">
-                    <i class="fas fa-power-off fa-fw"></i> Keluar (Logout)
-                </div>
-            </nav>
-        </aside>
-
-        <main class="main-content">
-
-            <div class="mobile-header">
-                <div class="page-title" style="margin:0">
-                    <h1 style="font-size:18px; font-family:'Space Grotesk',sans-serif;">Sinode GKPI</h1>
-                </div>
-                <button class="menu-toggle" onclick="toggleSidebar()">
-                    <i class="fas fa-bars"></i>
-                </button>
-            </div>
-
-            <div class="print-header">
-                <h2>Biro Infokom Sinode GKPI</h2>
-                <h3>Laporan Rekapitulasi Kehadiran Staff</h3>
-                <p id="labelPeriodePrint">Periode: Memuat...</p>
-            </div>
-
-            <div class="top-header">
-                <div class="page-title">
-                    <div class="page-eyebrow">Monitor Kehadiran</div>
-                    <h1>Rekap Staff Bulan Ini</h1>
-                    <p id="labelPeriode"><i class="far fa-calendar-alt"></i> Periode: Memuat...</p>
-                </div>
-                <div class="header-actions">
-                    <input type="month" id="filterBulan" class="input-month" onchange="muatData()" title="Pilih Bulan">
-                    <button class="btn-action btn-pdf" onclick="window.print()">
-                        <i class="fas fa-file-pdf"></i> Cetak PDF
-                    </button>
-                    <button class="btn-action" onclick="muatData()">
-                        <i class="fas fa-sync-alt"></i> Segarkan
-                    </button>
-                </div>
-            </div>
-
-            <div class="kpi-grid">
-                <div class="kpi-card blue">
-                    <div class="kpi-icon"><i class="fas fa-users"></i></div>
-                    <div class="kpi-data">
-                        <h4>Total Pegawai</h4>
-                        <h2 id="valTotalPegawai">0</h2>
-                    </div>
-                </div>
-                <div class="kpi-card red">
-                    <div class="kpi-icon"><i class="fas fa-user-slash"></i></div>
-                    <div class="kpi-data">
-                        <h4>Belum Absen Bulan Ini</h4>
-                        <h2 id="valBelumAbsen">0</h2>
-                    </div>
-                </div>
-                <div class="kpi-card green">
-                    <div class="kpi-icon"><i class="fas fa-medal"></i></div>
-                    <div class="kpi-data">
-                        <h4>Rasio Kedisiplinan</h4>
-                        <h2 id="valPersentase">0%</h2>
-                    </div>
-                </div>
-            </div>
-
-            <div class="middle-grid">
-                <div class="card-container">
-                    <div class="card-header">
-                        <div class="card-title">
-                            <span class="card-title-icon gold"><i class="fas fa-medal"></i></span>
-                            7 Staff Paling Tepat Waktu
-                        </div>
-                    </div>
-                    <div class="top-staff-list" id="listTopStaff">
-                        <p style="color:var(--text-3);font-size:13px;text-align:center;padding:24px 0;">Menyiapkan data...</p>
-                    </div>
-                </div>
-
-                <div class="card-container">
-                    <div class="card-header">
-                        <div class="card-title">
-                            <span class="card-title-icon orange"><i class="fas fa-exclamation-triangle"></i></span>
-                            Perhatian Khusus
-                        </div>
-                    </div>
-                    <div class="alert-list" id="listAlpha">
-                        <p style="color:var(--text-3);font-size:13px;text-align:center;padding:20px 0;">Memuat data...</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card-container">
-                <div class="table-controls">
-                    <div class="card-title">
-                        <span class="card-title-icon blue"><i class="fas fa-list-ul"></i></span>
-                        Tabel Rekapitulasi Lengkap
-                    </div>
-                    <div class="search-box">
-                        <i class="fas fa-search"></i>
-                        <input type="text" id="searchInput" placeholder="Cari nama pegawai..." onkeyup="filterTable()">
-                    </div>
-                </div>
-
-                <div class="table-responsive">
-                    <table id="dataTable">
-                        <thead>
-                            <tr>
-                                <th onclick="sortTable('nama')">Nama Pegawai <i class="fas fa-sort" id="icon-nama"></i></th>
-                                <th style="text-align:center" onclick="sortTable('totalHadir')">Hari Hadir <i class="fas fa-sort" id="icon-totalHadir"></i></th>
-                                <th style="text-align:center" onclick="sortTable('tepatWaktu')">Tepat Waktu <i class="fas fa-sort" id="icon-tepatWaktu"></i></th>
-                                <th style="text-align:center" onclick="sortTable('terlambat')">Terlambat <i class="fas fa-sort" id="icon-terlambat"></i></th>
-                                <th style="width:220px" onclick="sortTable('rasio')">Indikator Disiplin <i class="fas fa-sort" id="icon-rasio"></i></th>
-                            </tr>
-                        </thead>
-                        <tbody id="tableBody">
-                            <tr><td colspan="5" style="text-align:center;padding:40px;color:var(--text-3);">Menghubungkan ke server...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-        </main>
+    <div id="gpsStatus" class="status-gps gps-loading">
+      <i class="fas fa-satellite-dish fa-spin"></i> Mencari lokasi GPS...
     </div>
 
-    <script>
-        // ====================================================================
-        // API URL DARI GOOGLE APPS SCRIPT
-        // ====================================================================
-        const API_URL = "https://script.google.com/macros/s/AKfycbytSUNchsBEgPFA-9bmutWeBvdMTsOt2FHkyy3FzXSEGJodjOGPdHoXDj34Z2fcgF6sHw/exec";
+    <div id="formAbsen">
+      <input type="hidden" id="namaPegawai">
 
-        // ── INISIALISASI ───────────────────────────
-        function setBulanSaatIni() {
-            const now = new Date();
-            let m = now.getMonth() + 1;
-            if (m < 10) m = '0' + m;
-            document.getElementById('filterBulan').value = `${now.getFullYear()}-${m}`;
+      <div class="section-title"><i class="fas fa-map-marker-alt"></i> Lokasi Kehadiran</div>
+      <div class="toggle-pill">
+        <input type="radio" name="modeLokasi" id="locKantor" value="KANTOR" checked onchange="cekLokasi()">
+        <label for="locKantor">KANTOR</label>
+        
+        <input type="radio" name="modeLokasi" id="locLuar" value="LAPANGAN" onchange="cekLokasi()">
+        <label for="locLuar">LAPANGAN</label>
+      </div>
+
+      <div class="section-title"><i class="fas fa-clipboard-list"></i> Tipe Absensi</div>
+      <div class="toggle-pill">
+        <input type="radio" name="tipeAbsen" id="masuk" value="MASUK" checked>
+        <label for="masuk">DATANG</label>
+        
+        <input type="radio" name="tipeAbsen" id="pulang" value="PULANG">
+        <label for="pulang">PULANG</label>
+      </div>
+
+      <div class="section-title"><i class="fas fa-camera"></i> Bukti Foto</div>
+      <input type="file" id="fotoKamera" accept="image/*" capture="environment" class="d-none">
+      <label for="fotoKamera" id="uiKamera" class="kamera-container">
+        <i class="fas fa-camera" id="ikonKamera"></i>
+        <span id="teksKamera">Ketuk Area Ini untuk Ambil Foto Selfie</span>
+        <img id="previewGambarStatis" src="">
+      </label>
+
+      <button type="button" id="btnSubmit" class="btn-utama" onclick="prosesAbsen()" disabled>
+        KIRIM ABSENSI
+      </button>
+
+      <div class="card-modern mt-4" id="riwayatContainer" style="padding: 20px 15px;">
+        <div class="section-title mb-3" style="justify-content: center;"><i class="fas fa-history"></i> Riwayat Terakhir</div>
+        <table class="table-riwayat">
+          <thead>
+            <tr>
+              <th>Waktu</th>
+              <th>Tipe</th>
+              <th style="text-align: right;">Status</th>
+            </tr>
+          </thead>
+          <tbody id="isiRiwayat">
+            <tr><td colspan="3" class="text-center" style="color: #94a3b8;"><i class="fas fa-spinner fa-spin"></i> Memuat data...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  // ====================================================================
+  // URL BACKEND APPS SCRIPT ANDA
+  // ====================================================================
+  const API_URL = "https://script.google.com/macros/s/AKfycbytSUNchsBEgPFA-9bmutWeBvdMTsOt2FHkyy3FzXSEGJodjOGPdHoXDj34Z2fcgF6sHw/exec";
+
+  const KANTOR_LAT = 2.9507367687454646; 
+  const KANTOR_LNG = 99.06044938808277; 
+  const MAX_JARAK = 50; 
+  let statusLokasi = "Mencari...";
+  let base64String = ""; 
+
+  function tampilkanTanggal() {
+    const hariList = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+    const bulanList = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+    const now = new Date();
+    const str = `${hariList[now.getDay()]}, ${now.getDate()} ${bulanList[now.getMonth()]} ${now.getFullYear()}`;
+    document.getElementById('tanggalHariIni').innerHTML = `<i class="far fa-calendar-alt me-1"></i> ${str}`;
+    
+    const jam = now.getHours();
+    let sapaan = "Selamat Pagi";
+    if(jam >= 11 && jam < 15) sapaan = "Selamat Siang";
+    else if(jam >= 15 && jam < 18) sapaan = "Selamat Sore";
+    else if(jam >= 18) sapaan = "Selamat Malam";
+    document.getElementById('sapaanWaktu').innerText = sapaan;
+  }
+
+  function aturOtomatisAbsen() {
+    const jamSekarang = new Date().getHours();
+    if (jamSekarang >= 16) {
+      document.getElementById('pulang').checked = true;
+    } else {
+      document.getElementById('masuk').checked = true;
+    }
+  }
+
+  // FUNGSI SUPER KEBAL: Mencocokkan Tanggal
+  function isDateMatch(waktuDariDB, targetDate) {
+      if(!waktuDariDB) return false;
+      let d = targetDate.getDate();
+      let m = targetDate.getMonth() + 1;
+      let y = targetDate.getFullYear();
+      
+      let dPad = String(d).padStart(2, '0');
+      let mPad = String(m).padStart(2, '0');
+      
+      let w = waktuDariDB.toLowerCase();
+      let datePart = w.split(' ')[0]; 
+      
+      let patterns = [
+          `${dPad}/${mPad}`, `${mPad}/${dPad}`, 
+          `${d}/${m}`, `${m}/${d}`,
+          `${y}-${mPad}-${dPad}`, `${dPad}-${mPad}-${y}`,
+          `${dPad} ` 
+      ];
+      
+      const namaBulan = ["jan", "feb", "mar", "apr", "mei", "jun", "jul", "agu", "sep", "okt", "nov", "des"];
+      
+      let match = patterns.some(p => datePart.includes(p) || w.startsWith(p));
+      
+      if (!match && w.includes(d.toString()) && w.includes(namaBulan[targetDate.getMonth()])) {
+          match = true;
+      }
+      return match;
+  }
+
+  // LOGIKA RENDER THIS WEEK STATUS
+  function renderWeekCircles(riwayatData) {
+    const container = document.getElementById('weekStatusContainer');
+    container.innerHTML = '';
+    
+    let curr = new Date();
+    let dayOfWeek = curr.getDay(); 
+    let distanceToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+    
+    let firstDay = new Date(curr);
+    firstDay.setDate(curr.getDate() + distanceToMonday);
+    
+    const namaHari = ["S", "S", "R", "K", "J", "S", "M"]; 
+    
+    for (let i = 0; i < 7; i++) {
+        let d = new Date(firstDay);
+        d.setDate(firstDay.getDate() + i);
+        
+        let isPresent = false;
+        if (riwayatData && riwayatData.length > 0) {
+            isPresent = riwayatData.some(item => isDateMatch(item.waktu, d) && item.tipe === 'MASUK');
         }
-
-        window.onload = function () {
-            setBulanSaatIni();
-            if (sessionStorage.getItem('admin_login_status') === 'berhasil') {
-                tampilkanDashboard();
+        
+        let compareDate = new Date(d); compareDate.setHours(0,0,0,0);
+        let todayCompare = new Date(); todayCompare.setHours(0,0,0,0);
+        
+        let circleClass = "day-circle-new ";
+        let circleContent = "";
+        
+        if (compareDate <= todayCompare) {
+            if (isPresent) {
+                circleClass += "present";
+                circleContent = '<i class="fas fa-check"></i>'; 
             } else {
-                document.getElementById('adminLoginScreen').style.display = 'flex';
-                document.getElementById('adminDashboardScreen').style.display = 'none';
+                circleClass += "absent";
+                circleContent = 'A'; 
             }
+        } else {
+            circleClass += "future"; 
+        }
+        
+        container.innerHTML += `
+            <div class="day-item">
+                <span class="day-label">${namaHari[i]}</span>
+                <div class="${circleClass}">${circleContent}</div>
+            </div>
+        `;
+    }
+  }
+
+  function prosesLogin() {
+    const user = document.getElementById('inputUsername').value;
+    const pin = document.getElementById('inputPin').value;
+    const btn = document.getElementById('btnLogin');
+
+    if(!user || !pin) {
+      Swal.fire({icon: 'warning', title: 'Oops!', text: 'Isi Username & PIN', confirmButtonColor: '#2D3182'});
+      return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> MEMPROSES...';
+
+    const targetUrl = `${API_URL}?action=login&user=${encodeURIComponent(user)}&pin=${encodeURIComponent(pin)}`;
+
+    fetch(targetUrl)
+      .then(response => response.json())
+      .then(res => {
+        if (res.sukses) {
+          sessionStorage.setItem('statusLogin', 'sudah_login');
+          sessionStorage.setItem('namaPegawaiSesi', res.namaLengkap);
+          
+          Swal.fire({
+            title: 'Login Berhasil!',
+            text: 'Selamat bekerja, ' + res.namaLengkap,
+            icon: 'success',
+            timer: 2000,
+            showConfirmButton: false,
+            backdrop: `rgba(45, 49, 130, 0.4)`
+          }).then(() => {
+            document.getElementById('halamanLogin').style.display = 'none';
+            document.getElementById('halamanAbsen').style.display = 'block';
+            document.getElementById('tampilNamaLengkap').innerText = res.namaLengkap;
+            document.getElementById('namaPegawai').value = res.namaLengkap;
+            
+            tampilkanTanggal();
+            muatRiwayat(res.namaLengkap);
+            pancingIzinSistem();
+            cekLokasi();
+            aturOtomatisAbsen();
+          });
+        } else {
+          Swal.fire({icon: 'error', title: 'Gagal', text: res.pesan, confirmButtonColor: '#FF5252'});
+          btn.disabled = false; 
+          btn.innerHTML = '<span>MASUK</span>';
+        }
+      })
+      .catch(err => {
+        Swal.fire({icon: 'error', title: 'Error Server', text: 'Tidak dapat terhubung ke sistem backend.', confirmButtonColor: '#FF5252'});
+        btn.disabled = false;
+        btn.innerHTML = '<span>MASUK</span>';
+      });
+  }
+
+  function prosesLogout() {
+    Swal.fire({
+      title: 'Konfirmasi',
+      text: "Apakah Anda yakin ingin keluar?",
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#2D3182',
+      cancelButtonColor: '#FF5252',
+      confirmButtonText: 'Ya, Keluar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        sessionStorage.removeItem('statusLogin');
+        sessionStorage.removeItem('namaPegawaiSesi');
+        
+        document.getElementById('halamanAbsen').style.display = 'none';
+        document.getElementById('halamanLogin').style.display = 'flex';
+        
+        document.getElementById('inputUsername').value = '';
+        document.getElementById('inputPin').value = '';
+        document.getElementById('btnLogin').disabled = false;
+        document.getElementById('btnLogin').innerHTML = '<span>MASUK</span>';
+        
+        base64String = "";
+        document.getElementById('previewGambarStatis').style.display = 'none';
+        document.getElementById('uiKamera').classList.remove('has-photo');
+        document.getElementById('teksKamera').innerText = "Ketuk Area Ini untuk Ambil Foto Selfie";
+      }
+    });
+  }
+
+  document.getElementById('fotoKamera').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          const MAX_WIDTH = 400;
+          let width = img.width, height = img.height;
+          if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
+          canvas.width = width; canvas.height = height;
+          canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+          base64String = canvas.toDataURL('image/jpeg', 0.6);
+          document.getElementById('previewGambarStatis').src = base64String;
+          document.getElementById('previewGambarStatis').style.display = 'block';
+          document.getElementById('uiKamera').classList.add('has-photo');
+          document.getElementById('teksKamera').innerText = "Foto Berhasil Diambil";
         };
+        img.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  });
 
-        document.getElementById('adminPin').addEventListener('keypress', function (e) { if (e.key === 'Enter') prosesLoginAdmin(); });
-        document.getElementById('adminUser').addEventListener('keypress', function (e) { if (e.key === 'Enter') document.getElementById('adminPin').focus(); });
+  function hitungJarak(lat1, lon1, lat2, lon2) {
+    const R = 6371e3;
+    const p1 = lat1 * Math.PI/180, p2 = lat2 * Math.PI/180;
+    const a = Math.sin((lat2-lat1)*Math.PI/180/2)**2 + Math.cos(p1)*Math.cos(p2)*Math.sin((lon2-lon1)*Math.PI/180/2)**2;
+    return Math.round(R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)));
+  }
 
-        // ── AUTENTIKASI ────────────────────────────
-        function prosesLoginAdmin() {
-            const user = document.getElementById('adminUser').value;
-            const pin = document.getElementById('adminPin').value;
-            const btn = document.getElementById('btnLoginAdmin');
+  function cekLokasi() {
+    const badge = document.getElementById('gpsStatus'), btn = document.getElementById('btnSubmit');
+    const mode = document.querySelector('input[name="modeLokasi"]:checked').value;
+    badge.className = "status-gps gps-loading";
+    badge.innerHTML = "<i class='fas fa-circle-notch fa-spin'></i> Mencari lokasi...";
+    
+    navigator.geolocation.getCurrentPosition(function(pos) {
+      const jarak = hitungJarak(KANTOR_LAT, KANTOR_LNG, pos.coords.latitude, pos.coords.longitude);
+      if (mode === "KANTOR") {
+        if (jarak <= MAX_JARAK) {
+          statusLokasi = "Valid (Kantor)";
+          badge.className = "status-gps gps-success"; badge.innerHTML = "<i class='fas fa-check-circle'></i> Dalam Radius Kantor ("+jarak+"m)";
+          btn.disabled = false;
+        } else {
+          badge.className = "status-gps gps-danger"; badge.innerHTML = "<i class='fas fa-times-circle'></i> Di Luar Radius Kantor ("+jarak+"m)";
+          btn.disabled = true;
+        }
+      } else {
+        statusLokasi = "Lapangan ("+pos.coords.latitude+","+pos.coords.longitude+")";
+        badge.className = "status-gps gps-info"; badge.innerHTML = "<i class='fas fa-map-marked-alt'></i> Mode Dinas Lapangan Aktif";
+        btn.disabled = false;
+      }
+    }, function() { badge.className = "status-gps gps-danger"; badge.innerHTML = "<i class='fas fa-exclamation-triangle'></i> Aktifkan Layanan Lokasi (GPS)!"; btn.disabled = true; }, {enableHighAccuracy:true});
+  }
 
-            if (!user || !pin) {
-                Swal.fire({ icon: 'warning', title: 'Form Kosong', text: 'Harap isi Username dan PIN Admin.', confirmButtonColor: '#0c1e35' });
-                return;
+  function prosesAbsen() {
+    if(!base64String) { Swal.fire('Foto Diperlukan', 'Silakan ambil foto selfie terlebih dahulu.', 'warning'); return; }
+    const btn = document.getElementById('btnSubmit');
+    const namaUser = document.getElementById('namaPegawai').value;
+    btn.disabled = true; btn.innerHTML = '<i class="fas fa-circle-notch fa-spin me-2"></i> MENGIRIM...';
+
+    const payload = {
+      action: "absen",
+      data: {
+        nama: namaUser,
+        tipe: document.querySelector('input[name="tipeAbsen"]:checked').value,
+        statusLokasi: statusLokasi,
+        fotoBase64: base64String
+      }
+    };
+
+    fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify(payload)
+    })
+    .then(response => response.json())
+    .then(res => {
+      if(res.sukses) {
+        Swal.fire({
+          title: 'Absen Terkirim!',
+          text: res.pesan, 
+          icon: 'success', 
+          confirmButtonColor: '#1DD1A1',
+          confirmButtonText: '<i class="fas fa-check"></i> Selesai',
+          backdrop: `rgba(29, 209, 161, 0.2)`
+        }).then(() => {
+          base64String = "";
+          document.getElementById('previewGambarStatis').style.display = 'none';
+          document.getElementById('uiKamera').classList.remove('has-photo');
+          document.getElementById('teksKamera').innerText = "Ketuk Area Ini untuk Ambil Foto Selfie";
+          btn.disabled = false; btn.innerHTML = 'KIRIM ABSENSI';
+          
+          muatRiwayat(namaUser);
+          aturOtomatisAbsen();
+        });
+      } else {
+        Swal.fire({icon: 'error', title: 'Gagal Menyimpan', text: res.pesan, confirmButtonColor: '#FF5252'});
+        btn.disabled = false; btn.innerHTML = 'KIRIM ABSENSI';
+      }
+    })
+    .catch(err => {
+      Swal.fire({icon: 'error', title: 'Error', text: 'Gagal mengirim data absensi.', confirmButtonColor: '#FF5252'});
+      btn.disabled = false; btn.innerHTML = 'KIRIM ABSENSI';
+    });
+  }
+
+  function muatRiwayat(nama) {
+    const tbody = document.getElementById('isiRiwayat');
+    tbody.innerHTML = '<tr><td colspan="3" class="text-center" style="color: #94a3b8;"><i class="fas fa-spinner fa-spin"></i> Sinkronisasi data...</td></tr>';
+    
+    document.getElementById('statusMasukTxt').innerText = "--:--";
+    document.getElementById('statusPulangTxt').innerText = "--:--";
+
+    const targetUrl = `${API_URL}?action=riwayat&nama=${encodeURIComponent(nama)}`;
+
+    fetch(targetUrl)
+      .then(response => response.json())
+      .then(data => {
+        tbody.innerHTML = '';
+        
+        const now = new Date();
+        let isMasuk = false, isPulang = false;
+        let masukJam = "--:--", pulangJam = "--:--";
+
+        renderWeekCircles(data);
+
+        if (!data || data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="3" class="text-center" style="color: #94a3b8;">Belum ada riwayat.</td></tr>';
+        } else {
+          data.forEach(function(item) {
+            
+            if (isDateMatch(item.waktu, now)) {
+                let waktuPecah = item.waktu.split(' ');
+                let jam = waktuPecah.length > 1 ? waktuPecah[1] : item.waktu;
+                
+                if (item.tipe === "MASUK" && !isMasuk) { isMasuk = true; masukJam = jam; }
+                if (item.tipe === "PULANG" && !isPulang) { isPulang = true; pulangJam = jam; }
             }
 
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memverifikasi...';
-
-            const targetUrl = `${API_URL}?action=loginAdmin&user=${encodeURIComponent(user)}&pin=${encodeURIComponent(pin)}`;
-
-            fetch(targetUrl)
-                .then(response => response.json())
-                .then(res => {
-                    if (res.sukses) {
-                        sessionStorage.setItem('admin_login_status', 'berhasil');
-                        Swal.fire({ icon: 'success', title: 'Akses Diterima', text: res.pesan || 'Selamat datang di Dashboard Admin', timer: 1500, showConfirmButton: false, backdrop: 'rgba(12,30,53,0.4)' }).then(() => tampilkanDashboard());
-                    } else {
-                        Swal.fire({ icon: 'error', title: 'Akses Ditolak', text: res.pesan || 'Kredensial tidak valid.', confirmButtonColor: '#d63c5e' });
-                        btn.disabled = false;
-                        btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> MASUK KE DASHBOARD';
-                    }
-                })
-                .catch(err => {
-                    Swal.fire('Error Server', 'Tidak dapat terhubung ke sistem backend.', 'error');
-                    btn.disabled = false;
-                    btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> MASUK KE DASHBOARD';
-                });
+            let colorS = (item.status === 'Terlambat' || item.status === 'Pulang Cepat') ? '#FF5252' : '#1DD1A1';
+            let tipeBadge = item.tipe === 'MASUK' 
+                  ? '<span class="badge-tipe" style="background:#e6fcf5; color:#1DD1A1;">DATANG</span>' 
+                  : '<span class="badge-tipe" style="background:#fff4e6; color:#FF9F43;">PULANG</span>';
+            
+            let row = `<tr>
+              <td style="color: #64748b; font-size: 0.75rem;">${item.waktu}</td>
+              <td>${tipeBadge}</td>
+              <td style="color:${colorS}; font-weight:700; text-align: right;">${item.status}</td>
+            </tr>`;
+            tbody.innerHTML += row;
+          });
         }
 
-        function tampilkanDashboard() {
-            document.getElementById('adminLoginScreen').style.display = 'none';
-            document.getElementById('adminDashboardScreen').style.display = 'flex';
-            muatData();
-        }
+        document.getElementById('statusMasukTxt').innerText = isMasuk ? masukJam : "--:--";
+        document.getElementById('statusPulangTxt').innerText = isPulang ? pulangJam : "--:--";
 
-        function logoutAdmin() {
-            Swal.fire({
-                title: 'Keluar dari Panel Admin?',
-                text: 'Anda akan diminta memasukkan PIN kembali jika ingin masuk.',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#d63c5e',
-                cancelButtonColor: '#4a5b72',
-                confirmButtonText: '<i class="fas fa-sign-out-alt"></i> Ya, Keluar',
-                cancelButtonText: 'Batal'
-            }).then(result => {
-                if (result.isConfirmed) {
-                    sessionStorage.removeItem('admin_login_status');
-                    document.getElementById('adminUser').value = '';
-                    document.getElementById('adminPin').value = '';
-                    document.getElementById('adminDashboardScreen').style.display = 'none';
-                    document.getElementById('adminLoginScreen').style.display = 'flex';
-                    const sidebar = document.getElementById('sidebar');
-                    const overlay = document.querySelector('.sidebar-overlay');
-                    if (sidebar.classList.contains('active')) { sidebar.classList.remove('active'); overlay.classList.remove('active'); }
-                }
-            });
-        }
+      })
+      .catch(err => {
+        tbody.innerHTML = '<tr><td colspan="3" class="text-center text-danger">Gagal memuat riwayat</td></tr>';
+      });
+  }
 
-        // ── UI HELPERS ─────────────────────────────
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('active');
-            document.querySelector('.sidebar-overlay').classList.toggle('active');
-        }
+  function pancingIzinSistem() {
+    if (navigator.mediaDevices) navigator.mediaDevices.getUserMedia({video:true}).then(s => s.getTracks().forEach(t => t.stop()));
+  }
 
-        // ── DATA ───────────────────────────────────
-        let globalData = [];
-        let currentSort = { key: 'rasio', dir: 'desc' };
-
-        function muatData() {
-            document.getElementById('loader').style.display = 'flex';
-            const bulanDipilih = document.getElementById('filterBulan').value;
-
-            const targetUrl = `${API_URL}?action=rekap&bulanTahun=${encodeURIComponent(bulanDipilih)}`;
-
-            fetch(targetUrl)
-                .then(response => response.json())
-                .then(res => {
-                    document.getElementById('loader').style.display = 'none';
-                    if (res.sukses) {
-                        document.getElementById('labelPeriode').innerHTML = `<i class="far fa-calendar-alt"></i> Periode: ${res.bulan}`;
-                        document.getElementById('labelPeriodePrint').innerText = `Periode Absensi: ${res.bulan}`;
-                        document.getElementById('valTotalPegawai').innerText = res.ringkasan.totalPegawai;
-                        document.getElementById('valBelumAbsen').innerText = res.ringkasan.belumAbsen;
-                        document.getElementById('valPersentase').innerText = res.ringkasan.rataKetepatanWaktu;
-                        renderTopStaff(res.staffRajin);
-                        renderAlerts(res.tidakPernahAbsen);
-                        globalData = res.tabelLengkap.map(p => {
-                            p.rasio = p.totalHadir > 0 ? Math.round((p.tepatWaktu / p.totalHadir) * 100) : 0;
-                            return p;
-                        });
-                        sortTable('rasio');
-                    } else {
-                        Swal.fire({ icon: 'error', title: 'Gagal Memuat Data', text: res.pesan, confirmButtonColor: '#0c1e35' });
-                    }
-                })
-                .catch(err => {
-                    document.getElementById('loader').style.display = 'none';
-                    Swal.fire('Error Server', 'Gagal memuat rekap data dari server.', 'error');
-                });
-        }
-
-        function renderTopStaff(topStaff) {
-            const el = document.getElementById('listTopStaff');
-            el.innerHTML = '';
-            const top7 = topStaff.slice(0, 7);
-            if (!top7.length) {
-                el.innerHTML = `<div style="text-align:center;padding:30px 0;color:var(--text-3);font-size:13px;font-weight:600;">Belum ada data tepat waktu di periode ini.</div>`;
-                return;
-            }
-            top7.forEach((p, i) => {
-                el.innerHTML += `
-                    <div class="top-staff-item">
-                        <div class="top-staff-info">
-                            <div class="top-staff-rank">${i + 1}</div>
-                            <span class="top-staff-name">${p.nama}</span>
-                        </div>
-                        <div class="top-staff-score"><i class="fas fa-check"></i>${p.tepatWaktu} Hari</div>
-                    </div>`;
-            });
-        }
-
-        function renderAlerts(alphaStaff) {
-            const el = document.getElementById('listAlpha');
-            el.innerHTML = '';
-            if (!alphaStaff.length) {
-                el.innerHTML = `<div style="text-align:center;padding:24px 0;"><i class="fas fa-check-circle" style="color:var(--success);font-size:28px;margin-bottom:10px;display:block;"></i><small style="color:var(--success);font-weight:700;font-size:13px;">Semua staff sudah absen di periode ini.</small></div>`;
-            } else {
-                alphaStaff.forEach(nama => {
-                    el.innerHTML += `<div class="alert-item"><i class="fas fa-times-circle"></i><span>${nama} (0 Hari)</span></div>`;
-                });
-            }
-        }
-
-        function renderTable(data) {
-            const tbody = document.getElementById('tableBody');
-            tbody.innerHTML = '';
-            if (!data.length) {
-                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:36px;color:var(--text-3);">Tidak ada data ditemukan untuk periode ini.</td></tr>`;
-                return;
-            }
-            data.forEach(p => {
-                const color = p.rasio >= 80 ? 'var(--success)' : (p.rasio >= 50 ? 'var(--warning)' : 'var(--danger)');
-                const bc = p.rasio >= 80 ? 'badge-success' : (p.rasio >= 50 ? 'badge-warning' : 'badge-danger');
-                tbody.innerHTML += `
-                    <tr>
-                        <td class="nama-cell">${p.nama}</td>
-                        <td class="num-cell">${p.totalHadir}</td>
-                        <td style="text-align:center"><span class="badge ${bc}"><i class="fas fa-check"></i>${p.tepatWaktu}</span></td>
-                        <td style="text-align:center">${p.terlambat > 0 ? `<span class="badge badge-danger"><i class="fas fa-exclamation"></i>${p.terlambat}</span>` : `<span style="color:var(--text-3);font-weight:700;">—</span>`}</td>
-                        <td>
-                            <div class="progress-wrapper">
-                                <div class="progress-text">
-                                    <span style="color:${color}">${p.rasio}%</span>
-                                    <span style="color:var(--text-3);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;">Tepat Waktu</span>
-                                </div>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width:${p.rasio}%;background:${color}"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>`;
-            });
-        }
-
-        function sortTable(key) {
-            ['nama','totalHadir','tepatWaktu','terlambat','rasio'].forEach(k => document.getElementById('icon-'+k).className = 'fas fa-sort');
-            if (currentSort.key === key) {
-                currentSort.dir = currentSort.dir === 'asc' ? 'desc' : 'asc';
-            } else {
-                currentSort.key = key;
-                currentSort.dir = key === 'nama' ? 'asc' : 'desc';
-            }
-            document.getElementById('icon-'+key).className = currentSort.dir === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down';
-            let sorted = [...globalData].sort((a, b) => {
-                if (key === 'nama') {
-                    const va = a.nama.toLowerCase(), vb = b.nama.toLowerCase();
-                    return currentSort.dir === 'asc' ? (va < vb ? -1 : va > vb ? 1 : 0) : (va > vb ? -1 : va < vb ? 1 : 0);
-                }
-                return currentSort.dir === 'asc' ? (a[key] - b[key]) : (b[key] - a[key]);
-            });
-            applySearchFilter(sorted);
-        }
-
-        function filterTable() { sortTable(currentSort.key); }
-
-        function applySearchFilter(dataArray) {
-            const q = document.getElementById('searchInput').value.toLowerCase();
-            renderTable(q ? dataArray.filter(p => p.nama.toLowerCase().includes(q)) : dataArray);
-        }
-
-        function bukaLayarAbsen() {
-            document.getElementById('loader').style.display = 'flex';
-            document.querySelector('#loader p').innerText = 'Mengalihkan halaman...';
-            window.location.href = 'index.html'; 
-        }
-    </script>
+  window.onload = function() {
+    if (sessionStorage.getItem('statusLogin') === 'sudah_login') {
+      const nama = sessionStorage.getItem('namaPegawaiSesi');
+      document.getElementById('halamanLogin').style.display = 'none';
+      document.getElementById('halamanAbsen').style.display = 'block';
+      document.getElementById('tampilNamaLengkap').innerText = nama;
+      document.getElementById('namaPegawai').value = nama;
+      
+      tampilkanTanggal();
+      muatRiwayat(nama);
+      cekLokasi();
+      aturOtomatisAbsen();
+    }
+  };
+</script>
 </body>
 </html>

@@ -367,6 +367,7 @@
 <script>
   // ====================================================================
   // URL BACKEND APPS SCRIPT ANDA
+  // PASTIKAN INI ADALAH URL WEB APP YANG BARU
   // ====================================================================
   const API_URL = "https://script.google.com/macros/s/AKfycbytSUNchsBEgPFA-9bmutWeBvdMTsOt2FHkyy3FzXSEGJodjOGPdHoXDj34Z2fcgF6sHw/exec";
 
@@ -375,13 +376,20 @@
   let sudahAbsenMasukHariIni = false; 
   let daftarLiburNasional = []; 
   
-  // --- FUNGSI UPDATE SISA CUTI VIA FETCH ---
+  // --- FUNGSI UPDATE SISA CUTI VIA FETCH (POST) ---
   function perbaruiUIKuotaCuti() {
       let nama = document.getElementById('namaPegawai').value || sessionStorage.getItem('namaPegawai');
       let infoEl = document.getElementById('infoSisaCuti');
 
       if (nama) {
-          fetch(`${API_URL}?action=getUpdateSisaCuti&nama=${encodeURIComponent(nama)}`)
+          fetch(API_URL, {
+              method: "POST",
+              headers: { "Content-Type": "text/plain;charset=utf-8" },
+              body: JSON.stringify({
+                  action: "getUpdateSisaCuti",
+                  payload: { namaLengkap: nama }
+              })
+          })
           .then(res => res.json())
           .then(sisa => {
               sisaCutiUser = sisa; 
@@ -414,7 +422,7 @@
       }
   }
 
-  // --- PROSES LOGIN VIA FETCH ---
+  // --- PROSES LOGIN VIA FETCH (POST) ---
   function prosesLogin() {
       const user = document.getElementById('inputUsername').value;
       const pin = document.getElementById('inputPin').value;
@@ -423,7 +431,14 @@
       
       btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> MEMPROSES...';
       
-      fetch(`${API_URL}?action=login&user=${encodeURIComponent(user)}&pin=${encodeURIComponent(pin)}`)
+      fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({
+              action: "cekLoginPegawai",
+              payload: { username: user, pin: pin }
+          })
+      })
       .then(response => response.json())
       .then(res => {
         if(res.sukses) {
@@ -544,7 +559,7 @@
     }; r.readAsDataURL(file);
   }
 
-  // --- PROSES ABSEN VIA FETCH ---
+  // --- PROSES ABSEN VIA FETCH (POST) ---
   function prosesAbsen() {
     let tipeDipilih = document.querySelector('input[name="tipeAbsen"]:checked').value;
     if (tipeDipilih === "PULANG" && !sudahAbsenMasukHariIni) {
@@ -562,18 +577,20 @@
         fotoBase64: base64Absen 
     };
 
-    const payload = { action: "absen", data: py };
-    
     fetch(API_URL, {
         method: "POST",
-        body: JSON.stringify(payload)
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({
+            action: "simpanAbsenFoto",
+            payload: py
+        })
     })
     .then(response => response.json())
     .then(res => {
-        if(res.sukses !== false && !String(res.pesan).startsWith("Gagal")) {
+        if(res.pesan && !String(res.pesan).startsWith("Gagal")) {
             Swal.fire({
                 title: 'Absen Terkirim!',
-                text: res.pesan || res, 
+                text: res.pesan, 
                 icon: 'success', 
                 confirmButtonColor: '#1DD1A1',
                 confirmButtonText: '<i class="fas fa-check"></i> Selesai',
@@ -581,7 +598,7 @@
             });
             muatRiwayatAbsen();
         } else {
-            Swal.fire('Ditolak', res.pesan || res, 'error');
+            Swal.fire('Ditolak', res.pesan || "Terjadi kesalahan", 'error');
         }
         btn.disabled = false; btn.innerHTML = 'KIRIM ABSENSI';
         base64Absen = ""; 
@@ -643,27 +660,27 @@
     }
   }
 
-  // --- MUAT RIWAYAT ABSEN VIA FETCH ---
+  // --- MUAT RIWAYAT ABSEN VIA FETCH (POST) ---
   function muatRiwayatAbsen() {
     const tbody = document.getElementById('isiRiwayat');
     tbody.innerHTML = '<tr><td colspan="3" class="text-center" style="color: #94a3b8;"><i class="fas fa-spinner fa-spin"></i> Sinkronisasi data...</td></tr>';
     
     let nama = document.getElementById('namaPegawai').value;
     
-    fetch(`${API_URL}?action=riwayat&nama=${encodeURIComponent(nama)}`)
+    fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({
+            action: "getRiwayatAbsen",
+            payload: { nama: nama }
+        })
+    })
     .then(res => res.json())
     .then(response => {
       let dataAbsen = [];
-      let dataLibur = [];
       
-      if (response) {
-          if (Array.isArray(response)) {
-              dataAbsen = response; 
-          } else {
-              dataAbsen = response.absen || []; 
-              dataLibur = response.libur || [];
-              daftarLiburNasional = dataLibur; 
-          }
+      if (response && Array.isArray(response)) {
+          dataAbsen = response; 
       }
 
       let masuk = "--:--", pulang = "--:--", now = new Date();
@@ -715,15 +732,16 @@
       for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
         let dayOfWeek = d.getDay();
         if (dayOfWeek !== 0 && dayOfWeek !== 6) {
-          let tglFormat = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-          if (!daftarLiburNasional.includes(tglFormat)) totalHariKerja++;
+          // Hanya menghitung selain Sabtu & Minggu. 
+          // (Pengecualian libur nasional sementara menggunakan perhitungan standar karena API terpisah).
+          totalHariKerja++;
         }
       }
       document.getElementById('teksTotalHari').innerText = totalHariKerja > 0 ? `Total: ${totalHariKerja} Hari` : "Total: 0 Hari";
     }
   }
 
-  // --- PROSES PENGAJUAN VIA FETCH ---
+  // --- PROSES PENGAJUAN VIA FETCH (POST) ---
   function prosesPengajuan() {
     let tipe = document.querySelector('input[name="tipePengajuan"]:checked').value;
     let m = document.getElementById('tglMulai').value, s = document.getElementById('tglSelesai').value;
@@ -738,11 +756,14 @@
     btn.disabled = true; btn.innerHTML = '<i class="fas fa-circle-notch fa-spin me-2"></i> MENGIRIM PENGAJUAN...';
 
     const py = { nama: document.getElementById('namaPegawai').value, tipe: tipe, tglMulai: m, tglSelesai: s, totalHari: diff, fotoBase64: base64Pengajuan };
-    const payload = { action: "pengajuanCuti", data: py };
     
     fetch(API_URL, {
         method: "POST",
-        body: JSON.stringify(payload)
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({
+            action: "simpanPengajuanCuti",
+            payload: py
+        })
     })
     .then(response => response.json())
     .then(res => {
@@ -767,14 +788,21 @@
     });
   }
 
-  // --- MUAT RIWAYAT PENGAJUAN VIA FETCH ---
+  // --- MUAT RIWAYAT PENGAJUAN VIA FETCH (POST) ---
   function muatRiwayatPengajuan() {
     const div = document.getElementById('listStatusPengajuan');
     div.innerHTML = '<div class="text-center" style="color:#94a3b8; padding:30px;"><i class="fas fa-spinner fa-spin"></i> Memuat data...</div>';
     
     let nama = document.getElementById('namaPegawai').value;
 
-    fetch(`${API_URL}?action=riwayatPengajuan&nama=${encodeURIComponent(nama)}`)
+    fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({
+            action: "getRiwayatPengajuan",
+            payload: { nama: nama }
+        })
+    })
     .then(res => res.json())
     .then(data => {
       div.innerHTML = '';

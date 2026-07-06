@@ -11,7 +11,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
-        /* [Gaya CSS Anda tidak diubah, tetap sama seperti sebelumnya] */
         :root {
             --primary:       #0c1e35;
             --primary-mid:   #153252;
@@ -42,494 +41,190 @@
         }
 
         *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            display: flex;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); display: flex; min-height: 100vh; overflow-x: hidden; }
         ::-webkit-scrollbar { width:6px; height:6px; }
         ::-webkit-scrollbar-track { background:transparent; }
         ::-webkit-scrollbar-thumb { background:#c8d6e5; border-radius:99px; }
         ::-webkit-scrollbar-thumb:hover { background:#a0b4cc; }
 
-        .login-wrap {
-            position: fixed; inset: 0;
-            background: linear-gradient(145deg, var(--primary) 0%, #071626 100%);
-            display: flex; align-items: center; justify-content: center;
-            z-index: 10000; padding: 20px;
-            background-image:
-                linear-gradient(145deg, var(--primary) 0%, #071626 100%),
-                repeating-linear-gradient(135deg, transparent, transparent 40px, rgba(255,255,255,0.015) 40px, rgba(255,255,255,0.015) 41px);
-        }
-
-        .login-card {
-            background: var(--surface);
-            padding: 48px 40px 40px;
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-lg);
-            width: 100%; max-width: 420px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-        .login-card::before {
-            content: '';
-            position: absolute; top: 0; left: 0; right: 0; height: 4px;
-            background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold));
-        }
-
-        .login-icon-ring {
-            width: 76px; height: 76px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 24px;
-            box-shadow: 0 8px 24px rgba(12,30,53,0.25);
-        }
+        /* LOGIN SCREEN */
+        .login-wrap { position: fixed; inset: 0; background: linear-gradient(145deg, var(--primary) 0%, #071626 100%); display: flex; align-items: center; justify-content: center; z-index: 10000; padding: 20px; }
+        .login-card { background: var(--surface); padding: 48px 40px 40px; border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); width: 100%; max-width: 420px; text-align: center; position: relative; overflow: hidden; }
+        .login-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold)); }
+        .login-icon-ring { width: 76px; height: 76px; border-radius: 50%; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; box-shadow: 0 8px 24px rgba(12,30,53,0.25); }
         .login-icon-ring i { font-size: 32px; color: var(--gold); }
-
-        .login-card h2 {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 22px; font-weight: 700;
-            color: var(--primary); margin-bottom: 4px;
-        }
-        .login-card .login-sub {
-            font-size: 11px; font-weight: 600; letter-spacing: 1.5px;
-            text-transform: uppercase; color: var(--text-3); margin-bottom: 32px;
-        }
-
+        .login-card h2 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(20px, 4vw, 22px); font-weight: 700; color: var(--primary); margin-bottom: 4px; }
+        .login-card .login-sub { font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-3); margin-bottom: 32px; }
         .form-group { text-align: left; margin-bottom: 18px; }
-        .form-group label {
-            display: block; font-size: 11px; font-weight: 700;
-            letter-spacing: 0.8px; text-transform: uppercase;
-            color: var(--text-2); margin-bottom: 7px;
-        }
-        .form-control {
-            width: 100%; padding: 13px 16px;
-            border: 1.5px solid var(--border); border-radius: var(--radius-sm);
-            font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500;
-            color: var(--text); background: var(--surface-2); outline: none;
-            transition: var(--transition);
-        }
-        .form-control:focus {
-            border-color: var(--gold);
-            background: #fff;
-            box-shadow: 0 0 0 4px rgba(201,168,76,0.12);
-        }
-
-        .btn-login {
-            width: 100%; margin-top: 8px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            color: #fff; border: none;
-            padding: 15px; border-radius: var(--radius-sm);
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 14px; font-weight: 700; letter-spacing: 0.5px;
-            cursor: pointer; transition: var(--transition);
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-        }
+        .form-group label { display: block; font-size: 11px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: var(--text-2); margin-bottom: 7px; }
+        .form-control { width: 100%; padding: 13px 16px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500; color: var(--text); background: var(--surface-2); outline: none; transition: var(--transition); }
+        .form-control:focus { border-color: var(--gold); background: #fff; box-shadow: 0 0 0 4px rgba(201,168,76,0.12); }
+        .btn-login { width: 100%; margin-top: 8px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: #fff; border: none; padding: 15px; border-radius: var(--radius-sm); font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 0.5px; cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 10px; }
         .btn-login:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(12,30,53,0.22); }
-        .btn-login:disabled { opacity: 0.65; cursor: not-allowed; transform: none; box-shadow: none; }
-
-        #loader {
-            position: fixed; inset: 0;
-            background: rgba(240,244,249,0.92);
-            backdrop-filter: blur(10px);
-            z-index: 9999; display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-        }
-        .loader-ring {
-            width: 52px; height: 52px;
-            border: 3px solid var(--border);
-            border-top-color: var(--gold);
-            border-radius: 50%;
-            animation: spin 0.9s linear infinite;
-        }
+        
+        /* LOADER */
+        #loader { position: fixed; inset: 0; background: rgba(240,244,249,0.92); backdrop-filter: blur(10px); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .loader-ring { width: 52px; height: 52px; border: 3px solid var(--border); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.9s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
-        #loader p {
-            margin-top: 18px; font-weight: 700; font-size: 13px;
-            letter-spacing: 0.5px; color: var(--primary);
-        }
-
-        .sidebar-overlay {
-            display: none; position: fixed; inset: 0;
-            background: rgba(0,0,0,0.45); backdrop-filter: blur(4px);
-            z-index: 40; opacity: 0; transition: opacity 0.3s;
-        }
+        
+        /* SIDEBAR & LAYOUT */
+        .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); backdrop-filter: blur(4px); z-index: 40; opacity: 0; transition: opacity 0.3s; }
         .sidebar-overlay.active { display: block; opacity: 1; }
-
-        .sidebar {
-            width: 260px;
-            background: var(--primary);
-            color: #fff;
-            display: flex; flex-direction: column;
-            position: fixed; height: 100vh; z-index: 50;
-            transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
-        }
-
-        .sidebar-header {
-            padding: 36px 24px 28px;
-            border-bottom: 1px solid rgba(255,255,255,0.07);
-        }
-        .sidebar-logo {
-            display: flex; align-items: center; gap: 14px;
-        }
-        .sidebar-logo-icon {
-            width: 44px; height: 44px; border-radius: 12px;
-            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 20px; color: var(--primary);
-            flex-shrink: 0;
-            box-shadow: 0 4px 12px rgba(201,168,76,0.3);
-        }
-        .sidebar-logo-text h3 {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 16px; font-weight: 700; color: #fff; line-height: 1.1;
-        }
-        .sidebar-logo-text span {
-            font-size: 10px; font-weight: 600; letter-spacing: 1px;
-            text-transform: uppercase; color: var(--gold); opacity: 0.9;
-        }
-
-        .sidebar-section-label {
-            font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
-            text-transform: uppercase; color: rgba(255,255,255,0.25);
-            padding: 20px 24px 8px;
-        }
-
+        .sidebar { width: 260px; background: var(--primary); color: #fff; display: flex; flex-direction: column; position: fixed; height: 100vh; z-index: 50; transition: transform 0.35s cubic-bezier(0.4,0,0.2,1); }
+        .sidebar-header { padding: 36px 24px 28px; border-bottom: 1px solid rgba(255,255,255,0.07); }
+        .sidebar-logo { display: flex; align-items: center; gap: 14px; }
+        .sidebar-logo-icon { width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%); display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--primary); flex-shrink: 0; }
+        .sidebar-logo-text h3 { font-family: 'Space Grotesk', sans-serif; font-size: 16px; font-weight: 700; color: #fff; line-height: 1.1; }
+        .sidebar-logo-text span { font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--gold); opacity: 0.9; }
+        .sidebar-section-label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,0.25); padding: 20px 24px 8px; }
         .sidebar-nav { padding: 8px 14px; flex-grow: 1; display: flex; flex-direction: column; }
-
-        .nav-item {
-            display: flex; align-items: center; gap: 12px;
-            padding: 13px 16px;
-            color: rgba(255,255,255,0.55);
-            text-decoration: none; border-radius: var(--radius-sm);
-            font-size: 13px; font-weight: 600;
-            cursor: pointer; margin-bottom: 4px;
-            transition: var(--transition);
-            border: 1px solid transparent;
-        }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 13px 16px; color: rgba(255,255,255,0.55); text-decoration: none; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; cursor: pointer; margin-bottom: 4px; transition: var(--transition); border: 1px solid transparent; }
         .nav-item i { font-size: 15px; width: 18px; text-align: center; }
         .nav-item:hover { background: rgba(255,255,255,0.06); color: #fff; transform: translateX(3px); }
-        .nav-item.active {
-            background: var(--gold-dim);
-            color: var(--gold);
-            border-color: rgba(201,168,76,0.2);
-        }
+        .nav-item.active { background: var(--gold-dim); color: var(--gold); border-color: rgba(201,168,76,0.2); }
         .nav-spacer { flex: 1; }
-        .nav-item.logout-btn {
-            color: rgba(255,120,120,0.75); margin-bottom: 0;
-            border-top: 1px solid rgba(255,255,255,0.06);
-            margin-top: 8px; padding-top: 16px; border-radius: 0;
-        }
-        .nav-item.logout-btn:hover { background: rgba(214,60,94,0.1); color: #ff8fa3; transform: none; }
-
-        .main-content {
-            margin-left: 260px;
-            flex-grow: 1; width: calc(100% - 260px);
-            padding: 36px 40px;
-            display: flex; flex-direction: column; gap: 28px;
-            transition: margin var(--transition), width var(--transition);
-        }
-
-        .mobile-header {
-            display: none;
-            justify-content: space-between; align-items: center;
-        }
-        .menu-toggle {
-            background: var(--surface); border: 1px solid var(--border);
-            color: var(--primary); font-size: 18px; cursor: pointer;
-            padding: 10px 12px; border-radius: var(--radius-sm);
-            box-shadow: var(--shadow-sm); transition: var(--transition);
-        }
-        .menu-toggle:hover { background: var(--surface-2); }
-
-        .top-header {
-            display: flex; justify-content: space-between;
-            align-items: flex-start; flex-wrap: wrap; gap: 20px;
-        }
-
-        .page-eyebrow {
-            display: flex; align-items: center; gap: 8px;
-            font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
-            text-transform: uppercase; color: var(--gold);
-            margin-bottom: 6px;
-        }
-        .page-eyebrow::before {
-            content: '';
-            width: 20px; height: 2px;
-            background: var(--gold); border-radius: 2px;
-        }
-        .page-title h1 {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 26px; font-weight: 700;
-            color: var(--primary); letter-spacing: -0.5px;
-        }
-        .page-title p {
-            color: var(--text-2); font-size: 13px; font-weight: 500;
-            margin-top: 4px; display: flex; align-items: center; gap: 6px;
-        }
-
+        .nav-item.logout-btn { color: rgba(255,120,120,0.75); margin-bottom: 0; border-top: 1px solid rgba(255,255,255,0.06); margin-top: 8px; padding-top: 16px; border-radius: 0; }
+        
+        .main-content { margin-left: 260px; flex-grow: 1; width: calc(100% - 260px); padding: 36px 40px; display: flex; flex-direction: column; gap: 28px; transition: margin var(--transition), width var(--transition); }
+        .mobile-header { display: none; justify-content: space-between; align-items: center; }
+        .menu-toggle { background: var(--surface); border: 1px solid var(--border); color: var(--primary); font-size: 18px; cursor: pointer; padding: 10px 12px; border-radius: var(--radius-sm); }
+        
+        /* HEADER UTAMA */
+        .top-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 20px; }
+        .page-eyebrow { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); margin-bottom: 6px; }
+        .page-eyebrow::before { content: ''; width: 20px; height: 2px; background: var(--gold); border-radius: 2px; }
+        .page-title h1 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(20px, 3vw, 26px); font-weight: 700; color: var(--primary); letter-spacing: -0.5px; }
+        .page-title p { color: var(--text-2); font-size: 13px; font-weight: 500; margin-top: 4px; display: flex; align-items: center; gap: 6px; }
         .header-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-
-        .input-month {
-            padding: 11px 14px;
-            border: 1.5px solid var(--border); border-radius: var(--radius-sm);
-            font-family: 'Inter', sans-serif;
-            font-size: 13px; font-weight: 600; color: var(--primary);
-            background: var(--surface); outline: none; cursor: pointer;
-            transition: var(--transition);
-        }
-        .input-month:focus {
-            border-color: var(--gold);
-            box-shadow: 0 0 0 4px rgba(201,168,76,0.1);
-        }
-
-        .btn-action {
-            background: var(--surface);
-            color: var(--text-2);
-            border: 1.5px solid var(--border);
-            padding: 11px 18px; border-radius: var(--radius-sm);
-            font-family: 'Inter', sans-serif;
-            font-size: 13px; font-weight: 600;
-            cursor: pointer; transition: var(--transition);
-            display: flex; align-items: center; gap: 8px;
-            box-shadow: var(--shadow-sm);
-        }
+        .input-month { padding: 11px 14px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; color: var(--primary); background: var(--surface); outline: none; cursor: pointer; }
+        .btn-action { background: var(--surface); color: var(--text-2); border: 1.5px solid var(--border); padding: 11px 18px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: 8px; box-shadow: var(--shadow-sm); }
         .btn-action:hover { transform: translateY(-2px); box-shadow: var(--shadow); border-color: #c8d6e5; color: var(--text); }
-
         .btn-pdf { color: var(--danger); border-color: #f5c2ce; background: var(--danger-bg); }
-        .btn-pdf:hover { background: #fad4dc; border-color: #e8a0b0; }
-
+        
+        /* KOMPONEN KARTU OVERVIEW */
         .kpi-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
-
-        .kpi-card {
-            background: var(--surface);
-            border-radius: var(--radius);
-            padding: 26px;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--border);
-            display: flex; align-items: center; gap: 20px;
-            transition: var(--transition);
-            position: relative; overflow: hidden;
-        }
-        .kpi-card::after {
-            content: '';
-            position: absolute; right: -20px; bottom: -20px;
-            width: 90px; height: 90px; border-radius: 50%;
-            opacity: 0.06;
-        }
-        .kpi-card.blue::after  { background: #0284c7; }
-        .kpi-card.red::after   { background: var(--danger); }
-        .kpi-card.green::after { background: var(--success); }
-
-        .kpi-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
-
-        .kpi-icon {
-            width: 56px; height: 56px; border-radius: var(--radius-sm);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 22px; flex-shrink: 0;
-        }
-        .kpi-card.blue  .kpi-icon { background: #dbeafe; color: #1d6ed8; }
-        .kpi-card.red   .kpi-icon { background: var(--danger-bg); color: var(--danger); }
+        .kpi-card { background: var(--surface); border-radius: var(--radius); padding: 26px; box-shadow: var(--shadow-sm); border: 1px solid var(--border); display: flex; align-items: center; gap: 20px; }
+        .kpi-icon { width: 56px; height: 56px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+        .kpi-card.blue .kpi-icon { background: #dbeafe; color: #1d6ed8; }
+        .kpi-card.red .kpi-icon { background: var(--danger-bg); color: var(--danger); }
         .kpi-card.green .kpi-icon { background: var(--success-bg); color: var(--success); }
-
-        .kpi-data h4 {
-            font-size: 11px; font-weight: 700; letter-spacing: 0.8px;
-            text-transform: uppercase; color: var(--text-3); margin-bottom: 6px;
-        }
-        .kpi-data h2 {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 34px; font-weight: 700; color: var(--primary); line-height: 1;
-        }
-
+        .kpi-data h4 { font-size: 11px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: var(--text-3); margin-bottom: 6px; }
+        .kpi-data h2 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(26px, 4vw, 34px); font-weight: 700; color: var(--primary); line-height: 1; }
+        
         .middle-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
-
-        .card-container {
-            background: var(--surface);
-            border-radius: var(--radius);
-            padding: 26px;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--border);
-        }
-
+        .card-container { background: var(--surface); border-radius: var(--radius); padding: 26px; box-shadow: var(--shadow-sm); border: 1px solid var(--border); }
         .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-
-        .card-title {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 15px; font-weight: 700; color: var(--primary);
-            display: flex; align-items: center; gap: 9px;
-        }
-        .card-title-icon {
-            width: 30px; height: 30px; border-radius: 8px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 13px;
-        }
-        .card-title-icon.blue   { background: #dbeafe; color: #1d6ed8; }
-        .card-title-icon.gold   { background: var(--gold-dim); color: var(--gold); }
+        .card-title { font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 9px; }
+        .card-title-icon { width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; }
+        .card-title-icon.blue { background: #dbeafe; color: #1d6ed8; }
+        .card-title-icon.gold { background: var(--gold-dim); color: var(--gold); }
         .card-title-icon.orange { background: var(--warning-bg); color: var(--warning); }
-
-        .top-staff-list {
-            display: flex; flex-direction: column; gap: 8px;
-            max-height: 230px; overflow-y: auto; padding-right: 4px;
+        
+        /* LIST STAFF & ALERT (DESAIN PROFESIONAL) */
+        .top-staff-list, .alert-list { display: flex; flex-direction: column; gap: 8px; max-height: 250px; overflow-y: auto; padding-right: 4px; }
+        .top-staff-item, .alert-item { 
+            display: flex; justify-content: space-between; align-items: center; gap: 12px; 
+            padding: 12px 16px; background: #ffffff; 
+            border: 1px solid var(--border); border-left: 4px solid var(--success); 
+            border-radius: 8px; box-shadow: 0 1px 3px rgba(12,30,53,0.02); transition: var(--transition);
         }
-        .top-staff-item {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 12px 14px;
-            background: var(--surface-2); border: 1px solid var(--border);
-            border-radius: var(--radius-sm); transition: var(--transition);
-        }
-        .top-staff-item:hover { background: #fff; border-color: #c8d6e5; box-shadow: var(--shadow-sm); transform: translateX(3px); }
-        .top-staff-item:first-child .top-staff-rank { background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--primary); }
+        .alert-item { border-left-color: var(--danger); }
 
-        .top-staff-info { display: flex; align-items: center; gap: 12px; }
-        .top-staff-rank {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            color: #fff; width: 26px; height: 26px; min-width: 26px;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 11px; font-weight: 800;
-        }
-        .top-staff-name { font-size: 13px; font-weight: 600; color: var(--text); }
-
-        .top-staff-score {
-            font-size: 12px; font-weight: 700;
-            color: var(--success); background: var(--success-bg);
-            padding: 4px 12px; border-radius: 99px;
-            display: flex; align-items: center; gap: 5px;
+        .top-staff-info { display: flex; align-items: center; gap: 12px; flex: 1; overflow: hidden; }
+        .top-staff-rank { 
+            background: var(--success-bg); color: var(--success); 
+            width: 26px; height: 26px; border-radius: 6px; display: flex; align-items: center; justify-content: center; 
+            font-size: 11px; font-weight: 800; flex-shrink: 0; 
         }
 
-        .alert-list {
-            display: flex; flex-direction: column; gap: 10px;
-            max-height: 230px; overflow-y: auto; padding-right: 4px;
-        }
-        .alert-item {
-            display: flex; align-items: center; gap: 12px;
-            padding: 12px 14px;
-            background: var(--danger-bg); border: 1px solid #f5c2ce;
-            border-radius: var(--radius-sm); transition: var(--transition);
-        }
-        .alert-item:hover { transform: translateX(3px); border-color: #e8a0b0; }
-        .alert-item i { color: var(--danger); font-size: 15px; flex-shrink: 0; }
-        .alert-item span { font-size: 13px; font-weight: 600; color: #a02040; }
+        .top-staff-name { font-size: clamp(12px, 2vw, 13px); font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: left; }
+        .top-staff-score { font-size: 11px; font-weight: 700; color: var(--text-2); background: transparent; flex-shrink: 0; }
+        .top-staff-score i { color: var(--success); margin-right: 4px; }
 
-        .table-controls {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 20px; flex-wrap: wrap; gap: 14px;
-        }
-
+        .alert-item i { color: var(--danger); font-size: 16px; flex-shrink: 0; }
+        .alert-item span { font-size: clamp(12px, 2vw, 13px); font-weight: 600; color: #a02040; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; text-align: left; }
+        
+        /* TABEL DATA */
+        .table-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 14px; }
         .search-box { position: relative; width: 300px; }
-        .search-box i {
-            position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
-            color: var(--text-3); font-size: 13px;
-        }
-        .search-box input {
-            width: 100%; padding: 11px 14px 11px 40px;
-            border: 1.5px solid var(--border); border-radius: var(--radius-sm);
-            font-family: 'Inter', sans-serif;
-            font-size: 13px; font-weight: 500; color: var(--text);
-            background: var(--surface-2); outline: none; transition: var(--transition);
-        }
-        .search-box input:focus {
-            border-color: var(--gold); background: #fff;
-            box-shadow: 0 0 0 4px rgba(201,168,76,0.1);
-        }
-
+        .search-box i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-3); font-size: 13px; }
+        .search-box input { width: 100%; padding: 11px 14px 11px 40px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-size: 13px; font-weight: 500; background: var(--surface-2); outline: none; }
         .table-responsive { overflow-x: auto; border-radius: var(--radius-sm); border: 1px solid var(--border); }
-
         table { width: 100%; border-collapse: collapse; min-width: 780px; }
-
         thead { background: var(--surface-2); }
-        th {
-            padding: 14px 18px;
-            font-size: 11px; font-weight: 700; letter-spacing: 0.8px;
-            text-transform: uppercase; color: var(--text-2);
-            border-bottom: 1px solid var(--border);
-            cursor: pointer; user-select: none;
-            transition: background var(--transition);
-            white-space: nowrap;
-        }
-        th:hover { background: #eaf0f8; color: var(--primary); }
-        th i { margin-left: 6px; font-size: 10px; opacity: 0.5; }
-
-        td {
-            padding: 16px 18px; font-size: 13px; font-weight: 500;
-            color: var(--text); background: var(--surface);
-            border-bottom: 1px solid var(--border);
-        }
-        tbody tr:last-child td { border-bottom: none; }
-        tbody tr:hover td { background: #f7f9fc; }
-
-        .badge {
-            display: inline-flex; align-items: center; justify-content: center;
-            gap: 4px; padding: 5px 12px; border-radius: 99px;
-            font-size: 12px; font-weight: 700;
-        }
+        th { padding: 14px 18px; font-size: 11px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: var(--text-2); border-bottom: 1px solid var(--border); text-align: left; cursor:pointer;}
+        td { padding: 16px 18px; font-size: 13px; font-weight: 500; color: var(--text); background: var(--surface); border-bottom: 1px solid var(--border); }
+        
+        .badge { display: inline-flex; align-items: center; justify-content: center; gap: 4px; padding: 5px 12px; border-radius: 99px; font-size: 12px; font-weight: 700; }
         .badge-success { background: var(--success-bg); color: var(--success); }
         .badge-warning { background: var(--warning-bg); color: var(--warning); }
-        .badge-danger  { background: var(--danger-bg); color: var(--danger); }
-
+        .badge-danger { background: var(--danger-bg); color: var(--danger); }
+        
         .progress-wrapper { display: flex; flex-direction: column; gap: 7px; min-width: 140px; }
         .progress-text { display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; }
         .progress-bar-bg { width: 100%; height: 6px; background: var(--border); border-radius: 99px; overflow: hidden; }
-        .progress-bar-fill { height: 100%; border-radius: 99px; transition: width 0.8s cubic-bezier(0.4,0,0.2,1); }
-
-        .nama-cell { font-weight: 700; color: var(--primary); }
-        .num-cell { text-align: center; font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 700; color: var(--primary-light); }
-
-        @media (max-width: 1100px) {
-            .middle-grid { grid-template-columns: 1fr; }
+        .progress-bar-fill { height: 100%; border-radius: 99px; transition: width 0.8s; }
+        
+        /* RESPONSIVE MEDIA QUERIES */
+        @media (max-width: 1100px) { 
+            .middle-grid { grid-template-columns: 1fr; } 
         }
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); }
             .sidebar.active { transform: translateX(0); }
-            .main-content { margin-left: 0; width: 100%; padding: 16px; gap: 18px; }
-            .mobile-header { display: flex; }
-            .top-header { flex-direction: column; align-items: flex-start; gap: 14px; margin-top: 6px; }
-            .header-actions { width: 100%; }
-            .input-month { flex: 1; }
-            .kpi-grid { grid-template-columns: 1fr; gap: 14px; }
-            .card-container { padding: 18px; }
-            .table-controls { flex-direction: column; align-items: flex-start; }
+            .main-content { margin-left: 0; width: 100%; padding: 16px 20px; gap: 20px; }
+            .mobile-header { display: flex; margin-bottom: 10px; }
+            .top-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+            .header-actions { width: 100%; justify-content: flex-start; gap: 8px; }
+            .input-month { flex: 1; min-width: 120px; }
+            .btn-action { flex: 1; justify-content: center; text-align: center; font-size: 12px; padding: 11px 12px; }
+            .kpi-grid { grid-template-columns: 1fr; gap: 12px; }
+            .kpi-card { padding: 20px; }
+            .card-container { padding: 20px 16px; }
+            .table-controls { flex-direction: column; align-items: stretch; gap: 12px; }
             .search-box { width: 100%; }
+            th, td { padding: 12px 14px; font-size: 12px; }
+            .badge { font-size: 11px; }
+            .login-card { padding: 36px 24px 28px; }
         }
-
-        .print-header { display: none; }
-
+        
+        /* LAYOUT CETAK PDF PROFESIONAL */
         @media print {
-            @page { size: A4 portrait; margin: 14mm; }
-            body { background: white !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-            .sidebar, #loader, .header-actions, .search-box, .table-controls .card-title, .mobile-header, .login-wrap { display: none !important; }
-            .main-content { margin-left: 0 !important; width: 100% !important; padding: 0 !important; gap: 12px !important; display: block !important; }
-            .print-header { display: block !important; text-align: center; margin-bottom: 18px; padding-bottom: 14px; border-bottom: 2px solid #0c1e35; }
-            .print-header h2 { font-size: 20px; font-weight: 800; color: #0c1e35; text-transform: uppercase; letter-spacing: 1px; }
-            .print-header h3 { font-size: 15px; color: #0c1e35; margin-top: 4px; }
-            .print-header p { font-size: 12px; color: #4a5b72; margin-top: 4px; font-weight: 600; }
-            .top-header { display: none !important; }
-            .kpi-grid { display: flex; gap: 8px; margin-bottom: 12px; }
-            .kpi-card { border: 1px solid #c8d6e5; padding: 12px; flex: 1; box-shadow: none; }
-            .kpi-icon { width: 32px; height: 32px; font-size: 14px; }
-            .kpi-data h2 { font-size: 20px; }
-            .kpi-data h4 { font-size: 10px; }
-            .middle-grid { display: flex; gap: 12px; margin-bottom: 12px; }
-            .card-container { border: 1px solid #c8d6e5; padding: 12px; box-shadow: none; flex: 1; }
-            .top-staff-list, .alert-list { max-height: none; overflow: visible; }
-            .top-staff-item, .alert-item { padding: 7px 10px; border: 1px solid #c8d6e5; background: white !important; }
-            .top-staff-name, .alert-item span { font-size: 11px; color: black !important; }
-            .top-staff-score { font-size: 10px; color: black !important; background: white !important; border: 1px solid #c8d6e5; }
-            .top-staff-rank { box-shadow: none; }
-            .table-controls { display: none !important; }
-            .table-responsive { border-radius: 0; border: 1px solid #c8d6e5; }
-            table { border: none; }
-            th, td { border: 1px solid #c8d6e5 !important; padding: 7px 10px !important; font-size: 11px !important; color: black !important; }
-            th { background: #f0f4f9 !important; font-weight: 800 !important; text-align: center !important; }
-            tr { break-inside: avoid; }
-            .badge { border: 1px solid #c8d6e5; padding: 2px 6px; }
-            .progress-bar-bg { border: 1px solid #c8d6e5; background: #fff !important; }
-            .nama-cell, .num-cell { color: black !important; }
+            @page { size: A4 portrait; margin: 15mm !important; }
+            body { background: #fff !important; color: #000 !important; padding: 0 !important; }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            .sidebar, .sidebar-overlay, .mobile-header, .header-actions, .search-box, .menu-toggle { display: none !important; }
+            
+            .print-header-custom { display: flex !important; justify-content: space-between; font-size: 10px; border-bottom: 1px solid #ccc; padding-bottom: 8px; margin-bottom: 20px; font-weight: 700; color: #555; }
+            .print-footer-custom { 
+                display: block !important; position: fixed; bottom: 0; left: 0; right: 0; 
+                text-align: center; font-size: 10px; color: #777; padding-top: 8px; 
+                border-top: 1px solid #ccc; font-weight: 600; background: #fff !important; z-index: 9999;
+            }
+            
+            .main-content { margin-left: 0 !important; width: 100% !important; padding: 0 !important; display: block !important; }
+            .top-header { display: block !important; text-align: center !important; margin-bottom: 20px !important; }
+            .page-eyebrow { display: none !important; } 
+            .page-title h1 { font-size: 20px !important; color: #000 !important; margin: 0 0 5px 0 !important; }
+            .page-title p { justify-content: center; font-size: 12px !important; margin: 0 !important; color: #555 !important; }
+            
+            .kpi-grid { display: flex !important; justify-content: space-between !important; gap: 10px !important; margin-bottom: 15px !important; }
+            .kpi-card { flex: 1 !important; padding: 12px !important; margin: 0 !important; border: 1px solid #ddd !important; border-radius: 8px !important; }
+            .kpi-icon { width: 36px !important; height: 36px !important; font-size: 16px !important; }
+            .kpi-data h2 { font-size: 20px !important; }
+            
+            .middle-grid { display: flex !important; gap: 15px !important; margin-bottom: 15px !important; align-items: flex-start !important; }
+            .middle-grid .card-container { flex: 1 !important; margin: 0 !important; padding: 15px !important; border: 1px solid #ddd !important; box-shadow: none !important; }
+            
+            .top-staff-list, .alert-list { max-height: none !important; overflow: hidden !important; }
+            .top-staff-item, .alert-item { padding: 6px 10px !important; margin-bottom: 4px !important; box-shadow: none !important; border-radius: 4px !important; page-break-inside: avoid !important; }
+            
+            .card-container { padding: 15px !important; border: 1px solid #ddd !important; box-shadow: none !important; page-break-inside: auto !important; margin-bottom: 40px !important; }
+            thead { display: table-header-group !important; } 
+            tr { page-break-inside: avoid !important; page-break-after: auto !important; } 
+            th { padding: 8px !important; background: #f7f9fc !important; border: 1px solid #ccc !important; font-size: 9px !important; }
+            td { padding: 8px !important; border: 1px solid #ccc !important; font-size: 10px !important; }
+            .progress-bar-bg { background: #eee !important; height: 4px !important; }
         }
     </style>
 </head>
@@ -537,9 +232,7 @@
 
     <div id="adminLoginScreen" class="login-wrap">
         <div class="login-card">
-            <div class="login-icon-ring">
-                <i class="fas fa-user-shield"></i>
-            </div>
+            <div class="login-icon-ring"><i class="fas fa-user-shield"></i></div>
             <h2>Akses Khusus Admin</h2>
             <p class="login-sub">Sistem Absensi Sinode GKPI</p>
 
@@ -559,7 +252,6 @@
     </div>
 
     <div id="adminDashboardScreen" style="display:none; width:100%;">
-
         <div id="loader" style="display:none;">
             <div class="loader-ring"></div>
             <p>Memproses Data...</p>
@@ -570,9 +262,7 @@
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <div class="sidebar-logo">
-                    <div class="sidebar-logo-icon">
-                        <i class="fas fa-church"></i>
-                    </div>
+                    <div class="sidebar-logo-icon"><i class="fas fa-church"></i></div>
                     <div class="sidebar-logo-text">
                         <h3>SINODE GKPI</h3>
                         <span>Admin Dashboard</span>
@@ -580,15 +270,17 @@
                 </div>
             </div>
 
-         <nav class="sidebar-nav">
+            <nav class="sidebar-nav">
                 <div class="sidebar-section-label">Navigasi Utama</div>
-                <div class="nav-item active">
+                <div class="nav-item active" id="nav-overview" onclick="switchTab('overview')">
                     <i class="fas fa-chart-pie fa-fw"></i> Overview Analitik
+                </div>
+                <div class="nav-item" id="nav-approval" onclick="switchTab('approval')">
+                    <i class="fas fa-check-square fa-fw"></i> Persetujuan Cuti & Izin
                 </div>
                 <div class="nav-item" onclick="bukaLayarAbsen()">
                     <i class="fas fa-mobile-alt fa-fw"></i> Layar Absen HP
                 </div>
-
                 <div class="sidebar-section-label" style="margin-top: 20px;">Portal GKPI</div>
                 <a href="https://script.google.com/macros/s/AKfycbx-uXm8JEdQWS_kO_bSRbzn_4WGb3uJzqMKqnc3Xp_8PWq4pNenEH8VWWdhI_LN3eh2VQ/exec" class="nav-item">
                     <i class="fas fa-home fa-fw"></i> Dashboard Utama
@@ -602,8 +294,9 @@
                 <a href="https://script.google.com/macros/s/AKfycbwiI5UpSuOMctYhEHSFZM1a9gaslLbeP9QBbCUehdQisZXNhOWeNo97mtgVlROvTxG8BQ/exec" target="_blank" class="nav-item">
                     <i class="fas fa-folder-open fa-fw"></i> E-Arsip Digital
                 </a>
-
+                
                 <div class="nav-spacer"></div>
+
                 <div class="nav-item logout-btn" onclick="logoutAdmin()">
                     <i class="fas fa-power-off fa-fw"></i> Keluar (Logout)
                 </div>
@@ -611,163 +304,155 @@
         </aside>
 
         <main class="main-content">
-
-            <div class="mobile-header">
-                <div class="page-title" style="margin:0">
-                    <h1 style="font-size:18px; font-family:'Space Grotesk',sans-serif;">Sinode GKPI</h1>
-                </div>
-                <button class="menu-toggle" onclick="toggleSidebar()">
-                    <i class="fas fa-bars"></i>
-                </button>
+            <div class="print-header-custom" style="display:none;">
+            <span>Tanggal Cetak: <script>document.write(new Date().toLocaleDateString('id-ID'))</script></span>
+            <span>Executive Dashboard - GKPI</span>
             </div>
-
-            <div class="print-header">
-                <h2>Biro Infokom Sinode GKPI</h2>
-                <h3>Laporan Rekapitulasi Kehadiran Staff</h3>
-                <p id="labelPeriodePrint">Periode: Memuat...</p>
+            <div class="print-footer-custom" style="display:none;">
+                Copyright by diovery
+            </div>
+            <div class="mobile-header">
+                <div class="page-title" style="margin:0"><h1 style="font-size:18px;">Sinode GKPI</h1></div>
+                <button class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
             </div>
 
             <div class="top-header">
                 <div class="page-title">
-                    <div class="page-eyebrow">Monitor Kehadiran</div>
-                    <h1>Rekap Staff Bulan Ini</h1>
+                    <div class="page-eyebrow" id="pageEyebrowText">Monitor Kehadiran</div>
+                    <h1 id="pageTitleText">Rekap Staff Bulan Ini</h1>
                     <p id="labelPeriode"><i class="far fa-calendar-alt"></i> Periode: Memuat...</p>
                 </div>
                 <div class="header-actions">
-                    <input type="month" id="filterBulan" class="input-month" onchange="muatData()" title="Pilih Bulan">
-                    <button class="btn-action btn-pdf" onclick="window.print()">
+                    <input type="month" id="filterBulan" class="input-month" onchange="triggerDataLoad()">
+                    <button class="btn-action btn-pdf" id="btnCetakPDF" onclick="window.print()">
                         <i class="fas fa-file-pdf"></i> Cetak PDF
                     </button>
-                    <button class="btn-action" onclick="muatData()">
+                    <button class="btn-action" onclick="triggerDataLoad()">
                         <i class="fas fa-sync-alt"></i> Segarkan
                     </button>
                 </div>
             </div>
 
-            <div class="kpi-grid">
-                <div class="kpi-card blue">
-                    <div class="kpi-icon"><i class="fas fa-users"></i></div>
-                    <div class="kpi-data">
-                        <h4>Total Pegawai</h4>
-                        <h2 id="valTotalPegawai">0</h2>
+            <div id="view-overview">
+                <div class="kpi-grid">
+                    <div class="kpi-card blue">
+                        <div class="kpi-icon"><i class="fas fa-users"></i></div>
+                        <div class="kpi-data"><h4>Total Pegawai</h4><h2 id="valTotalPegawai">0</h2></div>
+                    </div>
+                    <div class="kpi-card red">
+                        <div class="kpi-icon"><i class="fas fa-user-slash"></i></div>
+                        <div class="kpi-data"><h4>Belum Absen Bulan Ini</h4><h2 id="valBelumAbsen">0</h2></div>
+                    </div>
+                    <div class="kpi-card green">
+                        <div class="kpi-icon"><i class="fas fa-medal"></i></div>
+                        <div class="kpi-data"><h4>Rasio Kedisiplinan</h4><h2 id="valPersentase">0%</h2></div>
+                        
                     </div>
                 </div>
-                <div class="kpi-card red">
-                    <div class="kpi-icon"><i class="fas fa-user-slash"></i></div>
-                    <div class="kpi-data">
-                        <h4>Belum Absen Bulan Ini</h4>
-                        <h2 id="valBelumAbsen">0</h2>
-                    </div>
-                </div>
-                <div class="kpi-card green">
-                    <div class="kpi-icon"><i class="fas fa-medal"></i></div>
-                    <div class="kpi-data">
-                        <h4>Rasio Kedisiplinan</h4>
-                        <h2 id="valPersentase">0%</h2>
-                    </div>
-                </div>
-            </div>
 
-            <div class="middle-grid">
-                <div class="card-container">
-                    <div class="card-header">
-                        <div class="card-title">
-                            <span class="card-title-icon gold"><i class="fas fa-medal"></i></span>
-                            7 Staff Paling Tepat Waktu
+                <div class="middle-grid">
+                    <div class="card-container">
+                        <div class="card-header">
+                            <div class="card-title"><span class="card-title-icon gold"><i class="fas fa-medal"></i></span>7 Staff Paling Tepat Waktu</div>
                         </div>
+                        <div class="top-staff-list" id="listTopStaff"></div>
                     </div>
-                    <div class="top-staff-list" id="listTopStaff">
-                        <p style="color:var(--text-3);font-size:13px;text-align:center;padding:24px 0;">Menyiapkan data...</p>
+                    <div class="card-container">
+                        <div class="card-header">
+                            <div class="card-title"><span class="card-title-icon orange"><i class="fas fa-exclamation-triangle"></i></span>Perhatian (Alpha)</div>
+                        </div>
+                        <div class="alert-list" id="listAlpha"></div>
                     </div>
                 </div>
 
                 <div class="card-container">
-                    <div class="card-header">
-                        <div class="card-title">
-                            <span class="card-title-icon orange"><i class="fas fa-exclamation-triangle"></i></span>
-                            Perhatian Khusus
+                    <div class="table-controls">
+                        <div class="card-title"><span class="card-title-icon blue"><i class="fas fa-list-ul"></i></span>Tabel Rekapitulasi Lengkap</div>
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="searchInput" placeholder="Cari nama pegawai..." onkeyup="filterTable()">
                         </div>
                     </div>
-                    <div class="alert-list" id="listAlpha">
-                        <p style="color:var(--text-3);font-size:13px;text-align:center;padding:20px 0;">Memuat data...</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card-container">
-                <div class="table-controls">
-                    <div class="card-title">
-                        <span class="card-title-icon blue"><i class="fas fa-list-ul"></i></span>
-                        Tabel Rekapitulasi Lengkap
-                    </div>
-                    <div class="search-box">
-                        <i class="fas fa-search"></i>
-                        <input type="text" id="searchInput" placeholder="Cari nama pegawai..." onkeyup="filterTable()">
-                    </div>
-                </div>
-
-                <div class="table-responsive">
-                    <table id="dataTable">
-                        <thead>
+                    <div class="table-responsive">
+                        <table id="dataTable">
+                           <thead>
                             <tr>
                                 <th onclick="sortTable('nama')">Nama Pegawai <i class="fas fa-sort" id="icon-nama"></i></th>
-                                <th style="text-align:center" onclick="sortTable('totalHadir')">Hari Hadir <i class="fas fa-sort" id="icon-totalHadir"></i></th>
+                                <th style="text-align:center" onclick="sortTable('totalHadir')">Hadir <i class="fas fa-sort" id="icon-totalHadir"></i></th>
+                                <th style="text-align:center" onclick="sortTable('totalAlpha')">Alpha <i class="fas fa-sort" id="icon-totalAlpha"></i></th>
+                                <th style="text-align:center" onclick="sortTable('totalCuti')">Cuti/Izin <i class="fas fa-sort" id="icon-totalCuti"></i></th>
                                 <th style="text-align:center" onclick="sortTable('tepatWaktu')">Tepat Waktu <i class="fas fa-sort" id="icon-tepatWaktu"></i></th>
                                 <th style="text-align:center" onclick="sortTable('terlambat')">Terlambat <i class="fas fa-sort" id="icon-terlambat"></i></th>
                                 <th style="width:220px" onclick="sortTable('rasio')">Indikator Disiplin <i class="fas fa-sort" id="icon-rasio"></i></th>
                             </tr>
-                        </thead>
-                        <tbody id="tableBody">
-                            <tr><td colspan="5" style="text-align:center;padding:40px;color:var(--text-3);">Menghubungkan ke server...</td></tr>
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody id="tableBody">
+                                <tr><td colspan="7" style="text-align:center;padding:40px;">Menghubungkan ke server...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
+            <div id="view-approval" style="display:none;">
+                <div class="card-container">
+                    <div class="table-controls">
+                        <div class="card-title"><span class="card-title-icon orange"><i class="fas fa-check-square"></i></span> Daftar Pengajuan Menunggu</div>
+                    </div>
+                    <div class="table-responsive">
+                        <table id="approvalTable">
+                            <thead>
+                                <tr>
+                                    <th>ID & Waktu</th>
+                                    <th>Nama Pegawai</th>
+                                    <th>Tipe</th>
+                                    <th>Tanggal (Durasi)</th>
+                                    <th>Bukti Surat</th>
+                                    <th>Status</th>
+                                    <th style="text-align:right">Tindakan</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBodyApproval">
+                                <tr><td colspan="7" style="text-align:center;padding:40px;">Menghubungkan ke server...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </main>
     </div>
 
     <script>
-        // ── KONFIGURASI API (WAJIB DIUBAH) ─────────
-        // Ganti URL di bawah dengan URL WEB APP BARU Anda setelah Deploy Ulang!
+        // ====================================================================
+        // URL BACKEND APPS SCRIPT ANDA (PASTIKAN MENGGUNAKAN URL TERBARU)
+        // ====================================================================
         const GAS_API_URL = "https://script.google.com/macros/s/AKfycbytSUNchsBEgPFA-9bmutWeBvdMTsOt2FHkyy3FzXSEGJodjOGPdHoXDj34Z2fcgF6sHw/exec";
 
-        // ── INISIALISASI ───────────────────────────
+        let activeTab = 'overview';
+        let globalData = [];
+        let currentSort = { key: 'rasio', dir: 'desc' };
+
         function setBulanSaatIni() {
             const now = new Date();
             let m = now.getMonth() + 1;
-            if (m < 10) m = '0' + m;
-            document.getElementById('filterBulan').value = `${now.getFullYear()}-${m}`;
+            document.getElementById('filterBulan').value = `${now.getFullYear()}-${m < 10 ? '0'+m : m}`;
         }
 
         window.onload = function () {
             setBulanSaatIni();
-            if (sessionStorage.getItem('admin_login_status') === 'berhasil') {
-                tampilkanDashboard();
-            } else {
-                document.getElementById('adminLoginScreen').style.display = 'flex';
-                document.getElementById('adminDashboardScreen').style.display = 'none';
-            }
+            if (sessionStorage.getItem('admin_login_status') === 'berhasil') tampilkanDashboard();
         };
 
-        document.getElementById('adminPin').addEventListener('keypress', function (e) { if (e.key === 'Enter') prosesLoginAdmin(); });
-        document.getElementById('adminUser').addEventListener('keypress', function (e) { if (e.key === 'Enter') document.getElementById('adminPin').focus(); });
-
-        // ── AUTENTIKASI ────────────────────────────
+        // --- FETCH: LOGIN ADMIN ---
         function prosesLoginAdmin() {
             const user = document.getElementById('adminUser').value;
             const pin = document.getElementById('adminPin').value;
             const btn = document.getElementById('btnLoginAdmin');
 
-            if (!user || !pin) {
-                Swal.fire({ icon: 'warning', title: 'Form Kosong', text: 'Harap isi Username dan PIN Admin.', confirmButtonColor: '#0c1e35' });
-                return;
-            }
+            if (!user || !pin) return Swal.fire({ icon: 'warning', title: 'Form Kosong', text: 'Harap isi Username dan PIN Admin.'});
 
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memverifikasi...';
-
-            // DIPERBARUI: Menggunakan metode POST sesuai dengan doPost() di GAS
+            btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memverifikasi...';
+            
             fetch(GAS_API_URL, {
                 method: "POST",
                 headers: { "Content-Type": "text/plain;charset=utf-8" },
@@ -776,40 +461,32 @@
                     payload: { user: user, pin: pin }
                 })
             })
-            .then(response => response.json())
+            .then(r => r.json())
             .then(res => {
                 if (res.sukses) {
                     sessionStorage.setItem('admin_login_status', 'berhasil');
-                    Swal.fire({ icon: 'success', title: 'Akses Diterima', text: res.pesan || 'Selamat datang di Dashboard Admin', timer: 1500, showConfirmButton: false, backdrop: 'rgba(12,30,53,0.4)' }).then(() => tampilkanDashboard());
+                    Swal.fire({ icon: 'success', title: 'Akses Diterima', timer: 1500, showConfirmButton: false }).then(() => tampilkanDashboard());
                 } else {
-                    Swal.fire({ icon: 'error', title: 'Akses Ditolak', text: res.pesan || 'Kredensial tidak valid.', confirmButtonColor: '#d63c5e' });
-                    btn.disabled = false;
-                    btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> MASUK KE DASHBOARD';
+                    Swal.fire({ icon: 'error', title: 'Akses Ditolak', text: res.pesan });
+                    btn.disabled = false; btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> MASUK KE DASHBOARD';
                 }
             })
-            .catch(error => {
-                Swal.fire({ icon: 'error', title: 'Koneksi Gagal', text: 'Gagal terhubung ke server database.', confirmButtonColor: '#d63c5e' });
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> MASUK KE DASHBOARD';
+            .catch(err => {
+                Swal.fire('Error', 'Gagal terhubung ke server', 'error');
+                btn.disabled = false; btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> MASUK KE DASHBOARD';
             });
         }
 
         function tampilkanDashboard() {
             document.getElementById('adminLoginScreen').style.display = 'none';
             document.getElementById('adminDashboardScreen').style.display = 'flex';
-            muatData();
+            triggerDataLoad();
         }
 
         function logoutAdmin() {
             Swal.fire({
-                title: 'Keluar dari Panel Admin?',
-                text: 'Anda akan diminta memasukkan PIN kembali jika ingin masuk.',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#d63c5e',
-                cancelButtonColor: '#4a5b72',
-                confirmButtonText: '<i class="fas fa-sign-out-alt"></i> Ya, Keluar',
-                cancelButtonText: 'Batal'
+                title: 'Keluar Admin?', text: 'Anda akan diminta PIN kembali jika ingin masuk.', icon: 'question',
+                showCancelButton: true, confirmButtonColor: '#d63c5e', confirmButtonText: 'Ya, Keluar'
             }).then(result => {
                 if (result.isConfirmed) {
                     sessionStorage.removeItem('admin_login_status');
@@ -817,119 +494,160 @@
                     document.getElementById('adminPin').value = '';
                     document.getElementById('adminDashboardScreen').style.display = 'none';
                     document.getElementById('adminLoginScreen').style.display = 'flex';
-                    const sidebar = document.getElementById('sidebar');
-                    const overlay = document.querySelector('.sidebar-overlay');
-                    if (sidebar.classList.contains('active')) { sidebar.classList.remove('active'); overlay.classList.remove('active'); }
                 }
             });
         }
 
-        // ── UI HELPERS ─────────────────────────────
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('active');
             document.querySelector('.sidebar-overlay').classList.toggle('active');
         }
 
-        // ── DATA ───────────────────────────────────
-        let globalData = [];
-        let currentSort = { key: 'rasio', dir: 'desc' };
+        function switchTab(tab) {
+            activeTab = tab;
+            document.getElementById('nav-overview').classList.remove('active');
+            document.getElementById('nav-approval').classList.remove('active');
+            document.getElementById('nav-' + tab).classList.add('active');
 
+            if(tab === 'overview') {
+                document.getElementById('view-overview').style.display = 'block';
+                document.getElementById('view-approval').style.display = 'none';
+                document.getElementById('pageTitleText').innerText = 'Rekap Staff Bulan Ini';
+                document.getElementById('pageEyebrowText').innerText = 'Monitor Kehadiran';
+                document.getElementById('btnCetakPDF').style.display = 'inline-flex';
+            } else {
+                document.getElementById('view-overview').style.display = 'none';
+                document.getElementById('view-approval').style.display = 'block';
+                document.getElementById('pageTitleText').innerText = 'Manajemen Cuti & Izin';
+                document.getElementById('pageEyebrowText').innerText = 'Approval Pengajuan';
+                document.getElementById('btnCetakPDF').style.display = 'none';
+            }
+            if (window.innerWidth <= 768) toggleSidebar(); 
+            triggerDataLoad();
+        }
+
+        function triggerDataLoad() { if(activeTab === 'overview') muatData(); else muatDataApproval(); }
+
+        function hitungHariKerja(tahun, bulan, liburNasional = []) {
+            let jumlahHari = new Date(tahun, bulan, 0).getDate();
+            let hariKerja = 0;
+            for (let i = 1; i <= jumlahHari; i++) {
+                let d = new Date(tahun, bulan - 1, i).getDay();
+                if (d !== 0 && d !== 6) {
+                    let tglString = `${tahun}-${String(bulan).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+                    if (!liburNasional.includes(tglString)) hariKerja++;
+                }
+            }
+            return hariKerja;
+        }
+
+        // --- FETCH: MUAT DATA OVERVIEW ---
         function muatData() {
             document.getElementById('loader').style.display = 'flex';
-            const bulanDipilih = document.getElementById('filterBulan').value;
+            const inputBulan = document.getElementById('filterBulan').value;
 
-            // DIPERBARUI: Menggunakan metode POST dan key 'bulanTahun' sesuai dengan script GAS
             fetch(GAS_API_URL, {
                 method: "POST",
                 headers: { "Content-Type": "text/plain;charset=utf-8" },
                 body: JSON.stringify({
                     action: "getRekapAdmin",
-                    payload: { bulanTahun: bulanDipilih }
+                    payload: { bulanTahun: inputBulan }
                 })
             })
-            .then(response => response.json())
+            .then(r => r.json())
             .then(res => {
                 document.getElementById('loader').style.display = 'none';
                 if (res.sukses) {
                     document.getElementById('labelPeriode').innerHTML = `<i class="far fa-calendar-alt"></i> Periode: ${res.bulan}`;
-                    document.getElementById('labelPeriodePrint').innerText = `Periode Absensi: ${res.bulan}`;
                     document.getElementById('valTotalPegawai').innerText = res.ringkasan.totalPegawai;
                     document.getElementById('valBelumAbsen').innerText = res.ringkasan.belumAbsen;
-                    document.getElementById('valPersentase').innerText = res.ringkasan.rataKetepatanWaktu || '0%';
-                    renderTopStaff(res.staffRajin);
-                    renderAlerts(res.tidakPernahAbsen);
+                    
+                    let [tahun, bulan] = inputBulan ? inputBulan.split('-') : [new Date().getFullYear(), new Date().getMonth() + 1];
+                    const totalHariKerja = hitungHariKerja(parseInt(tahun), parseInt(bulan), res.liburNasional || []);
+                    let totalSemuaTepatWaktu = 0;
+
                     globalData = res.tabelLengkap.map(p => {
-                        p.rasio = p.totalHadir > 0 ? Math.round((p.tepatWaktu / p.totalHadir) * 100) : 0;
+                        let hadir = parseInt(p.totalHadir) || 0;
+                        let telat = parseInt(p.terlambat) || 0;
+                        let tw = parseInt(p.tepatWaktu) || 0;
+                        
+                        if (tw === 0 && hadir > 0) {
+                            tw = hadir - telat;
+                        }
+                        
+                        p.tepatWaktu = tw > 0 ? tw : 0;
+                        
+                        p.rasio = totalHariKerja > 0 ? Math.round((p.tepatWaktu / totalHariKerja) * 100) : 0;
+                        if (p.rasio > 100) p.rasio = 100; 
+                        
+                        totalSemuaTepatWaktu += p.tepatWaktu;
                         return p;
                     });
+
+                    let targetTotal = globalData.length * totalHariKerja;
+                    document.getElementById('valPersentase').innerText = (targetTotal > 0 ? Math.round((totalSemuaTepatWaktu / targetTotal) * 100) : 0) + '%';
+
+                    const stafPalingRajin = [...globalData]
+                        .filter(p => p.tepatWaktu > 0)
+                        .sort((a, b) => b.tepatWaktu - a.tepatWaktu);
+                        
+                    renderTopStaff(stafPalingRajin);
+                    renderAlerts(); 
+
+                    currentSort = { key: 'rasio', dir: 'desc' };
                     sortTable('rasio');
                 } else {
-                    Swal.fire({ icon: 'error', title: 'Gagal Memuat Data', text: res.pesan, confirmButtonColor: '#0c1e35' });
+                    Swal.fire('Gagal', res.pesan, 'error');
                 }
             })
-            .catch(error => {
+            .catch(err => {
                 document.getElementById('loader').style.display = 'none';
-                Swal.fire({ icon: 'error', title: 'Koneksi Gagal', text: 'Tidak dapat memuat data dari server.', confirmButtonColor: '#0c1e35' });
+                Swal.fire('Error', 'Gagal memuat data.', 'error');
             });
         }
 
-        function renderTopStaff(topStaff) {
-            const el = document.getElementById('listTopStaff');
+        function renderAlerts() {
+            const el = document.getElementById('listAlpha'); 
             el.innerHTML = '';
-            const top7 = topStaff.slice(0, 7);
-            if (!top7.length) {
-                el.innerHTML = `<div style="text-align:center;padding:30px 0;color:var(--text-3);font-size:13px;font-weight:600;">Belum ada data tepat waktu di periode ini.</div>`;
-                return;
-            }
-            top7.forEach((p, i) => {
-                el.innerHTML += `
-                    <div class="top-staff-item">
-                        <div class="top-staff-info">
-                            <div class="top-staff-rank">${i + 1}</div>
-                            <span class="top-staff-name">${p.nama}</span>
-                        </div>
-                        <div class="top-staff-score"><i class="fas fa-check"></i>${p.tepatWaktu} Hari</div>
-                    </div>`;
-            });
-        }
-
-        function renderAlerts(alphaStaff) {
-            const el = document.getElementById('listAlpha');
-            el.innerHTML = '';
-            if (!alphaStaff.length) {
-                el.innerHTML = `<div style="text-align:center;padding:24px 0;"><i class="fas fa-check-circle" style="color:var(--success);font-size:28px;margin-bottom:10px;display:block;"></i><small style="color:var(--success);font-weight:700;font-size:13px;">Semua staff sudah absen di periode ini.</small></div>`;
+            
+            const stafAlpha = globalData.filter(p => (parseInt(p.totalAlpha) || 0) > 0).sort((a,b) => b.totalAlpha - a.totalAlpha);
+            
+            if (!stafAlpha.length) {
+                 el.innerHTML = `<div style="text-align:center;padding:24px 0;"><small style="color:var(--success);font-weight:700;">Tidak ada staff Alpha bulan ini.</small></div>`;
             } else {
-                alphaStaff.forEach(nama => {
-                    el.innerHTML += `<div class="alert-item"><i class="fas fa-times-circle"></i><span>${nama} (0 Hari)</span></div>`;
-                });
+                 stafAlpha.forEach(p => {
+                     el.innerHTML += `<div class="alert-item"><i class="fas fa-times-circle"></i><span>${p.nama} (${p.totalAlpha} Hari)</span></div>`;
+                 });
             }
+        }
+        
+        function renderTopStaff(topStaff) {
+            const el = document.getElementById('listTopStaff'); el.innerHTML = '';
+            const top7 = topStaff.slice(0, 7);
+            if (!top7.length) return el.innerHTML = `<div style="text-align:center;padding:30px 0;color:var(--text-3);font-size:13px;">Belum ada data kedisiplinan.</div>`;
+            top7.forEach((p, i) => el.innerHTML += `<div class="top-staff-item"><div class="top-staff-info"><div class="top-staff-rank">${i + 1}</div><span class="top-staff-name">${p.nama}</span></div><div class="top-staff-score"><i class="fas fa-check"></i>${p.tepatWaktu} Hari</div></div>`);
         }
 
         function renderTable(data) {
-            const tbody = document.getElementById('tableBody');
-            tbody.innerHTML = '';
-            if (!data.length) {
-                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:36px;color:var(--text-3);">Tidak ada data ditemukan untuk periode ini.</td></tr>`;
-                return;
-            }
+            const tbody = document.getElementById('tableBody'); tbody.innerHTML = '';
+            if (!data.length) return tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:36px;">Tidak ada data.</td></tr>`;
+            
             data.forEach(p => {
                 const color = p.rasio >= 80 ? 'var(--success)' : (p.rasio >= 50 ? 'var(--warning)' : 'var(--danger)');
-                const bc = p.rasio >= 80 ? 'badge-success' : (p.rasio >= 50 ? 'badge-warning' : 'badge-danger');
+                const cutiIzin = (parseInt(p.totalCuti) || 0) + (parseInt(p.totalIzin) || 0);
+                
                 tbody.innerHTML += `
                     <tr>
-                        <td class="nama-cell">${p.nama}</td>
-                        <td class="num-cell">${p.totalHadir}</td>
-                        <td style="text-align:center"><span class="badge ${bc}"><i class="fas fa-check"></i>${p.tepatWaktu}</span></td>
-                        <td style="text-align:center">${p.terlambat > 0 ? `<span class="badge badge-danger"><i class="fas fa-exclamation"></i>${p.terlambat}</span>` : `<span style="color:var(--text-3);font-weight:700;">—</span>`}</td>
+                        <td style="font-weight:700; color:var(--primary);">${p.nama}</td>
+                        <td style="text-align:center; font-weight:700; color:var(--success);">${p.totalHadir}</td>
+                        <td style="text-align:center; font-weight:700; color:var(--danger);">${p.totalAlpha > 0 ? p.totalAlpha : '-'}</td>
+                        <td style="text-align:center; font-weight:700; color:var(--success);">${cutiIzin > 0 ? cutiIzin : '-'}</td>
+                        <td style="text-align:center"><span class="badge badge-success"><i class="fas fa-check"></i>${p.tepatWaktu}</span></td>
+                        <td style="text-align:center">${p.terlambat > 0 ? `<span class="badge badge-danger"><i class="fas fa-exclamation"></i>${p.terlambat}</span>` : `<span style="color:var(--success);font-weight:700;">—</span>`}</td>
                         <td>
                             <div class="progress-wrapper">
-                                <div class="progress-text">
-                                    <span style="color:${color}">${p.rasio}%</span>
-                                    <span style="color:var(--text-3);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;">Tepat Waktu</span>
-                                </div>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width:${p.rasio}%;background:${color}"></div>
-                                </div>
+                                <div class="progress-text"><span style="color:${color}">${p.rasio}%</span><span style="color:var(--text-3);font-size:10px;">HADIR</span></div>
+                                <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${p.rasio}%;background:${color}"></div></div>
                             </div>
                         </td>
                     </tr>`;
@@ -937,37 +655,121 @@
         }
 
         function sortTable(key) {
-            ['nama','totalHadir','tepatWaktu','terlambat','rasio'].forEach(k => document.getElementById('icon-'+k).className = 'fas fa-sort');
-            if (currentSort.key === key) {
-                currentSort.dir = currentSort.dir === 'asc' ? 'desc' : 'asc';
-            } else {
-                currentSort.key = key;
-                currentSort.dir = key === 'nama' ? 'asc' : 'desc';
-            }
+            ['nama','totalHadir','totalAlpha','totalCuti','tepatWaktu','terlambat','rasio'].forEach(k => document.getElementById('icon-'+k).className = 'fas fa-sort');
+            
+            currentSort.dir = (currentSort.key === key && currentSort.dir === 'desc') ? 'asc' : 'desc';
+            currentSort.key = key;
             document.getElementById('icon-'+key).className = currentSort.dir === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down';
+            
             let sorted = [...globalData].sort((a, b) => {
-                if (key === 'nama') {
-                    const va = a.nama.toLowerCase(), vb = b.nama.toLowerCase();
-                    return currentSort.dir === 'asc' ? (va < vb ? -1 : va > vb ? 1 : 0) : (va > vb ? -1 : va < vb ? 1 : 0);
-                }
-                return currentSort.dir === 'asc' ? (a[key] - b[key]) : (b[key] - a[key]);
+                if (key === 'nama') return currentSort.dir === 'asc' ? a.nama.localeCompare(b.nama) : b.nama.localeCompare(a.nama);
+                
+                let valA = key === 'totalCuti' ? ((parseInt(a.totalCuti)||0) + (parseInt(a.totalIzin)||0)) : a[key];
+                let valB = key === 'totalCuti' ? ((parseInt(b.totalCuti)||0) + (parseInt(b.totalIzin)||0)) : b[key];
+                
+                return currentSort.dir === 'asc' ? valA - valB : valB - valA;
             });
-            applySearchFilter(sorted);
+            
+            renderTable(document.getElementById('searchInput').value ? sorted.filter(p => p.nama.toLowerCase().includes(document.getElementById('searchInput').value.toLowerCase())) : sorted);
         }
-
+        
         function filterTable() { sortTable(currentSort.key); }
-
-        function applySearchFilter(dataArray) {
-            const q = document.getElementById('searchInput').value.toLowerCase();
-            renderTable(q ? dataArray.filter(p => p.nama.toLowerCase().includes(q)) : dataArray);
-        }
 
         function bukaLayarAbsen() {
             document.getElementById('loader').style.display = 'flex';
-            document.querySelector('#loader p').innerText = 'Mengalihkan halaman...';
+            window.location.href = "index.html";
+        }
+
+        // --- FETCH: MUAT DATA APPROVAL ---
+        function muatDataApproval() {
+            document.getElementById('loader').style.display = 'flex';
             
-            // DIPERBARUI: Navigasi langsung menggunakan nama file (karena berada di folder GitHub yang sama)
-            window.location.href = "index.html"; 
+            fetch(GAS_API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify({
+                    action: "getDataApprovalAdmin",
+                    payload: {}
+                })
+            })
+            .then(r => r.json())
+            .then(res => {
+                document.getElementById('loader').style.display = 'none';
+                if (res.sukses) renderTableApproval(res.data);
+                else Swal.fire('Gagal', res.pesan, 'error');
+            })
+            .catch(err => {
+                document.getElementById('loader').style.display = 'none';
+                Swal.fire('Error', 'Gagal memuat data persetujuan', 'error');
+            });
+        }
+
+        function renderTableApproval(data) {
+            const tbody = document.getElementById('tableBodyApproval'); tbody.innerHTML = '';
+            if (!data || data.length === 0) return tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:36px;color:#8fa3bb;">Belum ada pengajuan.</td></tr>`;
+
+            data.forEach(item => {
+                let statusBadge, actionButtons;
+                if (item.status === "Menunggu") {
+                    statusBadge = `<span style="background:#fff8e6; color:#d08a00; padding:5px 10px; border-radius:10px; font-weight:700; font-size:12px;"><i class="fas fa-clock"></i> Menunggu</span>`;
+                    actionButtons = `
+                        <button style="background:#0d9f6e; color:white; border:none; padding:8px 12px; border-radius:5px; cursor:pointer;" onclick="kirimApproval(${item.baris}, 'Disetujui')">Setujui</button>
+                        <button style="background:#d63c5e; color:white; border:none; padding:8px 12px; border-radius:5px; cursor:pointer; margin-top:4px;" onclick="kirimApproval(${item.baris}, 'Ditolak')">Tolak</button>
+                    `;
+                } else if (item.status === "Disetujui") {
+                    statusBadge = `<span style="background:#e6f9f3; color:#0d9f6e; padding:5px 10px; border-radius:10px; font-weight:700; font-size:12px;"><i class="fas fa-check"></i> Disetujui</span>`;
+                    actionButtons = `<span style="color:#8fa3bb; font-weight:700; font-size:12px;">Selesai</span>`;
+                } else {
+                    statusBadge = `<span style="background:#fdeef2; color:#d63c5e; padding:5px 10px; border-radius:10px; font-weight:700; font-size:12px;"><i class="fas fa-times"></i> Ditolak</span>`;
+                    actionButtons = `<span style="color:#8fa3bb; font-weight:700; font-size:12px;">Selesai</span>`;
+                }
+
+                let linkFoto = item.foto.includes('http') ? `<a href="${item.foto}" target="_blank" style="color:#1d6ed8; text-decoration:none; font-weight:700; font-size:12px;">Lihat Bukti</a>` : `<span style="color:#8fa3bb; font-size:12px;">-</span>`;
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td><div style="font-weight:700; color:#0c1e35; font-size:12px;">${item.id}</div><div style="font-size:11px; color:#4a5b72;">${item.waktu}</div></td>
+                        <td style="font-weight:700; color:#0c1e35;">${item.nama}</td>
+                        <td><span style="background:#f0f4f9; padding:5px 10px; border-radius:8px; font-size:12px; font-weight:600;">${item.tipe}</span></td>
+                        <td><div style="font-size:12px; font-weight:600;">${item.tglMulai} - ${item.tglSelesai}</div><div style="font-size:11px; color:#0d9f6e; font-weight:700;">${item.totalHari} Hari</div></td>
+                        <td>${linkFoto}</td>
+                        <td>${statusBadge}</td>
+                        <td style="text-align:right">${actionButtons}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        // --- FETCH: KIRIM APPROVAL ---
+        function kirimApproval(baris, statusBaru) {
+            Swal.fire({
+                title: 'Konfirmasi', text: `Ubah status menjadi: ${statusBaru}?`, icon: 'question',
+                showCancelButton: true, confirmButtonColor: statusBaru === 'Disetujui' ? '#0d9f6e' : '#d63c5e',
+                cancelButtonText: 'Batal', confirmButtonText: 'Ya, Lanjutkan'
+            }).then(result => {
+                if (result.isConfirmed) {
+                    document.getElementById('loader').style.display = 'flex';
+                    
+                    fetch(GAS_API_URL, {
+                        method: "POST",
+                        headers: { "Content-Type": "text/plain;charset=utf-8" },
+                        body: JSON.stringify({
+                            action: "prosesApprovalAdmin",
+                            payload: { baris: baris, statusBaru: statusBaru }
+                        })
+                    })
+                    .then(r => r.json())
+                    .then(res => {
+                        document.getElementById('loader').style.display = 'none';
+                        if (res.sukses) { Swal.fire('Berhasil!', res.pesan, 'success'); muatDataApproval(); } 
+                        else Swal.fire('Gagal!', res.pesan, 'error');
+                    })
+                    .catch(err => {
+                        document.getElementById('loader').style.display = 'none';
+                        Swal.fire('Error!', 'Gagal memproses approval.', 'error');
+                    });
+                }
+            });
         }
     </script>
 </body>

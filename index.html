@@ -646,7 +646,11 @@
   // --- MUAT RIWAYAT ABSEN VIA FETCH (POST) ---
   function muatRiwayatAbsen() {
     const tbody = document.getElementById('isiRiwayat');
-    tbody.innerHTML = '<tr><td colspan="3" class="text-center" style="color: #94a3b8;"><i class="fas fa-spinner fa-spin"></i> Sinkronisasi data...</td></tr>';
+    
+    // 1. Tambahkan pengecekan agar tidak error jika id="isiRiwayat" tidak ada di HTML
+    if (tbody) {
+        tbody.innerHTML = '<tr><td colspan="3" class="text-center" style="color: #94a3b8;"><i class="fas fa-spinner fa-spin"></i> Sinkronisasi data...</td></tr>';
+    }
     
     let nama = document.getElementById('namaPegawai').value;
     
@@ -669,11 +673,13 @@
       let masuk = "--:--", pulang = "--:--", now = new Date();
       sudahAbsenMasukHariIni = false; 
       
+      // Render status kehadiran minggu ini akan dieksekusi dengan aman
       renderWeekCircles(dataAbsen);
-      tbody.innerHTML = '';
+      
+      if (tbody) tbody.innerHTML = '';
 
       if (!dataAbsen || dataAbsen.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="3" class="text-center text-muted">Belum ada riwayat.</td></tr>';
+        if (tbody) tbody.innerHTML = '<tr><td colspan="3" class="text-center text-muted">Belum ada riwayat.</td></tr>';
       } else {
         dataAbsen.forEach(d => {
             if(isDateMatch(d.waktu, now)) {
@@ -688,11 +694,14 @@
                 ? '<span class="badge-tipe" style="background:#e6fcf5; color:#1DD1A1;">DATANG</span>' 
                 : '<span class="badge-tipe" style="background:#fff4e6; color:#FF9F43;">PULANG</span>';
             
-            tbody.innerHTML += `<tr>
-                <td style="color: #64748b; font-size: 0.75rem;">${d.waktu}</td>
-                <td>${tipeBadge}</td>
-                <td style="color:${colorS}; text-align: right;">${d.status}</td>
-            </tr>`;
+            // 2. Cegah error saat memasukkan data ke tabel riwayat
+            if (tbody) {
+                tbody.innerHTML += `<tr>
+                    <td style="color: #64748b; font-size: 0.75rem;">${d.waktu}</td>
+                    <td>${tipeBadge}</td>
+                    <td style="color:${colorS}; text-align: right;">${d.status}</td>
+                </tr>`;
+            }
         });
       }
       
@@ -702,10 +711,9 @@
     })
     .catch(err => {
       Swal.fire('Informasi', 'Gagal memuat sebagian data: ' + err.message, 'warning');
-      tbody.innerHTML = '<tr><td colspan="3" class="text-center text-danger">Gagal memuat riwayat</td></tr>';
+      if (tbody) tbody.innerHTML = '<tr><td colspan="3" class="text-center text-danger">Gagal memuat riwayat</td></tr>';
     });
   }
-
   function hitungHari() {
     let m = document.getElementById('tglMulai').value, s = document.getElementById('tglSelesai').value;
     if (m && s) {

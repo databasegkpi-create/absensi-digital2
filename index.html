@@ -611,37 +611,71 @@
       return match;
   }
 
-  function renderWeekCircles(riwayatData) {
+function renderWeekCircles(riwayatData) {
     const container = document.getElementById('weekStatusContainer');
     container.innerHTML = '';
     
     let curr = new Date();
-    let distanceToMonday = curr.getDay() === 0 ? -6 : 1 - curr.getDay();
-    let firstDay = new Date(curr); firstDay.setDate(curr.getDate() + distanceToMonday);
+    let dayOfWeek = curr.getDay(); 
+    let distanceToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+    
+    let firstDay = new Date(curr);
+    firstDay.setDate(curr.getDate() + distanceToMonday);
+    
     const namaHari = ["S", "S", "R", "K", "J"]; 
     
     for (let i = 0; i < 5; i++) {
-        let d = new Date(firstDay); d.setDate(firstDay.getDate() + i);
-        let statusHari = "absent", circleContent = "A";
+        let d = new Date(firstDay);
+        d.setDate(firstDay.getDate() + i);
+        
+        // --- TAMBAHAN: Format tanggal ke YYYY-MM-DD untuk pencocokan libur ---
+        let yyyy = d.getFullYear();
+        let mm = String(d.getMonth() + 1).padStart(2, '0');
+        let dd = String(d.getDate()).padStart(2, '0');
+        let tglFormat = `${yyyy}-${mm}-${dd}`;
 
+        let statusHari = "absent"; 
+        let circleContent = "A";
+
+        // --- TAMBAHAN: Cek apakah hari ini ada di daftar libur nasional ---
+        // Asumsi daftarLiburNasional berisi array string: ["2026-07-07", "2026-08-17"]
+        if (daftarLiburNasional.includes(tglFormat)) {
+            statusHari = "holiday";
+            circleContent = "L"; // 'L' untuk Libur
+        }
+
+        // Cek riwayat kehadiran (Jika saat libur ternyata pegawai tetap absen MASUK, ini akan menimpa status libur)
         if (riwayatData && riwayatData.length > 0) {
             let logHariIni = riwayatData.filter(item => isDateMatch(item.waktu, d));
             if(logHariIni.length > 0) {
-                if(logHariIni.some(item => item.tipe === 'MASUK')) { statusHari = "present"; circleContent = '<i class="fas fa-check"></i>'; }
-                else if(logHariIni.some(item => item.tipe === 'CUTI' || item.tipe === 'IZIN')) { statusHari = "cuti-izin"; circleContent = 'C'; }
+                let hasHadir = logHariIni.some(item => item.tipe === 'MASUK');
+                let hasCuti = logHariIni.some(item => item.tipe === 'CUTI' || item.tipe === 'IZIN');
+                
+                if(hasHadir) { statusHari = "present"; circleContent = '<i class="fas fa-check"></i>'; }
+                else if(hasCuti) { statusHari = "cuti-izin"; circleContent = 'C'; }
             }
         }
         
         let compareDate = new Date(d); compareDate.setHours(0,0,0,0);
         let todayCompare = new Date(); todayCompare.setHours(0,0,0,0);
+        
         let circleClass = "day-circle-new ";
         
-        if (compareDate > todayCompare) { circleClass += "future"; circleContent = ""; } 
-        else { circleClass += statusHari; }
+        if (compareDate > todayCompare) {
+            circleClass += "future"; 
+            circleContent = "";
+        } else {
+            circleClass += statusHari;
+        }
         
-        container.innerHTML += `<div class="day-item"><span class="day-label">${namaHari[i]}</span><div class="${circleClass}">${circleContent}</div></div>`;
+        container.innerHTML += `
+            <div class="day-item">
+                <span class="day-label">${namaHari[i]}</span>
+                <div class="${circleClass}">${circleContent}</div>
+            </div>
+        `;
     }
-  }
+}
 
   // --- MUAT RIWAYAT ABSEN VIA FETCH (POST) ---
   function muatRiwayatAbsen() {

@@ -348,6 +348,26 @@
 </div>
 
 <script>
+  // --- FUNGSI BARU: TARIK DATA LIBUR DARI SPREADSHEET ---
+  function muatDataLibur(callback) {
+      fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ action: "getLibur" })
+      })
+      .then(res => res.json())
+      .then(data => {
+          if(Array.isArray(data)) {
+              daftarLiburNasional = data; // Mengisi array yang tadinya kosong dengan data dari Spreadsheet
+          }
+          if(callback) callback(); // Lanjutkan eksekusi fungsi berikutnya (muatRiwayatAbsen)
+      })
+      .catch(err => {
+          console.error("Gagal menarik data libur:", err);
+          if(callback) callback(); // Tetap lanjutkan aplikasi meski gagal tarik data
+      });
+  }
+  
   // ====================================================================
   // URL BACKEND APPS SCRIPT ANDA
   // PASTIKAN INI ADALAH URL WEB APP YANG BARU
@@ -476,8 +496,10 @@
     let tglMin = now.toISOString().split('T')[0];
     document.getElementById('tglMulai').setAttribute('min', tglMin);
     
-    cekLokasi(); muatRiwayatAbsen();
-  }
+  cekLokasi(); 
+  muatDataLibur(function() {
+      muatRiwayatAbsen();
+  });
 
   function prosesLogout() {
     Swal.fire({

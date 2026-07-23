@@ -3,7 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <base target="_top">
+  <title>Absensi GKPI</title>
+  
+  <!-- TAG PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#2D3182">
+  <link rel="apple-touch-icon" href="https://upload.wikimedia.org/wikipedia/id/0/0d/Logo_GKPI.png">
   
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -11,21 +16,12 @@
   
   <style>
     :root { 
-      --primary-blue: #2D3182; 
-      --bg-light: #F8F9FA;
-      --text-dark: #2D3436;
-      --text-muted: #64748b;
-      --color-absen: #FF5252;
-      --color-hadir: #1DD1A1;
-      --color-lapangan: #FF9F43;
-      --color-izin: #3498db;
-      --color-cuti: #f39c12;
-      --week-present: #5B63D3; 
-      --week-absent: #D97782;  
-      --week-cuti: #f39c12;
+      --primary-blue: #2D3182; --bg-light: #F8F9FA; --text-dark: #2D3436; --text-muted: #64748b;
+      --color-absen: #FF5252; --color-hadir: #1DD1A1; --color-lapangan: #FF9F43;
+      --color-izin: #3498db; --color-cuti: #f39c12; --week-present: #5B63D3; 
+      --week-absent: #D97782; --week-cuti: #f39c12;
     }
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
+    * { box-sizing: border-box; } html { scroll-behavior: smooth; }
     body { margin: 0; font-family: 'Inter', system-ui, sans-serif; background-color: var(--bg-light); min-height: 100vh; }
     
     .app-container { width: 100%; max-width: 420px; margin: 0 auto; background: var(--bg-light); min-height: 100vh; position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.05); }
@@ -33,10 +29,14 @@
     .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
     .header-top h4 { font-weight: 700; margin: 0; font-size: 1.4rem; }
     .header-top .subtitle { font-size: 0.8rem; opacity: 0.8; font-weight: 500; }
-    
     .btn-logout { background: rgba(255,255,255,0.2); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; transition: all 0.2s; }
     .app-body { padding: 0 20px 80px 20px; margin-top: -50px; }
     
+    /* SKELETON LOADING ANIMATION */
+    .skeleton { background: #e2e8f0; background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%); background-size: 200% 100%; animation: loading 1.5s infinite; border-radius: 8px; color: transparent !important; }
+    .skeleton-circle { border-radius: 50%; }
+    @keyframes loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
     /* LOGIN UI */
     .login-wrapper { padding: 40px 20px; min-height: 100vh; background: var(--primary-blue); display: flex; flex-direction: column; justify-content: center; align-items: center; }
     .login-container { background: white; padding: 40px 25px; border-radius: 30px; text-align: center; box-shadow: 0 15px 30px rgba(0,0,0,0.15); width: 100%; max-width: 360px; }
@@ -48,9 +48,7 @@
     .input-modern .form-control { padding-left: 50px; height: 55px; border-radius: 30px; border: 1px solid #dfe4ea; background-color: #f1f2f6; font-size: 0.95rem; font-weight: 600; color: var(--text-dark); transition: all 0.3s ease;}
     .input-modern .form-control:focus { background-color: #ffffff; border-color: var(--primary-blue); box-shadow: 0 0 0 4px rgba(45, 49, 130, 0.1); outline: none;}
     .btn-login { background: var(--primary-blue); color: white; height: 55px; border-radius: 30px; font-weight: 700; width: 100%; border: none; margin-top: 15px; box-shadow: 0 8px 20px rgba(45, 49, 130, 0.3); transition: all 0.2s ease;}
-    .btn-login:active { transform: translateY(2px); box-shadow: 0 4px 10px rgba(45, 49, 130, 0.3); }
-    .copyright-text { margin-top: 40px; font-size: 0.8rem; color: rgba(255, 255, 255, 0.7); font-weight: 600; letter-spacing: 0.5px; text-align: center; }
-    .copyright-text span { color: #FFD700; font-weight: 700; }
+    .copyright-text { margin-top: 40px; font-size: 0.8rem; color: rgba(255, 255, 255, 0.7); font-weight: 600; text-align: center; }
     
     /* CARD & KOMPONEN */
     .card-modern { background: #ffffff; border-radius: 24px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.04); margin-bottom: 20px; }
@@ -106,7 +104,6 @@
     .preview-img { width: 100%; border-radius: 15px; margin-top: 15px; display: none; box-shadow: 0 8px 20px rgba(0,0,0,0.15);}
 
     .btn-utama { background: var(--primary-blue); color: white; font-weight: 700; padding: 16px; border-radius: 30px; width: 100%; border: none; font-size: 1rem; margin-bottom: 10px; box-shadow: 0 10px 25px rgba(45, 49, 130, 0.3); transition: all 0.2s ease;}
-    .btn-utama:active { transform: translateY(2px); box-shadow: 0 5px 10px rgba(45, 49, 130, 0.3);} 
     .btn-utama:disabled { opacity: 0.6; cursor: not-allowed; }
     
     .kuota-cuti { background: #fff4e6; color: #e67e22; padding: 10px 15px; border-radius: 12px; font-weight: 700; font-size: 0.85rem; text-align: center; margin-bottom: 20px; border: 1px solid #ffd8a8; }
@@ -134,9 +131,7 @@
     </div>
     <button type="button" id="btnLogin" class="btn-login" onclick="prosesLogin()">MASUK</button>
   </div>
-  <div class="copyright-text">
-    © 2026 Copyright by <span>Diovery</span>
-  </div>
+  <div class="copyright-text">© 2026 Copyright by <span style="color:#FFD700">Diovery</span></div>
 </div>
 
 <div id="halamanUtama" class="app-container" style="display: none;">
@@ -167,7 +162,8 @@
       <div class="card-modern">
         <div class="section-title"><i class="fas fa-calendar-alt"></i> Status Kehadiran Minggu Ini</div>
         <div class="week-status-wrapper" id="weekStatusContainer">
-            </div>
+             <!-- Skeleton Circles will be injected here by JS -->
+        </div>
       </div>
 
       <div id="gpsStatus" class="status-gps gps-info">Mencari lokasi GPS...</div>
@@ -210,17 +206,13 @@
           <label for="tipeIzin">IZIN (Sakit/Acara)</label>
         </div>
 
-       <div style="text-align: left; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin: 0 0 5px 10px;">
-          Tanggal Mulai Cuti/Izin
-        </div>
+       <div style="text-align: left; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin: 0 0 5px 10px;">Tanggal Mulai</div>
         <div class="input-modern">
           <i class="fas fa-calendar-day"></i>
           <input type="date" id="tglMulai" class="form-control" style="padding-left:45px;" onchange="hitungHari()">
         </div>
         
-        <div style="text-align: left; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin: 0 0 5px 10px;">
-          Tanggal Berakhir
-        </div>
+        <div style="text-align: left; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin: 0 0 5px 10px;">Tanggal Berakhir</div>
         <div class="input-modern">
           <i class="fas fa-calendar-check"></i>
           <input type="date" id="tglSelesai" class="form-control" style="padding-left:45px;" onchange="hitungHari()">
@@ -242,7 +234,7 @@
       <div class="card-modern">
           <div class="section-title"><i class="fas fa-history"></i> Riwayat Pengajuan Saya</div>
           <div id="listStatusPengajuan">
-            <div class="text-center" style="color:#94a3b8; padding:30px;"><i class="fas fa-spinner fa-spin"></i> Memuat data...</div>
+            <!-- SKELETON RIWAYAT -->
           </div>
       </div>
     </div>
@@ -256,53 +248,60 @@
 </div>
 
 <script>
-  // =========================================================================
-  // GANTI URL DI BAWAH INI DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA
+  // DAFTARKAN SERVICE WORKER UNTUK PWA
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js').then(reg => {
+        console.log('Service Worker terdaftar!', reg);
+      });
+    });
+  }
+
   // =========================================================================
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbytSUNchsBEgPFA-9bmutWeBvdMTsOt2FHkyy3FzXSEGJodjOGPdHoXDj34Z2fcgF6sHw/exec'; 
+  // =========================================================================
 
   const KANTOR_LAT = 2.9507367687454646; const KANTOR_LNG = 99.06044938808277; const MAX_JARAK = 50; 
   let statusLokasi = "Mencari...", base64Absen = "", base64Pengajuan = "", sisaCutiUser = 0;
+  let currentLat = ""; let currentLng = ""; 
+  let sudahAbsenMasukHariIni = false; let daftarLiburNasional = [];
   
-  let currentLat = ""; 
-  let currentLng = ""; 
-  
-  let sudahAbsenMasukHariIni = false;
-  let daftarLiburNasional = [];
-  
+  function renderSkeletonMingguan() {
+      const container = document.getElementById('weekStatusContainer');
+      container.innerHTML = '';
+      const namaHari = ["S", "S", "R", "K", "J"]; 
+      for (let i = 0; i < 5; i++) {
+          container.innerHTML += `
+              <div class="day-item">
+                  <span class="day-label">${namaHari[i]}</span>
+                  <div class="day-circle-new skeleton skeleton-circle"></div>
+              </div>
+          `;
+      }
+      document.getElementById('statusMasukTxt').classList.add('skeleton');
+      document.getElementById('statusPulangTxt').classList.add('skeleton');
+  }
+
   function muatDataLibur(callback) {
-      // Menggunakan getRekapAdmin untuk mengambil libur nasional
+      renderSkeletonMingguan(); // Panggil skeleton saat mulai loading
       fetch(SCRIPT_URL + '?action=getRekapAdmin')
         .then(res => res.json())
         .then(data => {
-            if (data.liburNasional && Array.isArray(data.liburNasional)) {
-                daftarLiburNasional = data.liburNasional; 
-            }
+            if (data.liburNasional && Array.isArray(data.liburNasional)) daftarLiburNasional = data.liburNasional; 
             if (callback) callback(); 
-        })
-        .catch(error => {
-            console.error("Gagal memuat libur:", error);
-            if (callback) callback(); 
-        }); 
+        }).catch(error => { if (callback) callback(); }); 
   }
 
   function perbaruiUIKuotaCuti() {
       let nama = document.getElementById('namaPegawai').value || sessionStorage.getItem('namaPegawai');
       let infoEl = document.getElementById('infoSisaCuti');
-
       if (nama) {
           fetch(SCRIPT_URL + '?action=getUpdateSisaCuti&nama=' + encodeURIComponent(nama))
           .then(res => res.json())
           .then(res => {
-              sisaCutiUser = res.sisaCuti; 
-              sessionStorage.setItem('sisaCuti', res.sisaCuti); 
+              sisaCutiUser = res.sisaCuti; sessionStorage.setItem('sisaCuti', res.sisaCuti); 
               if(infoEl) infoEl.innerHTML = `<i class="fas fa-ticket-alt"></i> Sisa Kuota Cuti: ${res.sisaCuti} Hari`;
-          })
-          .catch(err => {
-              if(infoEl) infoEl.innerHTML = `<i class="fas fa-exclamation-triangle"></i> Gagal mengecek cuti.`;
-          });
-      } else {
-          if(infoEl) infoEl.innerHTML = `<i class="fas fa-ticket-alt"></i> Sisa Kuota Cuti: Sesi Habis`;
+          }).catch(err => { if(infoEl) infoEl.innerHTML = `<i class="fas fa-exclamation-triangle"></i> Gagal mengecek cuti.`; });
       }
   }
 
@@ -311,9 +310,8 @@
     document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
     document.getElementById(idTab).classList.add('active');
     elm.classList.add('active');
-    
     if(idTab === 'tabPengajuan') {
-        document.getElementById('infoSisaCuti').innerHTML = `<i class="fas fa-sync-alt fa-spin"></i> Mengecek sisa cuti...`;
+        document.getElementById('infoSisaCuti').innerHTML = `<i class="fas fa-sync-alt fa-spin"></i> Mengecek...`;
         perbaruiUIKuotaCuti();
     }
   }
@@ -325,36 +323,15 @@
     if(!user || !pin) return Swal.fire('Oops!', 'Isi Username & PIN', 'warning');
     
     btn.disabled = true; btn.innerHTML = 'MEMPROSES...';
-    
-    fetch(SCRIPT_URL, {
-        method: 'POST',
-        body: JSON.stringify({ action: 'cekLoginPegawai', username: user, pin: pin })
-    })
+    fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'cekLoginPegawai', username: user, pin: pin }) })
     .then(r => r.json())
     .then(res => {
       if(res.sukses) {
-        sessionStorage.setItem('statusLogin', 'sudah_login');
-        sessionStorage.setItem('namaPegawai', res.namaLengkap);
-        sessionStorage.setItem('sisaCuti', res.sisaCuti);
-        
-        Swal.fire({
-          title: 'Login Berhasil!',
-          text: 'Selamat bekerja, ' + res.namaLengkap,
-          icon: 'success',
-          timer: 2000,
-          showConfirmButton: false,
-          backdrop: `rgba(45, 49, 130, 0.4)`
-        }).then(() => setupUI(res.namaLengkap, res.sisaCuti));
-        
-      } else {
-        Swal.fire('Gagal', res.pesan, 'error');
-        btn.disabled = false; btn.innerHTML = 'MASUK';
-      }
-    })
-    .catch(err => {
-        Swal.fire('Error', 'Kesalahan jaringan. Gagal terhubung ke sistem.', 'error');
-        btn.disabled = false; btn.innerHTML = 'MASUK';
-    });
+        sessionStorage.setItem('statusLogin', 'sudah_login'); sessionStorage.setItem('namaPegawai', res.namaLengkap); sessionStorage.setItem('sisaCuti', res.sisaCuti);
+        Swal.fire({ title: 'Login Berhasil!', text: 'Selamat bekerja, ' + res.namaLengkap, icon: 'success', timer: 2000, showConfirmButton: false, backdrop: `rgba(45, 49, 130, 0.4)` })
+        .then(() => setupUI(res.namaLengkap, res.sisaCuti));
+      } else { Swal.fire('Gagal', res.pesan, 'error'); btn.disabled = false; btn.innerHTML = 'MASUK'; }
+    }).catch(err => { Swal.fire('Error', 'Kesalahan jaringan.', 'error'); btn.disabled = false; btn.innerHTML = 'MASUK'; });
   }
 
   function setupUI(nama, sisaCuti) {
@@ -362,47 +339,20 @@
     document.getElementById('halamanUtama').style.display = 'block';
     document.getElementById('tampilNamaLengkap').innerText = nama;
     document.getElementById('namaPegawai').value = nama;
-    
-    sisaCutiUser = sisaCuti;
-    document.getElementById('infoSisaCuti').innerHTML = `<i class="fas fa-ticket-alt"></i> Sisa Kuota Cuti: ${sisaCuti} Hari`;
-    
-    let now = new Date();
-    document.getElementById('tanggalHariIni').innerText = now.toLocaleDateString('id-ID', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
-    
-    let jamSekarang = now.getHours();
-    if (jamSekarang >= 16) {
-      document.getElementById('pulang').checked = true;
-    } else {
-      document.getElementById('masuk').checked = true;
-    }
-    
-    let tglMin = now.toISOString().split('T')[0];
-    document.getElementById('tglMulai').setAttribute('min', tglMin);
-    
-    cekLokasi(); 
-    muatDataLibur(function() { muatRiwayatAbsen(); });
+    sisaCutiUser = sisaCuti; document.getElementById('infoSisaCuti').innerHTML = `<i class="fas fa-ticket-alt"></i> Sisa Kuota Cuti: ${sisaCuti} Hari`;
+    let now = new Date(); document.getElementById('tanggalHariIni').innerText = now.toLocaleDateString('id-ID', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+    if (now.getHours() >= 16) document.getElementById('pulang').checked = true; else document.getElementById('masuk').checked = true;
+    document.getElementById('tglMulai').setAttribute('min', now.toISOString().split('T')[0]);
+    cekLokasi(); muatDataLibur(function() { muatRiwayatAbsen(); });
   }
 
   function prosesLogout() {
-    Swal.fire({
-      title: 'Konfirmasi',
-      text: "Apakah Anda yakin ingin keluar?",
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonColor: '#2D3182',
-      cancelButtonColor: '#FF5252',
-      confirmButtonText: 'Ya, Keluar'
-    }).then((result) => {
+    Swal.fire({ title: 'Konfirmasi', text: "Keluar dari sistem?", icon: 'question', showCancelButton: true, confirmButtonColor: '#2D3182', cancelButtonColor: '#FF5252', confirmButtonText: 'Ya, Keluar' })
+    .then((result) => {
       if (result.isConfirmed) {
-        sessionStorage.removeItem('statusLogin');
-        sessionStorage.removeItem('namaPegawai');
-        sessionStorage.removeItem('sisaCuti');
-        
-        document.getElementById('halamanUtama').style.display = 'none';
-        document.getElementById('halamanLogin').style.display = 'flex';
-        
-        document.getElementById('inputUsername').value = '';
-        document.getElementById('inputPin').value = '';
+        sessionStorage.clear();
+        document.getElementById('halamanUtama').style.display = 'none'; document.getElementById('halamanLogin').style.display = 'flex';
+        document.getElementById('inputUsername').value = ''; document.getElementById('inputPin').value = '';
       }
     });
   }
@@ -413,68 +363,33 @@
   }
 
   function cekLokasi() {
-    const b = document.getElementById('gpsStatus');
-    const btn = document.getElementById('btnSubmitAbsen');
-    const mode = document.querySelector('input[name="modeLokasi"]:checked').value;
-    
-    btn.disabled = true; 
-    currentLat = "";
-    currentLng = "";
-    
-    if (mode === "KANTOR") {
-      b.className = "status-gps gps-info"; 
-      b.innerHTML = "Mencari lokasi kantor...";
-      statusLokasi = "Mencari...";
-    } else {
-      b.className = "status-gps gps-info"; 
-      b.innerHTML = "<i class='fas fa-map-marked-alt'></i> Mode Dinas Lapangan Aktif";
-      statusLokasi = "Lapangan";
-    }
+    const b = document.getElementById('gpsStatus'), btn = document.getElementById('btnSubmitAbsen'), mode = document.querySelector('input[name="modeLokasi"]:checked').value;
+    btn.disabled = true; currentLat = ""; currentLng = "";
+    if (mode === "KANTOR") { b.className = "status-gps gps-info"; b.innerHTML = "Mencari lokasi kantor..."; statusLokasi = "Mencari..."; } 
+    else { b.className = "status-gps gps-info"; b.innerHTML = "<i class='fas fa-map-marked-alt'></i> Mode Dinas Lapangan"; statusLokasi = "Lapangan"; }
     
     navigator.geolocation.getCurrentPosition(pos => {
-      currentLat = pos.coords.latitude;
-      currentLng = pos.coords.longitude;
-
+      currentLat = pos.coords.latitude; currentLng = pos.coords.longitude;
       const j = hitungJarak(KANTOR_LAT, KANTOR_LNG, pos.coords.latitude, pos.coords.longitude);
       if (mode === "KANTOR") {
-        if (j <= MAX_JARAK) { 
-          statusLokasi = "Valid (Kantor)"; 
-          b.className = "status-gps gps-success"; 
-          b.innerHTML = `<i class='fas fa-check-circle'></i> Dalam Radius Kantor (${j}m)`; 
-          btn.disabled = false;
-        } else { 
-          statusLokasi = "Luar Radius"; 
-          b.className = "status-gps gps-danger"; 
-          b.innerHTML = `<i class='fas fa-times-circle'></i> Di Luar Radius Kantor (${j}m)`; 
-          btn.disabled = true; 
-        }
-      } else { 
-        statusLokasi = "Lapangan"; 
-        b.className = "status-gps gps-success"; 
-        b.innerHTML = "<i class='fas fa-map-marked-alt'></i> Mode Dinas Lapangan Aktif"; 
-        btn.disabled = false; 
-      }
-    }, () => { 
-      b.className = "status-gps gps-danger"; 
-      b.innerHTML = "Gagal! Aktifkan Izin Lokasi/GPS."; 
-      btn.disabled = true; 
-    }, {enableHighAccuracy: true, maximumAge: 0, timeout: 15000});
+        if (j <= MAX_JARAK) { statusLokasi = "Valid (Kantor)"; b.className = "status-gps gps-success"; b.innerHTML = `<i class='fas fa-check-circle'></i> Dalam Radius Kantor (${j}m)`; btn.disabled = false; } 
+        else { statusLokasi = "Luar Radius"; b.className = "status-gps gps-danger"; b.innerHTML = `<i class='fas fa-times-circle'></i> Di Luar Radius Kantor (${j}m)`; btn.disabled = true; }
+      } else { statusLokasi = "Lapangan"; b.className = "status-gps gps-success"; b.innerHTML = "<i class='fas fa-map-marked-alt'></i> Mode Dinas Lapangan Aktif"; btn.disabled = false; }
+    }, () => { b.className = "status-gps gps-danger"; b.innerHTML = "Gagal! Aktifkan GPS."; btn.disabled = true; }, {enableHighAccuracy: true, maximumAge: 0, timeout: 15000});
   }
 
   document.getElementById('fotoKameraAbsen').addEventListener('change', function(e) { handlePhoto(e.target.files[0], 'previewAbsen', 'teksKameraAbsen', 1); });
   document.getElementById('fotoKameraPengajuan').addEventListener('change', function(e) { handlePhoto(e.target.files[0], 'previewPengajuan', 'teksKameraPengajuan', 2); });
 
   function handlePhoto(file, idPrev, idTeks, type) {
-    if(!file) return;
-    const r = new FileReader();
+    if(!file) return; const r = new FileReader();
     r.onload = ev => {
       const img = new Image(); img.onload = () => {
         const c = document.createElement('canvas');
         let w = img.width, h = img.height; if(w > 400){ h*=400/w; w=400; }
         c.width = w; c.height = h; c.getContext('2d').drawImage(img,0,0,w,h);
         const b64 = c.toDataURL('image/jpeg', 0.6);
-        document.getElementById(idPrev).src = b64; document.getElementById(idPrev).style.display = 'block';
-        document.getElementById(idTeks).innerText = "Gambar Disertakan";
+        document.getElementById(idPrev).src = b64; document.getElementById(idPrev).style.display = 'block'; document.getElementById(idTeks).innerText = "Gambar Disertakan";
         if(type === 1) base64Absen = b64; else base64Pengajuan = b64;
       }; img.src = ev.target.result;
     }; r.readAsDataURL(file);
@@ -482,304 +397,139 @@
 
   function prosesAbsen() {
     let tipeDipilih = document.querySelector('input[name="tipeAbsen"]:checked').value;
-    
-    if (tipeDipilih === "PULANG" && !sudahAbsenMasukHariIni) {
-        return Swal.fire('Akses Ditolak', 'Anda tidak dapat Absen Pulang karena tidak ada rekaman Absen Masuk hari ini.', 'error');
-    }
-
-    if (!currentLat || !currentLng) {
-        return Swal.fire('Mohon Tunggu', 'Sistem sedang memproses koordinat akurat Anda. Pastikan Izin Lokasi aktif lalu tunggu beberapa detik.', 'info');
-    }
-
+    if (tipeDipilih === "PULANG" && !sudahAbsenMasukHariIni) return Swal.fire('Ditolak', 'Tidak ada rekaman Absen Masuk hari ini.', 'error');
+    if (!currentLat || !currentLng) return Swal.fire('Tunggu', 'Sistem sedang memproses GPS.', 'info');
     if(!base64Absen) return Swal.fire('Oops', 'Wajib melampirkan foto selfie.', 'warning');
     
     const btn = document.getElementById('btnSubmitAbsen');
     btn.disabled = true; btn.innerHTML = 'MENGIRIM...';
     
-    const py = { 
-        nama: document.getElementById('namaPegawai').value, 
-        tipe: tipeDipilih, 
-        statusLokasi: statusLokasi, 
-        fotoBase64: base64Absen,
-        lat: currentLat, 
-        lng: currentLng  
-    };
-    
-    fetch(SCRIPT_URL, {
-        method: 'POST',
-        body: JSON.stringify({ action: 'simpanAbsenFoto', payload: py })
-    })
+    const py = { nama: document.getElementById('namaPegawai').value, tipe: tipeDipilih, statusLokasi: statusLokasi, fotoBase64: base64Absen, lat: currentLat, lng: currentLng };
+    fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'simpanAbsenFoto', payload: py }) })
     .then(r => r.json())
     .then(resObj => {
       let msg = resObj.pesan || "Terjadi kesalahan";
       btn.disabled = false; btn.innerHTML = 'KIRIM ABSENSI';
-      
-      if(resObj.sukses === false || msg.startsWith("Gagal")) {
-          Swal.fire('Ditolak', msg, 'error'); 
-      } else if(msg.startsWith("Berhasil")) { 
-          let parts = msg.split('|');
-          let statusWaktu = parts[1]; 
-          
-          let judulNotif = "Absen Berhasil!";
-          let teksNotif = "Data Anda telah direkam.";
-          let ikonNotif = "success";
-          
-          if (tipeDipilih === "PULANG") {
-              if (statusWaktu === "Tepat Waktu") {
-                 judulNotif = "Absen Pulang Berhasil!";
-                 teksNotif = "Anda pulang tepat waktu.<br><br><i>Terima kasih atas kerja keras dan dedikasi Anda hari ini. Selamat beristirahat, Tuhan Yesus memberkati!</i>";
-              } else {
-                 judulNotif = "Absen Pulang";
-                 teksNotif = "Absen pulang tercatat.<br><br><i>Terima kasih atas pelayanan Anda hari ini. Hati-hati di jalan!</i>";
-              }
-          } else { 
-              if (statusWaktu === "Tepat Waktu") {
-                 judulNotif = "Selamat Pagi!";
-                 teksNotif = "Absen Masuk Berhasil.<br><br><i>Semangat memulai hari! Semoga pelayanan dan pekerjaan Anda hari ini diberkati dan berjalan lancar.</i>";
-                 ikonNotif = "success";
-              } else {
-                 judulNotif = "Absen Tercatat";
-                 teksNotif = "Absen Masuk berhasil diterima.<br><br><i>Meskipun terlambat, tetap semangat melayani dengan sepenuh hati hari ini!</i>";
-                 ikonNotif = "warning";
-              }
-          }
-          
-          Swal.fire({ 
-              title: judulNotif, 
-              html: teksNotif, 
-              icon: ikonNotif, 
-              confirmButtonColor: '#2D3182' 
-          });
-          
-          muatRiwayatAbsen(); 
-          base64Absen = ""; 
-          document.getElementById('previewAbsen').style.display='none'; 
-          document.getElementById('teksKameraAbsen').innerText="Ketuk untuk Ambil Foto Selfie";
-      } else {
-          Swal.fire('Sukses', msg, 'success');
-          muatRiwayatAbsen();
-      }
-    })
-    .catch(err => {
-        Swal.fire('Error', 'Kesalahan koneksi jaringan.', 'error');
-        btn.disabled = false; btn.innerHTML = 'KIRIM ABSENSI';
-    });
+      if(resObj.sukses === false || msg.startsWith("Gagal")) { Swal.fire('Ditolak', msg, 'error'); } 
+      else if(msg.startsWith("Berhasil")) { 
+          let statusWaktu = msg.split('|')[1];
+          Swal.fire({ title: "Berhasil!", html: "Data Anda telah direkam.", icon: "success", confirmButtonColor: '#2D3182' });
+          renderSkeletonMingguan(); muatRiwayatAbsen(); base64Absen = ""; document.getElementById('previewAbsen').style.display='none'; document.getElementById('teksKameraAbsen').innerText="Ketuk untuk Ambil Foto Selfie";
+      } else { Swal.fire('Sukses', msg, 'success'); muatRiwayatAbsen(); }
+    }).catch(err => { Swal.fire('Error', 'Kesalahan jaringan.', 'error'); btn.disabled = false; btn.innerHTML = 'KIRIM ABSENSI'; });
   }
 
   function isDateMatch(waktuDariDB, targetDate) {
       if(!waktuDariDB) return false;
-      let d = targetDate.getDate();
-      let m = targetDate.getMonth() + 1;
-      let y = targetDate.getFullYear();
-      let dPad = String(d).padStart(2, '0');
-      let mPad = String(m).padStart(2, '0');
-      
-      let w = waktuDariDB.toLowerCase();
-      let datePart = w.split(' ')[0]; 
-      
-      let patterns = [
-          `${dPad}/${mPad}`, `${mPad}/${dPad}`, `${d}/${m}`, `${m}/${d}`,
-          `${y}-${mPad}-${dPad}`, `${dPad}-${mPad}-${y}`, `${dPad} ` 
-      ];
+      let d = targetDate.getDate(), m = targetDate.getMonth() + 1, y = targetDate.getFullYear(), dPad = String(d).padStart(2, '0'), mPad = String(m).padStart(2, '0');
+      let w = waktuDariDB.toLowerCase(), datePart = w.split(' ')[0]; 
+      let patterns = [ `${dPad}/${mPad}`, `${mPad}/${dPad}`, `${d}/${m}`, `${m}/${d}`, `${y}-${mPad}-${dPad}`, `${dPad}-${mPad}-${y}`, `${dPad} ` ];
       const namaBulan = ["jan", "feb", "mar", "apr", "mei", "jun", "jul", "agu", "sep", "okt", "nov", "des"];
       let match = patterns.some(p => datePart.includes(p) || w.startsWith(p));
-      
-      if (!match && w.includes(d.toString()) && w.includes(namaBulan[targetDate.getMonth()])) {
-          match = true;
-      }
+      if (!match && w.includes(d.toString()) && w.includes(namaBulan[targetDate.getMonth()])) match = true;
       return match;
   }
 
   function renderWeekCircles(riwayatData) {
-    const container = document.getElementById('weekStatusContainer');
-    container.innerHTML = '';
-    
-    let curr = new Date();
-    let dayOfWeek = curr.getDay(); 
-    let distanceToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
-    
-    let firstDay = new Date(curr);
+    const container = document.getElementById('weekStatusContainer'); container.innerHTML = '';
+    let curr = new Date(), distanceToMonday = curr.getDay() === 0 ? -6 : 1 - curr.getDay(), firstDay = new Date(curr);
     firstDay.setDate(curr.getDate() + distanceToMonday);
-    
     const namaHari = ["S", "S", "R", "K", "J"]; 
     
     for (let i = 0; i < 5; i++) {
-        let d = new Date(firstDay);
-        d.setDate(firstDay.getDate() + i);
-        
-        let yyyy = d.getFullYear();
-        let mm = String(d.getMonth() + 1).padStart(2, '0');
-        let dd = String(d.getDate()).padStart(2, '0');
-        let tglFormat = `${yyyy}-${mm}-${dd}`;
+        let d = new Date(firstDay); d.setDate(firstDay.getDate() + i);
+        let tglFormat = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        let statusHari = "absent", circleContent = "A";
 
-        let statusHari = "absent"; 
-        let circleContent = "A";
-
-        if (daftarLiburNasional.includes(tglFormat)) {
-            statusHari = "holiday";
-            circleContent = "L"; 
-        }
-
+        if (daftarLiburNasional.includes(tglFormat)) { statusHari = "holiday"; circleContent = "L"; }
         if (riwayatData && riwayatData.length > 0) {
             let logHariIni = riwayatData.filter(item => isDateMatch(item.waktu, d));
             if(logHariIni.length > 0) {
-                let hasHadir = logHariIni.some(item => item.tipe === 'MASUK');
-                let hasCuti = logHariIni.some(item => item.tipe === 'CUTI' || item.tipe === 'IZIN');
-                
-                if(hasHadir) { statusHari = "present"; circleContent = '<i class="fas fa-check"></i>'; }
-                else if(hasCuti) { statusHari = "cuti-izin"; circleContent = 'C'; }
+                if(logHariIni.some(item => item.tipe === 'MASUK')) { statusHari = "present"; circleContent = '<i class="fas fa-check"></i>'; }
+                else if(logHariIni.some(item => item.tipe === 'CUTI' || item.tipe === 'IZIN')) { statusHari = "cuti-izin"; circleContent = 'C'; }
             }
         }
-        
-        let compareDate = new Date(d); compareDate.setHours(0,0,0,0);
-        let todayCompare = new Date(); todayCompare.setHours(0,0,0,0);
-        
+        let compareDate = new Date(d); compareDate.setHours(0,0,0,0); let todayCompare = new Date(); todayCompare.setHours(0,0,0,0);
         let circleClass = "day-circle-new ";
-        
         if (compareDate > todayCompare) {
-            if (statusHari === "holiday") {
-                circleClass += "holiday";
-            } else {
-                circleClass += "future"; 
-                circleContent = "";
-            }
-        } else {
-            circleClass += statusHari;
-        }
+            if (statusHari === "holiday") circleClass += "holiday"; else { circleClass += "future"; circleContent = ""; }
+        } else { circleClass += statusHari; }
         
-        container.innerHTML += `
-            <div class="day-item">
-                <span class="day-label">${namaHari[i]}</span>
-                <div class="${circleClass}">${circleContent}</div>
-            </div>
-        `;
+        container.innerHTML += `<div class="day-item"><span class="day-label">${namaHari[i]}</span><div class="${circleClass}">${circleContent}</div></div>`;
     }
   }
 
   function muatRiwayatAbsen() {
     let nama = document.getElementById('namaPegawai').value;
-    
     fetch(SCRIPT_URL + '?action=getRiwayatAbsen&nama=' + encodeURIComponent(nama))
     .then(r => r.json())
     .then(response => {
-      let dataAbsen = [];
-      if (response && Array.isArray(response)) {
-          dataAbsen = response; 
-      }
-
-      let masuk = "--:--", pulang = "--:--", now = new Date();
+      let dataAbsen = Array.isArray(response) ? response : [], masuk = "--:--", pulang = "--:--", now = new Date();
       sudahAbsenMasukHariIni = false; 
       
       renderWeekCircles(dataAbsen);
-
       dataAbsen.forEach(d => {
         if(isDateMatch(d.waktu, now)) {
-          let waktuPecah = d.waktu.split(' ');
-          let jam = waktuPecah.length > 1 ? waktuPecah[1] : d.waktu;
-          
-          if(d.tipe === "MASUK" || d.tipe === "LAPANGAN") {
-              masuk = jam;
-              sudahAbsenMasukHariIni = true; 
-          }
-          if(d.tipe === "PULANG") {
-              pulang = jam;
-          }
+          let jam = d.waktu.split(' ').length > 1 ? d.waktu.split(' ')[1] : d.waktu;
+          if(d.tipe === "MASUK" || d.tipe === "LAPANGAN") { masuk = jam; sudahAbsenMasukHariIni = true; }
+          if(d.tipe === "PULANG") pulang = jam;
         }
       });
-      
-      document.getElementById('statusMasukTxt').innerText = masuk;
-      document.getElementById('statusPulangTxt').innerText = pulang;
-      
-    })
-    .catch(err => {
-      Swal.fire('Informasi', 'Gagal memuat sebagian data: Kesalahan jaringan.', 'warning');
-    });
+      document.getElementById('statusMasukTxt').classList.remove('skeleton'); document.getElementById('statusMasukTxt').innerText = masuk;
+      document.getElementById('statusPulangTxt').classList.remove('skeleton'); document.getElementById('statusPulangTxt').innerText = pulang;
+    }).catch(err => { Swal.fire('Error', 'Kesalahan jaringan.', 'warning'); });
   }
 
   function hitungHari() {
-    let m = document.getElementById('tglMulai').value;
-    let s = document.getElementById('tglSelesai').value;
-    
+    let m = document.getElementById('tglMulai').value, s = document.getElementById('tglSelesai').value;
     if (m && s) {
-      let start = new Date(m);
-      let end = new Date(s);
-      
-      if (end < start) {
-        document.getElementById('teksTotalHari').innerText = "Tanggal tidak valid";
-        return;
-      }
-
+      let start = new Date(m), end = new Date(s);
+      if (end < start) { document.getElementById('teksTotalHari').innerText = "Tanggal tidak valid"; return; }
       let totalHariKerja = 0;
-      
       for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
         let dayOfWeek = d.getDay();
-        
         if (dayOfWeek !== 0 && dayOfWeek !== 6) {
-          
-          let y = d.getFullYear();
-          let mo = String(d.getMonth() + 1).padStart(2, '0');
-          let da = String(d.getDate()).padStart(2, '0');
-          let tglFormat = `${y}-${mo}-${da}`;
-          
-          if (!daftarLiburNasional.includes(tglFormat)) {
-            totalHariKerja++;
-          }
+          let tglFormat = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+          if (!daftarLiburNasional.includes(tglFormat)) totalHariKerja++;
         }
       }
-      
       document.getElementById('teksTotalHari').innerText = totalHariKerja > 0 ? `Total: ${totalHariKerja} Hari` : "Total: 0 Hari";
     }
   }
 
   function prosesPengajuan() {
-    let tipe = document.querySelector('input[name="tipePengajuan"]:checked').value;
-    let m = document.getElementById('tglMulai').value;
-    let s = document.getElementById('tglSelesai').value;
+    let tipe = document.querySelector('input[name="tipePengajuan"]:checked').value, m = document.getElementById('tglMulai').value, s = document.getElementById('tglSelesai').value;
+    let diff = parseInt(document.getElementById('teksTotalHari').innerText.replace(/[^\d]/g, '')) || 0;
     
-    let teksHari = document.getElementById('teksTotalHari').innerText;
-    let diff = parseInt(teksHari.replace(/[^\d]/g, '')) || 0;
-    
-    if(!m || !s || diff <= 0) return Swal.fire('Oops', 'Pilih tanggal dengan benar. Pastikan ada hari kerja dalam rentang waktu tersebut.', 'warning');
-    if(!base64Pengajuan) return Swal.fire('Oops', 'Wajib melampirkan foto/dokumen pendukung.', 'warning');
-    
-    if(tipe === 'CUTI' && diff > sisaCutiUser) return Swal.fire('Gagal', `Sisa cuti Anda tidak cukup (Sisa: ${sisaCutiUser} Hari, Diajukan: ${diff} Hari).`, 'error');
+    if(!m || !s || diff <= 0) return Swal.fire('Oops', 'Pilih tanggal dengan benar.', 'warning');
+    if(!base64Pengajuan) return Swal.fire('Oops', 'Wajib melampirkan bukti.', 'warning');
+    if(tipe === 'CUTI' && diff > sisaCutiUser) return Swal.fire('Gagal', `Sisa cuti Anda tidak cukup.`, 'error');
 
-    const btn = document.getElementById('btnSubmitPengajuan');
-    btn.disabled = true; btn.innerHTML = 'MENGIRIM PENGAJUAN...';
-
+    const btn = document.getElementById('btnSubmitPengajuan'); btn.disabled = true; btn.innerHTML = 'MENGIRIM...';
     const py = { nama: document.getElementById('namaPegawai').value, tipe: tipe, tglMulai: m, tglSelesai: s, totalHari: diff, fotoBase64: base64Pengajuan };
     
-    fetch(SCRIPT_URL, {
-        method: 'POST',
-        body: JSON.stringify({ action: 'simpanPengajuanCuti', payload: py })
-    })
+    fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'simpanPengajuanCuti', payload: py }) })
     .then(r => r.json())
     .then(res => {
       if(res.sukses) {
-        Swal.fire('Berhasil Dikirim!', 'Pengajuan Anda sedang diproses oleh admin.', 'success');
-        base64Pengajuan = ""; document.getElementById('previewPengajuan').style.display='none'; document.getElementById('teksKameraPengajuan').innerText="Upload Surat Keterangan / Bukti";
+        Swal.fire('Berhasil!', 'Pengajuan diproses admin.', 'success');
+        base64Pengajuan = ""; document.getElementById('previewPengajuan').style.display='none'; document.getElementById('teksKameraPengajuan').innerText="Upload Bukti";
         document.getElementById('tglMulai').value = ''; document.getElementById('tglSelesai').value = ''; document.getElementById('teksTotalHari').innerText = 'Total: 0 Hari';
       } else Swal.fire('Gagal', res.pesan, 'error');
       btn.disabled = false; btn.innerHTML = 'KIRIM PENGAJUAN';
-    })
-    .catch(err => {
-        Swal.fire('Error', 'Kesalahan jaringan saat mengirim.', 'error');
-        btn.disabled = false; btn.innerHTML = 'KIRIM PENGAJUAN';
-    });
+    }).catch(err => { Swal.fire('Error', 'Kesalahan jaringan.', 'error'); btn.disabled = false; btn.innerHTML = 'KIRIM PENGAJUAN'; });
   }
 
   function muatRiwayatPengajuan() {
     const div = document.getElementById('listStatusPengajuan');
-    div.innerHTML = '<div class="text-center" style="color:#94a3b8;"><i class="fas fa-spinner fa-spin"></i> Memuat data...</div>';
+    div.innerHTML = `<div class="skeleton" style="height:80px; width:100%; margin-bottom:10px;"></div><div class="skeleton" style="height:80px; width:100%;"></div>`;
     
     let nama = document.getElementById('namaPegawai').value;
-    
     fetch(SCRIPT_URL + '?action=getRiwayatPengajuan&nama=' + encodeURIComponent(nama))
     .then(r => r.json())
     .then(data => {
       div.innerHTML = '';
       if(!data || !data.length) return div.innerHTML = '<div class="text-center"><small style="color:#94a3b8;">Belum ada riwayat pengajuan.</small></div>';
-      
       data.forEach(d => {
         let tglStr = d.tglMulai === d.tglSelesai ? d.tglMulai : `${d.tglMulai} s/d ${d.tglSelesai}`;
         div.innerHTML += `
@@ -792,16 +542,12 @@
             <div style="font-size:0.7rem; color:#cbd5e1; margin-top:5px;">ID: ${d.id}</div>
           </div>`;
       });
-    })
-    .catch(err => {
-        div.innerHTML = '<div class="text-center text-danger"><small>Gagal memuat riwayat pengajuan.</small></div>';
-    });
+    }).catch(err => { div.innerHTML = '<div class="text-center text-danger"><small>Gagal memuat riwayat.</small></div>'; });
   }
 
- window.onload = function() {
+  window.onload = function() {
     if(sessionStorage.getItem('statusLogin') === 'sudah_login') {
-       setupUI(sessionStorage.getItem('namaPegawai'), sessionStorage.getItem('sisaCuti'));
-       perbaruiUIKuotaCuti(); 
+       setupUI(sessionStorage.getItem('namaPegawai'), sessionStorage.getItem('sisaCuti')); perbaruiUIKuotaCuti(); 
     }
   };
 </script>

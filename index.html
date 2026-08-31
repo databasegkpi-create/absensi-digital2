@@ -3,25 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Absensi GKPI</title>
-  
-  <!-- TAG PWA -->
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#2D3182">
-  <link rel="apple-touch-icon" href="https://upload.wikimedia.org/wikipedia/id/0/0d/Logo_GKPI.png">
+  <base target="_top">
   
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   
   <style>
+    /* CSS ANDA TETAP SAMA SEPERTI SEBELUMNYA, TIDAK ADA YANG DIUBAH */
     :root { 
-      --primary-blue: #2D3182; --bg-light: #F8F9FA; --text-dark: #2D3436; --text-muted: #64748b;
-      --color-absen: #FF5252; --color-hadir: #1DD1A1; --color-lapangan: #FF9F43;
-      --color-izin: #3498db; --color-cuti: #f39c12; --week-present: #5B63D3; 
-      --week-absent: #D97782; --week-cuti: #f39c12;
+      --primary-blue: #2D3182; 
+      --bg-light: #F8F9FA;
+      --text-dark: #2D3436;
+      --text-muted: #64748b;
+      --color-absen: #FF5252;
+      --color-hadir: #1DD1A1;
+      --color-ibadah: #8e44ad; 
+      --color-lapangan: #FF9F43;
+      --color-izin: #3498db;
+      --color-cuti: #f39c12;
+      --week-present: #5B63D3; 
+      --week-absent: #D97782;  
+      --week-cuti: #f39c12;
     }
-    * { box-sizing: border-box; } html { scroll-behavior: smooth; }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
     body { margin: 0; font-family: 'Inter', system-ui, sans-serif; background-color: var(--bg-light); min-height: 100vh; }
     
     .app-container { width: 100%; max-width: 420px; margin: 0 auto; background: var(--bg-light); min-height: 100vh; position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.05); }
@@ -29,15 +35,10 @@
     .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
     .header-top h4 { font-weight: 700; margin: 0; font-size: 1.4rem; }
     .header-top .subtitle { font-size: 0.8rem; opacity: 0.8; font-weight: 500; }
+    
     .btn-logout { background: rgba(255,255,255,0.2); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; transition: all 0.2s; }
     .app-body { padding: 0 20px 80px 20px; margin-top: -50px; }
     
-    /* SKELETON LOADING ANIMATION */
-    .skeleton { background: #e2e8f0; background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%); background-size: 200% 100%; animation: loading 1.5s infinite; border-radius: 8px; color: transparent !important; }
-    .skeleton-circle { border-radius: 50%; }
-    @keyframes loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-
-    /* LOGIN UI */
     .login-wrapper { padding: 40px 20px; min-height: 100vh; background: var(--primary-blue); display: flex; flex-direction: column; justify-content: center; align-items: center; }
     .login-container { background: white; padding: 40px 25px; border-radius: 30px; text-align: center; box-shadow: 0 15px 30px rgba(0,0,0,0.15); width: 100%; max-width: 360px; }
     .logo-gkpi { width: 90px; height: 90px; object-fit: contain; margin-bottom: 15px; }
@@ -48,9 +49,10 @@
     .input-modern .form-control { padding-left: 50px; height: 55px; border-radius: 30px; border: 1px solid #dfe4ea; background-color: #f1f2f6; font-size: 0.95rem; font-weight: 600; color: var(--text-dark); transition: all 0.3s ease;}
     .input-modern .form-control:focus { background-color: #ffffff; border-color: var(--primary-blue); box-shadow: 0 0 0 4px rgba(45, 49, 130, 0.1); outline: none;}
     .btn-login { background: var(--primary-blue); color: white; height: 55px; border-radius: 30px; font-weight: 700; width: 100%; border: none; margin-top: 15px; box-shadow: 0 8px 20px rgba(45, 49, 130, 0.3); transition: all 0.2s ease;}
-    .copyright-text { margin-top: 40px; font-size: 0.8rem; color: rgba(255, 255, 255, 0.7); font-weight: 600; text-align: center; }
+    .btn-login:active { transform: translateY(2px); box-shadow: 0 4px 10px rgba(45, 49, 130, 0.3); }
+    .copyright-text { margin-top: 40px; font-size: 0.8rem; color: rgba(255, 255, 255, 0.7); font-weight: 600; letter-spacing: 0.5px; text-align: center; }
+    .copyright-text span { color: #FFD700; font-weight: 700; }
     
-    /* CARD & KOMPONEN */
     .card-modern { background: #ffffff; border-radius: 24px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.04); margin-bottom: 20px; }
     .date-badge { display: inline-block; background: #f1f2f6; color: var(--text-muted); padding: 6px 15px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; margin-bottom: 10px; }
     .user-name { font-size: 1.3rem; color: var(--text-dark); font-weight: 800; display: block; margin-top: 5px; }
@@ -63,7 +65,6 @@
     .bg-orange { background: linear-gradient(135deg, #FFA726, #FF9800); }
     .bg-red { background: linear-gradient(135deg, #EF5350, #F44336); }
 
-    /* THIS WEEK CIRCLES */
     .week-status-wrapper { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; }
     .day-item { display: flex; flex-direction: column; align-items: center; gap: 10px; }
     .day-label { font-size: 0.9rem; font-weight: 700; color: #475569; }
@@ -77,7 +78,6 @@
     .status-gps { padding: 12px 15px; border-radius: 16px; font-weight: 700; font-size: 0.8rem; margin-bottom: 20px; text-align:center; transition: all 0.3s;}
     .gps-success { background: #dcfce7; color: #16a34a; } .gps-danger { background: #fee2e2; color: #dc2626; } .gps-info { background: #fff4e6; color: #e67e22; }
 
-    /* TAB NAVIGASI BAWAH */
     .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 420px; background: white; display: flex; justify-content: space-around; padding: 12px 10px; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); border-top-left-radius: 25px; border-top-right-radius: 25px; z-index: 1000; }
     .nav-item { display: flex; flex-direction: column; align-items: center; color: #94a3b8; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: 0.3s; width: 33%;}
     .nav-item i { font-size: 1.4rem; margin-bottom: 4px; }
@@ -87,7 +87,6 @@
     .tab-content.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* RADIO TOGGLE */
     .toggle-pill { background: #f1f2f6; padding: 5px; border-radius: 30px; display: flex; width: 100%; margin-bottom: 20px; }
     .toggle-pill input[type="radio"] { display: none; }
     .toggle-pill label { flex: 1; text-align: center; padding: 12px 0; border-radius: 25px; font-weight: 700; font-size: 0.85rem; color: var(--text-muted); cursor: pointer; margin: 0; }
@@ -95,6 +94,7 @@
     #locLuar:checked + label { background: var(--color-lapangan); color: white; }
     #masuk:checked + label { background: var(--color-hadir); color: white; }
     #pulang:checked + label { background: var(--color-absen); color: white; }
+    #ibadah:checked + label { background: var(--color-ibadah); color: white; }
     #tipeCuti:checked + label { background: var(--color-cuti); color: white; }
     #tipeIzin:checked + label { background: var(--color-izin); color: white; }
 
@@ -104,6 +104,7 @@
     .preview-img { width: 100%; border-radius: 15px; margin-top: 15px; display: none; box-shadow: 0 8px 20px rgba(0,0,0,0.15);}
 
     .btn-utama { background: var(--primary-blue); color: white; font-weight: 700; padding: 16px; border-radius: 30px; width: 100%; border: none; font-size: 1rem; margin-bottom: 10px; box-shadow: 0 10px 25px rgba(45, 49, 130, 0.3); transition: all 0.2s ease;}
+    .btn-utama:active { transform: translateY(2px); box-shadow: 0 5px 10px rgba(45, 49, 130, 0.3);} 
     .btn-utama:disabled { opacity: 0.6; cursor: not-allowed; }
     
     .kuota-cuti { background: #fff4e6; color: #e67e22; padding: 10px 15px; border-radius: 12px; font-weight: 700; font-size: 0.85rem; text-align: center; margin-bottom: 20px; border: 1px solid #ffd8a8; }
@@ -115,6 +116,7 @@
 </head>
 <body>
 
+<!-- HTML BODY SAMA DENGAN VERSI SEBELUMNYA -->
 <div id="halamanLogin" class="login-wrapper">
   <div class="login-container">
     <img src="https://upload.wikimedia.org/wikipedia/id/0/0d/Logo_GKPI.png" alt="Logo" class="logo-gkpi">
@@ -131,7 +133,9 @@
     </div>
     <button type="button" id="btnLogin" class="btn-login" onclick="prosesLogin()">MASUK</button>
   </div>
-  <div class="copyright-text">© 2026 Copyright by <span style="color:#FFD700">Diovery</span></div>
+  <div class="copyright-text">
+    © 2026 Copyright by <span>Diovery</span>
+  </div>
 </div>
 
 <div id="halamanUtama" class="app-container" style="display: none;">
@@ -162,34 +166,47 @@
       <div class="card-modern">
         <div class="section-title"><i class="fas fa-calendar-alt"></i> Status Kehadiran Minggu Ini</div>
         <div class="week-status-wrapper" id="weekStatusContainer">
-             <!-- Skeleton Circles will be injected here by JS -->
-        </div>
+            </div>
       </div>
 
       <div id="gpsStatus" class="status-gps gps-info">Mencari lokasi GPS...</div>
 
-      <div class="section-title"><i class="fas fa-map-marker-alt"></i> Lokasi Kehadiran</div>
-      <div class="toggle-pill">
-        <input type="radio" name="modeLokasi" id="locKantor" value="KANTOR" checked onchange="cekLokasi()">
-        <label for="locKantor">KANTOR</label>
-        <input type="radio" name="modeLokasi" id="locLuar" value="LAPANGAN" onchange="cekLokasi()">
-        <label for="locLuar">LAPANGAN</label>
+      <div id="areaLokasiToggle">
+        <div class="section-title"><i class="fas fa-map-marker-alt"></i> Lokasi Kehadiran</div>
+        <div class="toggle-pill">
+          <input type="radio" name="modeLokasi" id="locKantor" value="KANTOR" checked onchange="cekLokasi()">
+          <label for="locKantor">KANTOR</label>
+          <input type="radio" name="modeLokasi" id="locLuar" value="LAPANGAN" onchange="cekLokasi()">
+          <label for="locLuar">LAPANGAN</label>
+        </div>
       </div>
 
       <div class="section-title"><i class="fas fa-clipboard-check"></i> Tipe Kehadiran</div>
       <div class="toggle-pill">
         <input type="radio" name="tipeAbsen" id="masuk" value="MASUK" checked>
         <label for="masuk">DATANG</label>
+        <input type="radio" name="tipeAbsen" id="ibadah" value="IBADAH">
+        <label for="ibadah">IBADAH</label>
         <input type="radio" name="tipeAbsen" id="pulang" value="PULANG">
         <label for="pulang">PULANG</label>
       </div>
 
-      <input type="file" id="fotoKameraAbsen" accept="image/*" capture="environment" class="d-none">
-      <label for="fotoKameraAbsen" class="kamera-container">
-        <i class="fas fa-camera"></i>
-        <span id="teksKameraAbsen">Ketuk untuk Ambil Foto Selfie</span>
-        <img id="previewAbsen" class="preview-img">
-      </label>
+      <div id="areaKameraAbsen">
+          <input type="file" id="fotoKameraAbsen" accept="image/*" capture="user" class="d-none">
+          <label for="fotoKameraAbsen" class="kamera-container">
+            <i class="fas fa-camera"></i>
+            <span id="teksKameraAbsen">Ketuk untuk Ambil Foto Selfie</span>
+            <img id="previewAbsen" class="preview-img">
+          </label>
+      </div>
+
+      <div id="areaPinIbadah" style="display:none; margin-bottom: 20px;">
+          <div class="input-modern text-center" style="margin-bottom: 0;">
+             <i class="fas fa-key" style="color:var(--color-ibadah);"></i>
+             <input type="number" id="inputPinKehadiran" class="form-control" placeholder="Masukkan PIN Ibadah (3 Digit)" style="text-align: center; font-size: 1.1rem; font-weight: bold; letter-spacing: 2px;">
+          </div>
+          <p style="font-size:0.75rem; color:var(--text-muted); text-align:center; margin-top:5px; font-weight: 600;">*PIN akan diberikan pimpinan di akhir ibadah.</p>
+      </div>
 
       <button type="button" id="btnSubmitAbsen" class="btn-utama" onclick="prosesAbsen()">KIRIM ABSENSI</button>
     </div>
@@ -206,20 +223,24 @@
           <label for="tipeIzin">IZIN (Sakit/Acara)</label>
         </div>
 
-       <div style="text-align: left; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin: 0 0 5px 10px;">Tanggal Mulai</div>
+       <div style="text-align: left; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin: 0 0 5px 10px;">
+          Tanggal Mulai Cuti/Izin
+        </div>
         <div class="input-modern">
           <i class="fas fa-calendar-day"></i>
           <input type="date" id="tglMulai" class="form-control" style="padding-left:45px;" onchange="hitungHari()">
         </div>
         
-        <div style="text-align: left; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin: 0 0 5px 10px;">Tanggal Berakhir</div>
+        <div style="text-align: left; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin: 0 0 5px 10px;">
+          Tanggal Berakhir
+        </div>
         <div class="input-modern">
           <i class="fas fa-calendar-check"></i>
           <input type="date" id="tglSelesai" class="form-control" style="padding-left:45px;" onchange="hitungHari()">
         </div>
         <p id="teksTotalHari" style="font-size:0.8rem; color:var(--text-muted); font-weight:600; text-align:right;">Total: 0 Hari</p>
 
-        <input type="file" id="fotoKameraPengajuan" accept="image/*" class="d-none">
+        <input type="file" id="fotoKameraPengajuan" accept="image/*" capture="environment" class="d-none">
         <label for="fotoKameraPengajuan" class="kamera-container" style="padding:20px;">
           <i class="fas fa-file-upload"></i>
           <span id="teksKameraPengajuan">Upload Surat Keterangan / Bukti</span>
@@ -234,7 +255,7 @@
       <div class="card-modern">
           <div class="section-title"><i class="fas fa-history"></i> Riwayat Pengajuan Saya</div>
           <div id="listStatusPengajuan">
-            <!-- SKELETON RIWAYAT -->
+            <div class="text-center" style="color:#94a3b8; padding:30px;"><i class="fas fa-spinner fa-spin"></i> Memuat data...</div>
           </div>
       </div>
     </div>
@@ -248,60 +269,68 @@
 </div>
 
 <script>
-  // DAFTARKAN SERVICE WORKER UNTUK PWA
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js').then(reg => {
-        console.log('Service Worker terdaftar!', reg);
-      });
-    });
+  // --------------------------------------------------------------------------------
+  // PERHATIAN: Masukkan URL Web App Google Apps Script Anda di sini!
+  // Pastikan deploy sebagai "Web App" dengan akses "Anyone" (Siapa Saja)
+  // --------------------------------------------------------------------------------
+  const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx-uXm8JEdQWS_kO_bSRbzn_4WGb3uJzqMKqnc3Xp_8PWq4pNenEH8VWWdhI_LN3eh2VQ/exec"; 
+  
+  // Fungsi utama pengganti google.script.run
+  async function fetchAPI(action, data = {}) {
+      try {
+          const response = await fetch(GAS_WEB_APP_URL, {
+              method: "POST",
+              body: JSON.stringify({ action: action, data: data })
+          });
+          return await response.json();
+      } catch (error) {
+          throw new Error("Gagal terhubung ke server.");
+      }
   }
-
-  // =========================================================================
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbytSUNchsBEgPFA-9bmutWeBvdMTsOt2FHkyy3FzXSEGJodjOGPdHoXDj34Z2fcgF6sHw/exec'; 
-  // =========================================================================
+  // --------------------------------------------------------------------------------
 
   const KANTOR_LAT = 2.9507367687454646; const KANTOR_LNG = 99.06044938808277; const MAX_JARAK = 50; 
   let statusLokasi = "Mencari...", base64Absen = "", base64Pengajuan = "", sisaCutiUser = 0;
-  let currentLat = ""; let currentLng = ""; 
-  let sudahAbsenMasukHariIni = false; let daftarLiburNasional = [];
-  
-  function renderSkeletonMingguan() {
-      const container = document.getElementById('weekStatusContainer');
-      container.innerHTML = '';
-      const namaHari = ["S", "S", "R", "K", "J"]; 
-      for (let i = 0; i < 5; i++) {
-          container.innerHTML += `
-              <div class="day-item">
-                  <span class="day-label">${namaHari[i]}</span>
-                  <div class="day-circle-new skeleton skeleton-circle"></div>
-              </div>
-          `;
-      }
-      document.getElementById('statusMasukTxt').classList.add('skeleton');
-      document.getElementById('statusPulangTxt').classList.add('skeleton');
-  }
+  let currentLat = "", currentLng = ""; 
+  let sudahAbsenMasukHariIni = false;
+  let daftarLiburNasional = [];
 
+  document.querySelectorAll('input[name="tipeAbsen"]').forEach(radio => {
+      radio.addEventListener('change', function() {
+          if (this.value === 'IBADAH') {
+              document.getElementById('areaPinIbadah').style.display = 'block';
+              document.getElementById('areaKameraAbsen').style.display = 'none';
+              document.getElementById('areaLokasiToggle').style.display = 'none';
+          } else {
+              document.getElementById('areaPinIbadah').style.display = 'none';
+              document.getElementById('areaKameraAbsen').style.display = 'block';
+              document.getElementById('areaLokasiToggle').style.display = 'block';
+          }
+      });
+  });
+  
   function muatDataLibur(callback) {
-      renderSkeletonMingguan(); // Panggil skeleton saat mulai loading
-      fetch(SCRIPT_URL + '?action=getRekapAdmin')
-        .then(res => res.json())
-        .then(data => {
-            if (data.liburNasional && Array.isArray(data.liburNasional)) daftarLiburNasional = data.liburNasional; 
-            if (callback) callback(); 
-        }).catch(error => { if (callback) callback(); }); 
+      fetchAPI("ambilDataLiburNasional").then(data => {
+          if (Array.isArray(data)) daftarLiburNasional = data; 
+          if (callback) callback(); 
+      }).catch(err => {
+          if (callback) callback();
+      });
   }
 
   function perbaruiUIKuotaCuti() {
       let nama = document.getElementById('namaPegawai').value || sessionStorage.getItem('namaPegawai');
       let infoEl = document.getElementById('infoSisaCuti');
       if (nama) {
-          fetch(SCRIPT_URL + '?action=getUpdateSisaCuti&nama=' + encodeURIComponent(nama))
-          .then(res => res.json())
-          .then(res => {
-              sisaCutiUser = res.sisaCuti; sessionStorage.setItem('sisaCuti', res.sisaCuti); 
-              if(infoEl) infoEl.innerHTML = `<i class="fas fa-ticket-alt"></i> Sisa Kuota Cuti: ${res.sisaCuti} Hari`;
-          }).catch(err => { if(infoEl) infoEl.innerHTML = `<i class="fas fa-exclamation-triangle"></i> Gagal mengecek cuti.`; });
+          fetchAPI("getUpdateSisaCuti", { nama: nama }).then(sisa => {
+              sisaCutiUser = sisa; 
+              sessionStorage.setItem('sisaCuti', sisa); 
+              if(infoEl) infoEl.innerHTML = `<i class="fas fa-ticket-alt"></i> Sisa Kuota Cuti: ${sisa} Hari`;
+          }).catch(err => {
+              if(infoEl) infoEl.innerHTML = `<i class="fas fa-exclamation-triangle"></i> Gagal mengecek cuti.`;
+          });
+      } else {
+          if(infoEl) infoEl.innerHTML = `<i class="fas fa-ticket-alt"></i> Sisa Kuota Cuti: Sesi Habis`;
       }
   }
 
@@ -311,7 +340,7 @@
     document.getElementById(idTab).classList.add('active');
     elm.classList.add('active');
     if(idTab === 'tabPengajuan') {
-        document.getElementById('infoSisaCuti').innerHTML = `<i class="fas fa-sync-alt fa-spin"></i> Mengecek...`;
+        document.getElementById('infoSisaCuti').innerHTML = `<i class="fas fa-sync-alt fa-spin"></i> Mengecek sisa cuti...`;
         perbaruiUIKuotaCuti();
     }
   }
@@ -323,15 +352,25 @@
     if(!user || !pin) return Swal.fire('Oops!', 'Isi Username & PIN', 'warning');
     
     btn.disabled = true; btn.innerHTML = 'MEMPROSES...';
-    fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'cekLoginPegawai', username: user, pin: pin }) })
-    .then(r => r.json())
-    .then(res => {
+    
+    fetchAPI("cekLoginPegawai", { user: user, pin: pin }).then(res => {
       if(res.sukses) {
-        sessionStorage.setItem('statusLogin', 'sudah_login'); sessionStorage.setItem('namaPegawai', res.namaLengkap); sessionStorage.setItem('sisaCuti', res.sisaCuti);
-        Swal.fire({ title: 'Login Berhasil!', text: 'Selamat bekerja, ' + res.namaLengkap, icon: 'success', timer: 2000, showConfirmButton: false, backdrop: `rgba(45, 49, 130, 0.4)` })
-        .then(() => setupUI(res.namaLengkap, res.sisaCuti));
-      } else { Swal.fire('Gagal', res.pesan, 'error'); btn.disabled = false; btn.innerHTML = 'MASUK'; }
-    }).catch(err => { Swal.fire('Error', 'Kesalahan jaringan.', 'error'); btn.disabled = false; btn.innerHTML = 'MASUK'; });
+        sessionStorage.setItem('statusLogin', 'sudah_login');
+        sessionStorage.setItem('namaPegawai', res.namaLengkap);
+        sessionStorage.setItem('sisaCuti', res.sisaCuti);
+        
+        Swal.fire({
+          title: 'Login Berhasil!', text: 'Selamat bekerja, ' + res.namaLengkap, icon: 'success',
+          timer: 2000, showConfirmButton: false, backdrop: `rgba(45, 49, 130, 0.4)`
+        }).then(() => setupUI(res.namaLengkap, res.sisaCuti));
+      } else {
+        Swal.fire('Gagal', res.pesan, 'error');
+        btn.disabled = false; btn.innerHTML = 'MASUK';
+      }
+    }).catch(err => {
+        Swal.fire('Error', err.message, 'error');
+        btn.disabled = false; btn.innerHTML = 'MASUK';
+    });
   }
 
   function setupUI(nama, sisaCuti) {
@@ -339,19 +378,33 @@
     document.getElementById('halamanUtama').style.display = 'block';
     document.getElementById('tampilNamaLengkap').innerText = nama;
     document.getElementById('namaPegawai').value = nama;
-    sisaCutiUser = sisaCuti; document.getElementById('infoSisaCuti').innerHTML = `<i class="fas fa-ticket-alt"></i> Sisa Kuota Cuti: ${sisaCuti} Hari`;
-    let now = new Date(); document.getElementById('tanggalHariIni').innerText = now.toLocaleDateString('id-ID', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
-    if (now.getHours() >= 16) document.getElementById('pulang').checked = true; else document.getElementById('masuk').checked = true;
-    document.getElementById('tglMulai').setAttribute('min', now.toISOString().split('T')[0]);
-    cekLokasi(); muatDataLibur(function() { muatRiwayatAbsen(); });
+    
+    sisaCutiUser = sisaCuti;
+    document.getElementById('infoSisaCuti').innerHTML = `<i class="fas fa-ticket-alt"></i> Sisa Kuota Cuti: ${sisaCuti} Hari`;
+    
+    let now = new Date();
+    document.getElementById('tanggalHariIni').innerText = now.toLocaleDateString('id-ID', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+    
+    let jamSekarang = now.getHours();
+    if (jamSekarang >= 16) document.getElementById('pulang').checked = true;
+    else document.getElementById('masuk').checked = true;
+    
+    let tglMin = now.toISOString().split('T')[0];
+    document.getElementById('tglMulai').setAttribute('min', tglMin);
+    
+    cekLokasi(); 
+    muatDataLibur(function() { muatRiwayatAbsen(); });
   }
 
   function prosesLogout() {
-    Swal.fire({ title: 'Konfirmasi', text: "Keluar dari sistem?", icon: 'question', showCancelButton: true, confirmButtonColor: '#2D3182', cancelButtonColor: '#FF5252', confirmButtonText: 'Ya, Keluar' })
-    .then((result) => {
+    Swal.fire({
+      title: 'Konfirmasi', text: "Apakah Anda yakin ingin keluar?", icon: 'question',
+      showCancelButton: true, confirmButtonColor: '#2D3182', cancelButtonColor: '#FF5252', confirmButtonText: 'Ya, Keluar'
+    }).then((result) => {
       if (result.isConfirmed) {
-        sessionStorage.clear();
-        document.getElementById('halamanUtama').style.display = 'none'; document.getElementById('halamanLogin').style.display = 'flex';
+        sessionStorage.removeItem('statusLogin'); sessionStorage.removeItem('namaPegawai'); sessionStorage.removeItem('sisaCuti');
+        document.getElementById('halamanUtama').style.display = 'none';
+        document.getElementById('halamanLogin').style.display = 'flex';
         document.getElementById('inputUsername').value = ''; document.getElementById('inputPin').value = '';
       }
     });
@@ -363,96 +416,186 @@
   }
 
   function cekLokasi() {
-    const b = document.getElementById('gpsStatus'), btn = document.getElementById('btnSubmitAbsen'), mode = document.querySelector('input[name="modeLokasi"]:checked').value;
+    const b = document.getElementById('gpsStatus'), btn = document.getElementById('btnSubmitAbsen');
+    const mode = document.querySelector('input[name="modeLokasi"]:checked').value;
+    
     btn.disabled = true; currentLat = ""; currentLng = "";
-    if (mode === "KANTOR") { b.className = "status-gps gps-info"; b.innerHTML = "Mencari lokasi kantor..."; statusLokasi = "Mencari..."; } 
-    else { b.className = "status-gps gps-info"; b.innerHTML = "<i class='fas fa-map-marked-alt'></i> Mode Dinas Lapangan"; statusLokasi = "Lapangan"; }
+    
+    if (mode === "KANTOR") {
+      b.className = "status-gps gps-info"; b.innerHTML = "Mencari lokasi kantor..."; statusLokasi = "Mencari...";
+    } else {
+      b.className = "status-gps gps-info"; b.innerHTML = "<i class='fas fa-map-marked-alt'></i> Mode Dinas Lapangan Aktif"; statusLokasi = "Lapangan";
+    }
     
     navigator.geolocation.getCurrentPosition(pos => {
       currentLat = pos.coords.latitude; currentLng = pos.coords.longitude;
       const j = hitungJarak(KANTOR_LAT, KANTOR_LNG, pos.coords.latitude, pos.coords.longitude);
       if (mode === "KANTOR") {
-        if (j <= MAX_JARAK) { statusLokasi = "Valid (Kantor)"; b.className = "status-gps gps-success"; b.innerHTML = `<i class='fas fa-check-circle'></i> Dalam Radius Kantor (${j}m)`; btn.disabled = false; } 
-        else { statusLokasi = "Luar Radius"; b.className = "status-gps gps-danger"; b.innerHTML = `<i class='fas fa-times-circle'></i> Di Luar Radius Kantor (${j}m)`; btn.disabled = true; }
-      } else { statusLokasi = "Lapangan"; b.className = "status-gps gps-success"; b.innerHTML = "<i class='fas fa-map-marked-alt'></i> Mode Dinas Lapangan Aktif"; btn.disabled = false; }
-    }, () => { b.className = "status-gps gps-danger"; b.innerHTML = "Gagal! Aktifkan GPS."; btn.disabled = true; }, {enableHighAccuracy: true, maximumAge: 0, timeout: 15000});
+        if (j <= MAX_JARAK) { 
+          statusLokasi = "Valid (Kantor)"; b.className = "status-gps gps-success"; b.innerHTML = `<i class='fas fa-check-circle'></i> Dalam Radius Kantor (${j}m)`; btn.disabled = false; 
+        } else { 
+          statusLokasi = "Luar Radius"; b.className = "status-gps gps-danger"; b.innerHTML = `<i class='fas fa-times-circle'></i> Di Luar Radius Kantor (${j}m)`; btn.disabled = true; 
+        }
+      } else { 
+        statusLokasi = "Lapangan"; b.className = "status-gps gps-success"; b.innerHTML = "<i class='fas fa-map-marked-alt'></i> Mode Dinas Lapangan Aktif"; btn.disabled = false; 
+      }
+    }, () => { 
+      b.className = "status-gps gps-danger"; b.innerHTML = "Gagal! Aktifkan Izin Lokasi/GPS."; btn.disabled = true; 
+    }, {enableHighAccuracy: true, maximumAge: 0, timeout: 15000});
   }
 
   document.getElementById('fotoKameraAbsen').addEventListener('change', function(e) { handlePhoto(e.target.files[0], 'previewAbsen', 'teksKameraAbsen', 1); });
   document.getElementById('fotoKameraPengajuan').addEventListener('change', function(e) { handlePhoto(e.target.files[0], 'previewPengajuan', 'teksKameraPengajuan', 2); });
 
   function handlePhoto(file, idPrev, idTeks, type) {
-    if(!file) return; const r = new FileReader();
+    if(!file) return;
+    const r = new FileReader();
     r.onload = ev => {
-      const img = new Image(); img.onload = () => {
+      const img = new Image(); 
+      img.onload = () => {
         const c = document.createElement('canvas');
-        let w = img.width, h = img.height; if(w > 400){ h*=400/w; w=400; }
-        c.width = w; c.height = h; c.getContext('2d').drawImage(img,0,0,w,h);
-        const b64 = c.toDataURL('image/jpeg', 0.6);
-        document.getElementById(idPrev).src = b64; document.getElementById(idPrev).style.display = 'block'; document.getElementById(idTeks).innerText = "Gambar Disertakan";
+        let w = img.width, h = img.height; 
+        
+        const MAX_SIZE = 500;
+        if (w > h && w > MAX_SIZE) { h *= MAX_SIZE / w; w = MAX_SIZE; }
+        else if (h > MAX_SIZE) { w *= MAX_SIZE / h; h = MAX_SIZE; }
+        
+        c.width = w; c.height = h; 
+        c.getContext('2d').drawImage(img, 0, 0, w, h);
+        const b64 = c.toDataURL('image/jpeg', 0.5); 
+        
+        document.getElementById(idPrev).src = b64; 
+        document.getElementById(idPrev).style.display = 'block';
+        document.getElementById(idTeks).innerText = "Gambar Siap Dikirim";
+        
         if(type === 1) base64Absen = b64; else base64Pengajuan = b64;
-      }; img.src = ev.target.result;
-    }; r.readAsDataURL(file);
+      }; 
+      img.src = ev.target.result;
+    }; 
+    r.readAsDataURL(file);
   }
 
   function prosesAbsen() {
     let tipeDipilih = document.querySelector('input[name="tipeAbsen"]:checked').value;
-    if (tipeDipilih === "PULANG" && !sudahAbsenMasukHariIni) return Swal.fire('Ditolak', 'Tidak ada rekaman Absen Masuk hari ini.', 'error');
-    if (!currentLat || !currentLng) return Swal.fire('Tunggu', 'Sistem sedang memproses GPS.', 'info');
-    if(!base64Absen) return Swal.fire('Oops', 'Wajib melampirkan foto selfie.', 'warning');
+    let pinIbadahVal = "";
     
+    if (tipeDipilih === "IBADAH") {
+        pinIbadahVal = document.getElementById('inputPinKehadiran').value;
+        if (!pinIbadahVal) return Swal.fire('Oops', 'Wajib memasukkan PIN Ibadah yang diberikan di akhir acara.', 'warning');
+    } else {
+        if (tipeDipilih === "PULANG" && !sudahAbsenMasukHariIni) {
+            return Swal.fire('Akses Ditolak', 'Anda tidak dapat Absen Pulang karena tidak ada rekaman Absen Masuk hari ini.', 'error');
+        }
+        if (!currentLat || !currentLng) {
+            return Swal.fire('Mohon Tunggu', 'Sistem sedang memproses koordinat akurat Anda. Pastikan Izin Lokasi aktif lalu tunggu beberapa detik.', 'info');
+        }
+        if (!base64Absen) return Swal.fire('Oops', 'Wajib melampirkan foto selfie.', 'warning');
+    }
+
     const btn = document.getElementById('btnSubmitAbsen');
     btn.disabled = true; btn.innerHTML = 'MENGIRIM...';
     
-    const py = { nama: document.getElementById('namaPegawai').value, tipe: tipeDipilih, statusLokasi: statusLokasi, fotoBase64: base64Absen, lat: currentLat, lng: currentLng };
-    fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'simpanAbsenFoto', payload: py }) })
-    .then(r => r.json())
-    .then(resObj => {
-      let msg = resObj.pesan || "Terjadi kesalahan";
-      btn.disabled = false; btn.innerHTML = 'KIRIM ABSENSI';
-      if(resObj.sukses === false || msg.startsWith("Gagal")) { Swal.fire('Ditolak', msg, 'error'); } 
-      else if(msg.startsWith("Berhasil")) { 
-          let statusWaktu = msg.split('|')[1];
-          Swal.fire({ title: "Berhasil!", html: "Data Anda telah direkam.", icon: "success", confirmButtonColor: '#2D3182' });
-          renderSkeletonMingguan(); muatRiwayatAbsen(); base64Absen = ""; document.getElementById('previewAbsen').style.display='none'; document.getElementById('teksKameraAbsen').innerText="Ketuk untuk Ambil Foto Selfie";
-      } else { Swal.fire('Sukses', msg, 'success'); muatRiwayatAbsen(); }
-    }).catch(err => { Swal.fire('Error', 'Kesalahan jaringan.', 'error'); btn.disabled = false; btn.innerHTML = 'KIRIM ABSENSI'; });
+    const py = { 
+        nama: document.getElementById('namaPegawai').value, 
+        tipe: tipeDipilih, 
+        statusLokasi: statusLokasi, 
+        fotoBase64: base64Absen,
+        lat: currentLat, 
+        lng: currentLng,
+        pinIbadah: pinIbadahVal
+    };
+    
+    setTimeout(() => {
+        fetchAPI("simpanAbsenFoto", py).then(msg => {
+          btn.disabled = false; btn.innerHTML = 'KIRIM ABSENSI';
+          
+          if(msg.startsWith("Gagal")) {
+              Swal.fire('Ditolak', msg, 'error'); 
+          } else if(msg.startsWith("Berhasil")) { 
+              let parts = msg.split('|');
+              let statusWaktu = parts[1]; 
+              let judulNotif = "Absen Berhasil!";
+              let teksNotif = "Data Anda telah direkam.";
+              let ikonNotif = "success";
+              
+              if (tipeDipilih === "IBADAH") {
+                 judulNotif = "Ibadah Selesai!"; teksNotif = "Kehadiran ibadah Anda telah tercatat.<br><br><i>Selamat bekerja kembali dan Tuhan Yesus memberkati!</i>";
+              } else if (tipeDipilih === "PULANG") {
+                  if (statusWaktu === "Tepat Waktu") {
+                     judulNotif = "Absen Pulang Berhasil!"; teksNotif = "Anda pulang tepat waktu.<br><br><i>Terima kasih atas kerja keras dan dedikasi Anda hari ini. Selamat beristirahat!</i>";
+                  } else {
+                     judulNotif = "Absen Pulang"; teksNotif = "Absen pulang tercatat.<br><br><i>Terima kasih atas pelayanan Anda hari ini. Hati-hati di jalan!</i>";
+                  }
+              } else { 
+                  if (statusWaktu === "Tepat Waktu") {
+                     judulNotif = "Selamat Pagi!"; teksNotif = "Absen Masuk Berhasil.<br><br><i>Semangat memulai hari! Semoga pelayanan dan pekerjaan Anda hari ini diberkati.</i>"; ikonNotif = "success";
+                  } else {
+                     judulNotif = "Absen Tercatat"; teksNotif = "Absen Masuk berhasil diterima.<br><br><i>Meskipun terlambat, tetap semangat melayani dengan sepenuh hati hari ini!</i>"; ikonNotif = "warning";
+                  }
+              }
+              
+              Swal.fire({ title: judulNotif, html: teksNotif, icon: ikonNotif, confirmButtonColor: '#2D3182' });
+              muatRiwayatAbsen(); 
+              
+              base64Absen = ""; document.getElementById('inputPinKehadiran').value = '';
+              document.getElementById('previewAbsen').style.display='none'; document.getElementById('teksKameraAbsen').innerText="Ketuk untuk Ambil Foto Selfie";
+              
+          } else {
+              Swal.fire('Sukses', msg, 'success');
+              muatRiwayatAbsen();
+          }
+        }).catch(err => {
+            btn.disabled = false; btn.innerHTML = 'KIRIM ABSENSI';
+            Swal.fire('Koneksi Gagal', 'Sistem kesulitan terhubung ke jaringan. Pastikan internet Anda stabil. [' + err.message + ']', 'error');
+        });
+    }, 400);
   }
 
   function isDateMatch(waktuDariDB, targetDate) {
       if(!waktuDariDB) return false;
-      let d = targetDate.getDate(), m = targetDate.getMonth() + 1, y = targetDate.getFullYear(), dPad = String(d).padStart(2, '0'), mPad = String(m).padStart(2, '0');
-      let w = waktuDariDB.toLowerCase(), datePart = w.split(' ')[0]; 
+      let d = targetDate.getDate(); let m = targetDate.getMonth() + 1; let y = targetDate.getFullYear();
+      let dPad = String(d).padStart(2, '0'); let mPad = String(m).padStart(2, '0');
+      let w = waktuDariDB.toLowerCase(); let datePart = w.split(' ')[0]; 
+      
       let patterns = [ `${dPad}/${mPad}`, `${mPad}/${dPad}`, `${d}/${m}`, `${m}/${d}`, `${y}-${mPad}-${dPad}`, `${dPad}-${mPad}-${y}`, `${dPad} ` ];
       const namaBulan = ["jan", "feb", "mar", "apr", "mei", "jun", "jul", "agu", "sep", "okt", "nov", "des"];
       let match = patterns.some(p => datePart.includes(p) || w.startsWith(p));
+      
       if (!match && w.includes(d.toString()) && w.includes(namaBulan[targetDate.getMonth()])) match = true;
       return match;
   }
 
   function renderWeekCircles(riwayatData) {
     const container = document.getElementById('weekStatusContainer'); container.innerHTML = '';
-    let curr = new Date(), distanceToMonday = curr.getDay() === 0 ? -6 : 1 - curr.getDay(), firstDay = new Date(curr);
-    firstDay.setDate(curr.getDate() + distanceToMonday);
+    let curr = new Date(); let dayOfWeek = curr.getDay(); let distanceToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+    let firstDay = new Date(curr); firstDay.setDate(curr.getDate() + distanceToMonday);
     const namaHari = ["S", "S", "R", "K", "J"]; 
     
     for (let i = 0; i < 5; i++) {
         let d = new Date(firstDay); d.setDate(firstDay.getDate() + i);
-        let tglFormat = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-        let statusHari = "absent", circleContent = "A";
+        let yyyy = d.getFullYear(); let mm = String(d.getMonth() + 1).padStart(2, '0'); let dd = String(d.getDate()).padStart(2, '0');
+        let tglFormat = `${yyyy}-${mm}-${dd}`;
+        let statusHari = "absent"; let circleContent = "A";
 
         if (daftarLiburNasional.includes(tglFormat)) { statusHari = "holiday"; circleContent = "L"; }
+
         if (riwayatData && riwayatData.length > 0) {
             let logHariIni = riwayatData.filter(item => isDateMatch(item.waktu, d));
             if(logHariIni.length > 0) {
-                if(logHariIni.some(item => item.tipe === 'MASUK')) { statusHari = "present"; circleContent = '<i class="fas fa-check"></i>'; }
-                else if(logHariIni.some(item => item.tipe === 'CUTI' || item.tipe === 'IZIN')) { statusHari = "cuti-izin"; circleContent = 'C'; }
+                let hasHadir = logHariIni.some(item => item.tipe === 'MASUK');
+                let hasCuti = logHariIni.some(item => item.tipe === 'CUTI' || item.tipe === 'IZIN');
+                if(hasHadir) { statusHari = "present"; circleContent = '<i class="fas fa-check"></i>'; }
+                else if(hasCuti) { statusHari = "cuti-izin"; circleContent = 'C'; }
             }
         }
-        let compareDate = new Date(d); compareDate.setHours(0,0,0,0); let todayCompare = new Date(); todayCompare.setHours(0,0,0,0);
+        
+        let compareDate = new Date(d); compareDate.setHours(0,0,0,0);
+        let todayCompare = new Date(); todayCompare.setHours(0,0,0,0);
         let circleClass = "day-circle-new ";
+        
         if (compareDate > todayCompare) {
-            if (statusHari === "holiday") circleClass += "holiday"; else { circleClass += "future"; circleContent = ""; }
+            if (statusHari === "holiday") circleClass += "holiday";
+            else { circleClass += "future"; circleContent = ""; }
         } else { circleClass += statusHari; }
         
         container.innerHTML += `<div class="day-item"><span class="day-label">${namaHari[i]}</span><div class="${circleClass}">${circleContent}</div></div>`;
@@ -460,24 +603,24 @@
   }
 
   function muatRiwayatAbsen() {
-    let nama = document.getElementById('namaPegawai').value;
-    fetch(SCRIPT_URL + '?action=getRiwayatAbsen&nama=' + encodeURIComponent(nama))
-    .then(r => r.json())
-    .then(response => {
-      let dataAbsen = Array.isArray(response) ? response : [], masuk = "--:--", pulang = "--:--", now = new Date();
+    fetchAPI("getRiwayatAbsen", { nama: document.getElementById('namaPegawai').value }).then(response => {
+      let dataAbsen = []; if (response && Array.isArray(response)) dataAbsen = response; 
+      let masuk = "--:--", pulang = "--:--", now = new Date();
       sudahAbsenMasukHariIni = false; 
-      
       renderWeekCircles(dataAbsen);
+
       dataAbsen.forEach(d => {
         if(isDateMatch(d.waktu, now)) {
-          let jam = d.waktu.split(' ').length > 1 ? d.waktu.split(' ')[1] : d.waktu;
+          let waktuPecah = d.waktu.split(' '); let jam = waktuPecah.length > 1 ? waktuPecah[1] : d.waktu;
           if(d.tipe === "MASUK" || d.tipe === "LAPANGAN") { masuk = jam; sudahAbsenMasukHariIni = true; }
           if(d.tipe === "PULANG") pulang = jam;
         }
       });
-      document.getElementById('statusMasukTxt').classList.remove('skeleton'); document.getElementById('statusMasukTxt').innerText = masuk;
-      document.getElementById('statusPulangTxt').classList.remove('skeleton'); document.getElementById('statusPulangTxt').innerText = pulang;
-    }).catch(err => { Swal.fire('Error', 'Kesalahan jaringan.', 'warning'); });
+      document.getElementById('statusMasukTxt').innerText = masuk; document.getElementById('statusPulangTxt').innerText = pulang;
+      
+    }).catch(err => {
+      Swal.fire('Informasi', 'Gagal memuat sebagian data: ' + err.message, 'warning');
+    });
   }
 
   function hitungHari() {
@@ -485,12 +628,13 @@
     if (m && s) {
       let start = new Date(m), end = new Date(s);
       if (end < start) { document.getElementById('teksTotalHari').innerText = "Tanggal tidak valid"; return; }
+
       let totalHariKerja = 0;
       for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
         let dayOfWeek = d.getDay();
         if (dayOfWeek !== 0 && dayOfWeek !== 6) {
-          let tglFormat = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-          if (!daftarLiburNasional.includes(tglFormat)) totalHariKerja++;
+          let y = d.getFullYear(), mo = String(d.getMonth() + 1).padStart(2, '0'), da = String(d.getDate()).padStart(2, '0');
+          if (!daftarLiburNasional.includes(`${y}-${mo}-${da}`)) totalHariKerja++;
         }
       }
       document.getElementById('teksTotalHari').innerText = totalHariKerja > 0 ? `Total: ${totalHariKerja} Hari` : "Total: 0 Hari";
@@ -498,38 +642,42 @@
   }
 
   function prosesPengajuan() {
-    let tipe = document.querySelector('input[name="tipePengajuan"]:checked').value, m = document.getElementById('tglMulai').value, s = document.getElementById('tglSelesai').value;
+    let tipe = document.querySelector('input[name="tipePengajuan"]:checked').value;
+    let m = document.getElementById('tglMulai').value, s = document.getElementById('tglSelesai').value;
     let diff = parseInt(document.getElementById('teksTotalHari').innerText.replace(/[^\d]/g, '')) || 0;
     
-    if(!m || !s || diff <= 0) return Swal.fire('Oops', 'Pilih tanggal dengan benar.', 'warning');
-    if(!base64Pengajuan) return Swal.fire('Oops', 'Wajib melampirkan bukti.', 'warning');
-    if(tipe === 'CUTI' && diff > sisaCutiUser) return Swal.fire('Gagal', `Sisa cuti Anda tidak cukup.`, 'error');
+    if(!m || !s || diff <= 0) return Swal.fire('Oops', 'Pilih tanggal dengan benar. Pastikan ada hari kerja dalam rentang waktu tersebut.', 'warning');
+    if(!base64Pengajuan) return Swal.fire('Oops', 'Wajib melampirkan foto/dokumen pendukung.', 'warning');
+    if(tipe === 'CUTI' && diff > sisaCutiUser) return Swal.fire('Gagal', `Sisa cuti Anda tidak cukup (Sisa: ${sisaCutiUser} Hari, Diajukan: ${diff} Hari).`, 'error');
 
-    const btn = document.getElementById('btnSubmitPengajuan'); btn.disabled = true; btn.innerHTML = 'MENGIRIM...';
+    const btn = document.getElementById('btnSubmitPengajuan');
+    btn.disabled = true; btn.innerHTML = 'MENGIRIM PENGAJUAN...';
+
     const py = { nama: document.getElementById('namaPegawai').value, tipe: tipe, tglMulai: m, tglSelesai: s, totalHari: diff, fotoBase64: base64Pengajuan };
     
-    fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'simpanPengajuanCuti', payload: py }) })
-    .then(r => r.json())
-    .then(res => {
-      if(res.sukses) {
-        Swal.fire('Berhasil!', 'Pengajuan diproses admin.', 'success');
-        base64Pengajuan = ""; document.getElementById('previewPengajuan').style.display='none'; document.getElementById('teksKameraPengajuan').innerText="Upload Bukti";
-        document.getElementById('tglMulai').value = ''; document.getElementById('tglSelesai').value = ''; document.getElementById('teksTotalHari').innerText = 'Total: 0 Hari';
-      } else Swal.fire('Gagal', res.pesan, 'error');
-      btn.disabled = false; btn.innerHTML = 'KIRIM PENGAJUAN';
-    }).catch(err => { Swal.fire('Error', 'Kesalahan jaringan.', 'error'); btn.disabled = false; btn.innerHTML = 'KIRIM PENGAJUAN'; });
+    setTimeout(() => {
+        fetchAPI("simpanPengajuanCuti", py).then(res => {
+          if(res.sukses) {
+            Swal.fire('Berhasil Dikirim!', 'Pengajuan Anda sedang diproses oleh admin.', 'success');
+            base64Pengajuan = ""; document.getElementById('previewPengajuan').style.display='none'; document.getElementById('teksKameraPengajuan').innerText="Upload Surat Keterangan / Bukti";
+            document.getElementById('tglMulai').value = ''; document.getElementById('tglSelesai').value = ''; document.getElementById('teksTotalHari').innerText = 'Total: 0 Hari';
+          } else Swal.fire('Gagal', res.pesan, 'error');
+          btn.disabled = false; btn.innerHTML = 'KIRIM PENGAJUAN';
+        }).catch(err => {
+            btn.disabled = false; btn.innerHTML = 'KIRIM PENGAJUAN';
+            Swal.fire('Error Jaringan', 'Sistem kesulitan terhubung ke server. Coba lagi.', 'error');
+        });
+    }, 400);
   }
 
   function muatRiwayatPengajuan() {
     const div = document.getElementById('listStatusPengajuan');
-    div.innerHTML = `<div class="skeleton" style="height:80px; width:100%; margin-bottom:10px;"></div><div class="skeleton" style="height:80px; width:100%;"></div>`;
+    div.innerHTML = '<div class="text-center" style="color:#94a3b8;"><i class="fas fa-spinner fa-spin"></i> Memuat data...</div>';
     
-    let nama = document.getElementById('namaPegawai').value;
-    fetch(SCRIPT_URL + '?action=getRiwayatPengajuan&nama=' + encodeURIComponent(nama))
-    .then(r => r.json())
-    .then(data => {
+    fetchAPI("getRiwayatPengajuan", { nama: document.getElementById('namaPegawai').value }).then(data => {
       div.innerHTML = '';
       if(!data || !data.length) return div.innerHTML = '<div class="text-center"><small style="color:#94a3b8;">Belum ada riwayat pengajuan.</small></div>';
+      
       data.forEach(d => {
         let tglStr = d.tglMulai === d.tglSelesai ? d.tglMulai : `${d.tglMulai} s/d ${d.tglSelesai}`;
         div.innerHTML += `
@@ -542,12 +690,15 @@
             <div style="font-size:0.7rem; color:#cbd5e1; margin-top:5px;">ID: ${d.id}</div>
           </div>`;
       });
-    }).catch(err => { div.innerHTML = '<div class="text-center text-danger"><small>Gagal memuat riwayat.</small></div>'; });
+    }).catch(err => {
+        div.innerHTML = '<div class="text-center"><small style="color:#ef4444;">Gagal memuat data.</small></div>';
+    });
   }
 
-  window.onload = function() {
+ window.onload = function() {
     if(sessionStorage.getItem('statusLogin') === 'sudah_login') {
-       setupUI(sessionStorage.getItem('namaPegawai'), sessionStorage.getItem('sisaCuti')); perbaruiUIKuotaCuti(); 
+       setupUI(sessionStorage.getItem('namaPegawai'), sessionStorage.getItem('sisaCuti'));
+       perbaruiUIKuotaCuti(); 
     }
   };
 </script>

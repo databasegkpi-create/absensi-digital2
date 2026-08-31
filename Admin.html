@@ -167,32 +167,63 @@
             .login-card { padding: 36px 24px 28px; }
         }
 
-        @media print {
-            @page { size: A4 portrait; margin: 15mm !important; }
+       @media print {
+            /* 1. UBAH KE LANDSCAPE AGAR TABEL LEBAR & RAPI */
+            @page { size: A4 landscape; margin: 12mm !important; }
+            
             body { background: #fff !important; color: #000 !important; padding: 0 !important; }
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            
+            /* Sembunyikan elemen navigasi & tombol */
             .sidebar, .sidebar-overlay, .mobile-header, .header-actions, .search-box, .menu-toggle { display: none !important; }
-            .print-header-custom { display: flex !important; justify-content: space-between; font-size: 10px; border-bottom: 1px solid #ccc; padding-bottom: 8px; margin-bottom: 20px; font-weight: 700; color: #555; }
-            .print-footer-custom { display: block !important; position: fixed; bottom: 0; left: 0; right: 0; text-align: center; font-size: 10px; color: #777; padding-top: 8px; border-top: 1px solid #ccc; font-weight: 600; background: #fff !important; z-index: 9999; }
-            .main-content { margin-left: 0 !important; width: 100% !important; padding: 0 !important; display: block !important; }
+            
+            .print-header-custom { display: flex !important; justify-content: space-between; font-size: 11px; border-bottom: 2px solid #000; padding-bottom: 8px; margin-bottom: 20px; font-weight: 700; color: #000; }
+            
+            /* Perbaikan Footer agar tidak menimpa tabel */
+            .print-footer-custom { display: block !important; position: fixed; bottom: 0; left: 0; right: 0; text-align: center; font-size: 10px; color: #555; padding-top: 8px; border-top: 1px solid #ccc; font-weight: 600; background: #fff !important; z-index: 9999; }
+            
+            /* Memberi ruang di bagian bawah agar tabel tidak tertutup footer */
+            .main-content { margin-left: 0 !important; width: 100% !important; padding: 0 !important; display: block !important; padding-bottom: 30px !important; }
+            
             .top-header { display: block !important; text-align: center !important; margin-bottom: 20px !important; }
             .page-eyebrow { display: none !important; } 
-            .page-title h1 { font-size: 20px !important; color: #000 !important; margin: 0 0 5px 0 !important; }
+            .page-title h1 { font-size: 22px !important; color: #000 !important; margin: 0 0 5px 0 !important; }
             .page-title p { justify-content: center; font-size: 12px !important; margin: 0 !important; color: #555 !important; }
-            .kpi-grid { display: flex !important; justify-content: space-between !important; gap: 10px !important; margin-bottom: 15px !important; }
-            .kpi-card { flex: 1 !important; padding: 12px !important; margin: 0 !important; border: 1px solid #ddd !important; border-radius: 8px !important; }
-            .kpi-icon { width: 36px !important; height: 36px !important; font-size: 16px !important; }
-            .kpi-data h2 { font-size: 20px !important; }
-            .middle-grid { display: flex !important; gap: 15px !important; margin-bottom: 15px !important; align-items: flex-start !important; }
-            .middle-grid .card-container { flex: 1 !important; margin: 0 !important; padding: 15px !important; border: 1px solid #ddd !important; box-shadow: none !important; }
+            
+            /* Merapikan susunan kartu (Card) bagian atas */
+            .kpi-grid { display: flex !important; justify-content: space-between !important; gap: 15px !important; margin-bottom: 20px !important; }
+            .kpi-card { flex: 1 !important; padding: 12px !important; margin: 0 !important; border: 1px solid #000 !important; border-radius: 6px !important; box-shadow: none !important; }
+            .kpi-icon { width: 32px !important; height: 32px !important; font-size: 16px !important; }
+            .kpi-data h2 { font-size: 18px !important; margin-top: 4px !important; }
+            .kpi-data h4 { font-size: 10px !important; color: #333 !important; }
+            
+            .middle-grid { display: flex !important; gap: 15px !important; margin-bottom: 20px !important; align-items: flex-start !important; }
+            .middle-grid .card-container { flex: 1 !important; margin: 0 !important; padding: 12px !important; border: 1px solid #000 !important; box-shadow: none !important; }
+            
             .top-staff-list, .alert-list { max-height: none !important; overflow: hidden !important; }
-            .top-staff-item, .alert-item { padding: 6px 10px !important; margin-bottom: 4px !important; box-shadow: none !important; border-radius: 4px !important; page-break-inside: avoid !important; }
-            .card-container { padding: 15px !important; border: 1px solid #ddd !important; box-shadow: none !important; page-break-inside: auto !important; margin-bottom: 40px !important; }
+            .top-staff-item, .alert-item { padding: 4px 8px !important; margin-bottom: 4px !important; box-shadow: none !important; border-radius: 4px !important; page-break-inside: avoid !important; border: 1px solid #ccc !important; }
+            
+            /* PERBAIKAN TABEL REKAPITULASI */
+            .card-container { padding: 0 !important; border: none !important; box-shadow: none !important; page-break-inside: auto !important; margin-bottom: 20px !important; }
+            .table-controls .card-title { font-size: 14px !important; margin-bottom: 10px !important; color: #000 !important; border-bottom: 2px solid #000; padding-bottom: 4px; display: inline-block; }
+            
+            table { width: 100% !important; border-collapse: collapse !important; }
             thead { display: table-header-group !important; } 
             tr { page-break-inside: avoid !important; page-break-after: auto !important; } 
-            th { padding: 8px !important; background: #f7f9fc !important; border: 1px solid #ccc !important; font-size: 9px !important; }
-            td { padding: 8px !important; border: 1px solid #ccc !important; font-size: 10px !important; }
-            .progress-bar-bg { background: #eee !important; height: 4px !important; }
+            
+            /* Memaksa teks header agar lurus (nowrap) dan mengecilkan padding */
+            th { padding: 6px 4px !important; background: #e3e9f0 !important; border: 1px solid #000 !important; font-size: 10px !important; color: #000 !important; white-space: nowrap !important; text-align: center !important; }
+            td { padding: 6px 4px !important; border: 1px solid #000 !important; font-size: 11px !important; color: #000 !important; text-align: center !important; }
+            
+            /* Nama pegawai rata kiri & tidak terpotong */
+            th:first-child, td:first-child { text-align: left !important; white-space: nowrap !important; }
+            
+            /* Merapikan visual progress bar di PDF */
+            .progress-bar-bg { background: #ddd !important; height: 6px !important; border: 1px solid #999; }
+            .badge { border: 1px solid #000; }
+            
+            /* Sembunyikan ikon panah sorting saat dicetak */
+            th i { display: none !important; }
         }
         .swal2-container { z-index: 20000 !important; }
     </style>

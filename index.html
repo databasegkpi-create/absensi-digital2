@@ -8,6 +8,10 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#4A90E2"> <!-- Sesuaikan kode warna (HEX) dengan warna tema utama aplikasi Anda -->
+  <link rel="apple-touch-icon" href="/icon-192x192.png"> <!-- Sangat penting agar ikon muncul dengan benar di iPhone/iOS -->
   
   <style>
     /* CSS ANDA TETAP SAMA SEPERTI SEBELUMNYA, TIDAK ADA YANG DIUBAH */
@@ -706,6 +710,18 @@ async function fetchAPI(action, data = {}) {
        perbaruiUIKuotaCuti(); 
     }
   };
+
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(registration => {
+          console.log('Service Worker aktif:', registration.scope);
+        })
+        .catch(error => {
+          console.error('Service Worker gagal didaftarkan:', error);
+        });
+    });
+  }
 </script>
 </body>
 </html>

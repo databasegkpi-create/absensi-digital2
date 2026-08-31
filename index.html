@@ -275,18 +275,23 @@
   // --------------------------------------------------------------------------------
   const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx-uXm8JEdQWS_kO_bSRbzn_4WGb3uJzqMKqnc3Xp_8PWq4pNenEH8VWWdhI_LN3eh2VQ/exec"; 
   
-  // Fungsi utama pengganti google.script.run
-  async function fetchAPI(action, data = {}) {
-      try {
-          const response = await fetch(GAS_WEB_APP_URL, {
-              method: "POST",
-              body: JSON.stringify({ action: action, data: data })
-          });
-          return await response.json();
-      } catch (error) {
-          throw new Error("Gagal terhubung ke server.");
-      }
-  }
+// Ganti fungsi fetchAPI Anda dengan ini:
+async function fetchAPI(action, data = {}) {
+    try {
+        const response = await fetch(GAS_WEB_APP_URL, {
+            method: "POST",
+            redirect: "follow", // PENTING: Mengikuti pengalihan (redirect) internal Google
+            headers: {
+                "Content-Type": "text/plain;charset=utf-8", // PENTING: Mencegah error CORS dari browser
+            },
+            body: JSON.stringify({ action: action, data: data })
+        });
+        return await response.json();
+    } catch (error) {
+        console.error("Fetch Error Detail:", error);
+        throw new Error("Gagal terhubung ke server.");
+    }
+}
   // --------------------------------------------------------------------------------
 
   const KANTOR_LAT = 2.9507367687454646; const KANTOR_LNG = 99.06044938808277; const MAX_JARAK = 50; 

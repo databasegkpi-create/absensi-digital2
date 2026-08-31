@@ -347,17 +347,20 @@
                     </div>
                     <div class="table-responsive">
                         <table id="dataTable">
-                           <thead>
-                            <tr>
-                                <th onclick="sortTable('nama')">Nama Pegawai <i class="fas fa-sort" id="icon-nama"></i></th>
-                                <th style="text-align:center" onclick="sortTable('totalHadir')">Hadir <i class="fas fa-sort" id="icon-totalHadir"></i></th>
-                                <th style="text-align:center" onclick="sortTable('totalAlpha')">Alpha <i class="fas fa-sort" id="icon-totalAlpha"></i></th>
-                                <th style="text-align:center" onclick="sortTable('totalCuti')">Cuti/Izin <i class="fas fa-sort" id="icon-totalCuti"></i></th>
-                                <th style="text-align:center" onclick="sortTable('tepatWaktu')">Tepat Waktu <i class="fas fa-sort" id="icon-tepatWaktu"></i></th>
-                                <th style="text-align:center" onclick="sortTable('terlambat')">Terlambat <i class="fas fa-sort" id="icon-terlambat"></i></th>
-                                <th style="width:220px" onclick="sortTable('rasio')">Indikator Disiplin <i class="fas fa-sort" id="icon-rasio"></i></th>
-                            </tr>
-                            </thead>
+                          <thead>
+    <tr>
+        <th onclick="sortTable('nama')">Nama Pegawai <i class="fas fa-sort" id="icon-nama"></i></th>
+        <th style="text-align:center" onclick="sortTable('totalHadir')">Hadir <i class="fas fa-sort" id="icon-totalHadir"></i></th>
+        <th style="text-align:center" onclick="sortTable('hadirKantor')">Kantor <i class="fas fa-sort" id="icon-hadirKantor"></i></th>
+        <th style="text-align:center" onclick="sortTable('hadirLapangan')">Lpngn <i class="fas fa-sort" id="icon-hadirLapangan"></i></th>
+        <th style="text-align:center" onclick="sortTable('totalAlpha')">Alpha <i class="fas fa-sort" id="icon-totalAlpha"></i></th>
+        <th style="text-align:center" onclick="sortTable('alpaIbadah')">Bolos Ibadah <i class="fas fa-sort" id="icon-alpaIbadah"></i></th>
+        <th style="text-align:center" onclick="sortTable('totalCuti')">Cuti/Izin <i class="fas fa-sort" id="icon-totalCuti"></i></th>
+        <th style="text-align:center" onclick="sortTable('tepatWaktu')">Tepat Wkt <i class="fas fa-sort" id="icon-tepatWaktu"></i></th>
+        <th style="text-align:center" onclick="sortTable('terlambat')">Terlambat <i class="fas fa-sort" id="icon-terlambat"></i></th>
+        <th style="width:180px" onclick="sortTable('rasio')">Rasio <i class="fas fa-sort" id="icon-rasio"></i></th>
+    </tr>
+</thead>
                             <tbody id="tableBody">
                                 <tr><td colspan="7" style="text-align:center;padding:40px;">Menghubungkan ke server...</td></tr>
                             </tbody>
@@ -635,47 +638,67 @@
             top7.forEach((p, i) => el.innerHTML += `<div class="top-staff-item"><div class="top-staff-info"><div class="top-staff-rank">${i + 1}</div><span class="top-staff-name">${p.nama}</span></div><div class="top-staff-score"><i class="fas fa-check"></i>${p.tepatWaktu} Hari</div></div>`);
         }
 
-        function renderTable(data) {
-            const tbody = document.getElementById('tableBody'); tbody.innerHTML = '';
-            if (!data.length) return tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:36px;">Tidak ada data.</td></tr>`;
-            
-            data.forEach(p => {
-                const color = p.rasio >= 80 ? 'var(--success)' : (p.rasio >= 50 ? 'var(--warning)' : 'var(--danger)');
-                const cutiIzin = (parseInt(p.totalCuti) || 0) + (parseInt(p.totalIzin) || 0);
-                
-                tbody.innerHTML += `
-                    <tr>
-                        <td style="font-weight:700; color:var(--primary);">${p.nama}</td>
-                        <td style="text-align:center; font-weight:700; color:var(--success);">${p.totalHadir}</td>
-                        <td style="text-align:center; font-weight:700; color:var(--danger);">${p.totalAlpha > 0 ? p.totalAlpha : '-'}</td>
-                        <td style="text-align:center; font-weight:700; color:var(--success);">${cutiIzin > 0 ? cutiIzin : '-'}</td>
-                        <td style="text-align:center"><span class="badge badge-success"><i class="fas fa-check"></i>${p.tepatWaktu}</span></td>
-                        <td style="text-align:center">${p.terlambat > 0 ? `<span class="badge badge-danger"><i class="fas fa-exclamation"></i>${p.terlambat}</span>` : `<span style="color:var(--success);font-weight:700;">—</span>`}</td>
-                        <td>
-                            <div class="progress-wrapper">
-                                <div class="progress-text"><span style="color:${color}">${p.rasio}%</span><span style="color:var(--text-3);font-size:10px;">HADIR</span></div>
-                                <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${p.rasio}%;background:${color}"></div></div>
-                            </div>
-                        </td>
-                    </tr>`;
-            });
-        }
+       function renderTable(data) {
+    const tbody = document.getElementById('tableBody'); tbody.innerHTML = '';
+    if (!data.length) return tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:36px;">Tidak ada data.</td></tr>`;
+    
+    data.forEach(p => {
+        const color = p.rasio >= 80 ? 'var(--success)' : (p.rasio >= 50 ? 'var(--warning)' : 'var(--danger)');
+        const cutiIzin = (parseInt(p.totalCuti) || 0) + (parseInt(p.totalIzin) || 0);
+        const kantor = parseInt(p.hadirKantor) || 0;
+        const lapangan = parseInt(p.hadirLapangan) || 0;
+        const bolosIbadah = parseInt(p.alpaIbadah) || 0;
+        
+        tbody.innerHTML += `
+            <tr>
+                <td style="font-weight:700; color:var(--primary);">${p.nama}</td>
+                <td style="text-align:center; font-weight:700; color:var(--success);">${p.totalHadir}</td>
+                <td style="text-align:center; font-weight:700; color:#1d6ed8;">${kantor > 0 ? kantor : '-'}</td>
+                <td style="text-align:center; font-weight:700; color:var(--warning);">${lapangan > 0 ? lapangan : '-'}</td>
+                <td style="text-align:center; font-weight:700; color:var(--danger);">${p.totalAlpha > 0 ? p.totalAlpha : '-'}</td>
+                <td style="text-align:center; font-weight:700; color:#8e44ad;">${bolosIbadah > 0 ? bolosIbadah : '-'}</td>
+                <td style="text-align:center; font-weight:700; color:var(--success);">${cutiIzin > 0 ? cutiIzin : '-'}</td>
+                <td style="text-align:center"><span class="badge badge-success"><i class="fas fa-check"></i>${p.tepatWaktu}</span></td>
+                <td style="text-align:center">${p.terlambat > 0 ? `<span class="badge badge-danger"><i class="fas fa-exclamation"></i>${p.terlambat}</span>` : `<span style="color:var(--success);font-weight:700;">—</span>`}</td>
+                <td>
+                    <div class="progress-wrapper">
+                        <div class="progress-text"><span style="color:${color}">${p.rasio}%</span><span style="color:var(--text-3);font-size:10px;">HADIR</span></div>
+                        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${p.rasio}%;background:${color}"></div></div>
+                    </div>
+                </td>
+            </tr>`;
+    });
+}
 
-        function sortTable(key) {
-            ['nama','totalHadir','totalAlpha','totalCuti','tepatWaktu','terlambat','rasio'].forEach(k => document.getElementById('icon-'+k).className = 'fas fa-sort');
+function sortTable(key) {
+            // Daftar semua kolom yang bisa di-sort
+            const keys = ['nama', 'totalHadir', 'hadirKantor', 'hadirLapangan', 'totalAlpha', 'alpaIbadah', 'totalCuti', 'tepatWaktu', 'terlambat', 'rasio'];
+            
+            keys.forEach(k => {
+                let iconEl = document.getElementById('icon-' + k);
+                if (iconEl) iconEl.className = 'fas fa-sort';
+            });
             
             currentSort.dir = (currentSort.key === key && currentSort.dir === 'desc') ? 'asc' : 'desc';
             currentSort.key = key;
-            document.getElementById('icon-'+key).className = currentSort.dir === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down';
+            
+            let activeIcon = document.getElementById('icon-' + key);
+            if (activeIcon) {
+                activeIcon.className = currentSort.dir === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down';
+            }
             
             let sorted = [...globalData].sort((a, b) => {
                 if (key === 'nama') return currentSort.dir === 'asc' ? a.nama.localeCompare(b.nama) : b.nama.localeCompare(a.nama);
-                let valA = key === 'totalCuti' ? ((parseInt(a.totalCuti)||0) + (parseInt(a.totalIzin)||0)) : a[key];
-                let valB = key === 'totalCuti' ? ((parseInt(b.totalCuti)||0) + (parseInt(b.totalIzin)||0)) : b[key];
+                
+                let valA = key === 'totalCuti' ? ((parseInt(a.totalCuti)||0) + (parseInt(a.totalIzin)||0)) : (a[key] || 0);
+                let valB = key === 'totalCuti' ? ((parseInt(b.totalCuti)||0) + (parseInt(b.totalIzin)||0)) : (b[key] || 0);
+                
                 return currentSort.dir === 'asc' ? valA - valB : valB - valA;
             });
             
-            renderTable(document.getElementById('searchInput').value ? sorted.filter(p => p.nama.toLowerCase().includes(document.getElementById('searchInput').value.toLowerCase())) : sorted);
+            let keyword = document.getElementById('searchInput').value.toLowerCase();
+            renderTable(keyword ? sorted.filter(p => p.nama.toLowerCase().includes(keyword)) : sorted);
+        }  renderTable(document.getElementById('searchInput').value ? sorted.filter(p => p.nama.toLowerCase().includes(document.getElementById('searchInput').value.toLowerCase())) : sorted);
         }
         
         function filterTable() { sortTable(currentSort.key); }

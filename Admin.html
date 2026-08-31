@@ -698,7 +698,6 @@ function sortTable(key) {
             
             let keyword = document.getElementById('searchInput').value.toLowerCase();
             renderTable(keyword ? sorted.filter(p => p.nama.toLowerCase().includes(keyword)) : sorted);
-        }  renderTable(document.getElementById('searchInput').value ? sorted.filter(p => p.nama.toLowerCase().includes(document.getElementById('searchInput').value.toLowerCase())) : sorted);
         }
         
         function filterTable() { sortTable(currentSort.key); }

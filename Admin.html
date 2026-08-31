@@ -816,7 +816,7 @@ function sortTable(key) {
                 }
             });
         }
-        async function generateExecutivePDF() {
+      async function generateExecutivePDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
     
@@ -825,104 +825,148 @@ function sortTable(key) {
     const belumAbsen = document.getElementById('valBelumAbsen').innerText;
     const rasioDisiplin = document.getElementById('valPersentase').innerText;
 
-    // --- WARNA TEMA ---
-    const primaryColor = [12, 30, 53]; // #0c1e35
-    const goldColor = [201, 168, 76];    // #c9a84c
-    const textDark = [40, 40, 40];
+    // --- PALET WARNA PROFESIONAL ---
+    const colorPrimary = [12, 30, 53];     // #0c1e35 (Biru Gelap)
+    const colorGold = [201, 168, 76];       // #c9a84c (Aksen Emas)
+    const colorDarkText = [40, 40, 40];     // Teks Utama
+    const colorLightBg = [248, 250, 252];   // Latar Kotak
 
-    // --- HEADER DOKUMEN ---
+    // ==========================================
+    // 1. HEADER DOKUMEN
+    // ==========================================
+    doc.setFillColor(...colorPrimary);
+    doc.rect(0, 0, 210, 12, 'F'); // Bar atas dekoratif
+
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(16);
-    doc.setTextColor(...primaryColor);
-    doc.text("EXECUTIVE DASHBOARD - GKPI", 14, 18);
+    doc.setFontSize(15);
+    doc.setTextColor(...colorPrimary);
+    doc.text("EXECUTIVE DASHBOARD - GKPI", 14, 22);
 
     doc.setFont("helvetica", "normal");
-    doc.setFontSize(10);
-    doc.setTextColor(100, 100, 100);
-    doc.text(`Periode Laporan: ${bulanPeriode}`, 14, 24);
-    doc.text(`Tanggal Cetak: ${new Date().toLocaleDateString('id-ID')}`, 140, 24);
-
-    doc.setDrawColor(...goldColor);
-    doc.setLineWidth(0.8);
-    doc.line(14, 28, 196, 28);
-
-    // --- KOTAK RINGKASAN (KPI CARDS) ---
-    let startY = 34;
-    doc.setFillColor(245, 247, 250);
-    doc.roundedRect(14, startY, 56, 18, 2, 2, 'F');
-    doc.roundedRect(74, startY, 56, 18, 2, 2, 'F');
-    doc.roundedRect(134, startY, 62, 18, 2, 2, 'F');
-
-    doc.setFont("helvetica", "bold");
     doc.setFontSize(9);
-    doc.setTextColor(...primaryColor);
-    doc.text("TOTAL PEGAWAI", 18, startY + 6);
-    doc.text("BELUM ABSEN", 78, startY + 6);
-    doc.text("RASIO KEDISIPLINAN", 138, startY + 6);
+    doc.setTextColor(100, 100, 100);
+    doc.text(`Periode Laporan: ${bulanPeriode}`, 14, 28);
+    doc.text(`Tanggal Cetak: ${new Date().toLocaleDateString('id-ID')}`, 140, 28);
 
-    doc.setFontSize(13);
-    doc.text(totalPegawai, 18, startY + 14);
-    doc.text(belumAbsen, 78, startY + 14);
-    doc.text(rasioDisiplin, 138, startY + 14);
+    doc.setDrawColor(...colorGold);
+    doc.setLineWidth(0.6);
+    doc.line(14, 32, 196, 32);
+
+    // ==========================================
+    // 2. KOTAK RINGKASAN STATISTIK (KPI CARDS)
+    // ==========================================
+    let startY = 38;
+    
+    // Kotak 1: Total Pegawai
+    doc.setFillColor(...colorLightBg);
+    doc.setDrawColor(220, 225, 230);
+    doc.roundedRect(14, startY, 56, 18, 1.5, 1.5, 'FD');
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(8);
+    doc.setTextColor(100, 110, 120);
+    doc.text("TOTAL PEGAWAI", 18, startY + 5);
+    doc.setFontSize(14);
+    doc.setTextColor(...colorPrimary);
+    doc.text(totalPegawai, 18, startY + 13);
+
+    // Kotak 2: Belum Absen
+    doc.roundedRect(74, startY, 56, 18, 1.5, 1.5, 'FD');
+    doc.setFontSize(8);
+    doc.setTextColor(180, 60, 60);
+    doc.text("BELUM ABSEN BULAN INI", 78, startY + 5);
+    doc.setFontSize(14);
+    doc.text(belumAbsen, 78, startY + 13);
+
+    // Kotak 3: Rasio Disiplin
+    doc.roundedRect(134, startY, 62, 18, 1.5, 1.5, 'FD');
+    doc.setFontSize(8);
+    doc.setTextColor(13, 159, 110);
+    doc.text("RASIO KEDISIPLINAN", 138, startY + 5);
+    doc.setFontSize(14);
+    doc.text(rasioDisiplin, 138, startY + 13);
 
     startY += 24;
 
-    // --- BAGIAN 1: 7 STAFF TERBAIK & PERHATIAN (ALPHA) ---
+    // ==========================================
+    // 3. BAGIAN KIRI & KANAN: 7 STAFF TERBAIK & ALPHA
+    // ==========================================
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(11);
-    doc.setTextColor(...primaryColor);
+    doc.setFontSize(10);
+    doc.setTextColor(...colorPrimary);
     doc.text("7 Staff Paling Tepat Waktu", 14, startY);
-    doc.text("Daftar Perhatian (Alpha / Belum Masuk)", 110, startY);
+    doc.text("Daftar Perhatian (Alpha)", 110, startY);
 
     startY += 4;
 
-    // Ambil data dari variabel globalData Anda
     const topStaff = [...globalData].sort((a,b) => b.tepatWaktu - a.tepatWaktu).slice(0, 7);
     const alphaStaff = globalData.filter(p => (parseInt(p.totalAlpha) || 0) > 0);
 
     let rowY = startY;
     
-    // Render 7 Staff Terbaik
+    // Render 7 Staff Terbaik (Nuansa Hijau Lembut)
     doc.setFont("helvetica", "normal");
-    doc.setFontSize(9);
+    doc.setFontSize(8.5);
     topStaff.forEach((p, idx) => {
         doc.setFillColor(230, 249, 243);
-        doc.rect(14, rowY, 85, 6, 'F');
+        doc.setDrawColor(200, 240, 225);
+        doc.roundedRect(14, rowY, 88, 6, 1, 1, 'FD');
+        
         doc.setTextColor(13, 159, 110);
-        doc.text(`${idx + 1}. ${p.nama}`, 16, rowY + 4);
-        doc.text(`${p.tepatWaktu} Hari`, 80, rowY + 4);
+        doc.setFont("helvetica", "bold");
+        doc.text(`${idx + 1}.`, 16, rowY + 4.2);
+        
+        doc.setTextColor(...colorDarkText);
+        doc.setFont("helvetica", "normal");
+        doc.text(`${p.nama}`, 24, rowY + 4.2);
+        
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(13, 159, 110);
+        doc.text(`${p.tepatWaktu} Hari`, 82, rowY + 4.2);
+        
         rowY += 7;
     });
 
-    // Render Staff Alpha di sebelah kanan
+    // Render Staff Alpha (Nuansa Merah Lembut)
     let alphaY = startY;
     if (alphaStaff.length === 0) {
-        doc.setFillColor(245, 245, 245);
-        doc.rect(110, alphaY, 86, 6, 'F');
+        doc.setFillColor(245, 247, 250);
+        doc.roundedRect(110, alphaY, 86, 6, 1, 1, 'FD');
         doc.setTextColor(100, 100, 100);
-        doc.text("Tidak ada staff Alpha bulan ini.", 112, alphaY + 4);
+        doc.text("Tidak ada staff Alpha bulan ini.", 114, alphaY + 4.2);
     } else {
         alphaStaff.slice(0, 7).forEach((p) => {
             doc.setFillColor(253, 238, 242);
-            doc.rect(110, alphaY, 86, 6, 'F');
+            doc.setDrawColor(245, 215, 225);
+            doc.roundedRect(110, alphaY, 86, 6, 1, 1, 'FD');
+            
             doc.setTextColor(214, 60, 94);
-            doc.text(`- ${p.nama}`, 112, alphaY + 4);
-            doc.text(`${p.totalAlpha} Hari`, 180, alphaY + 4);
+            doc.setFont("helvetica", "bold");
+            doc.text("!", 114, alphaY + 4.2);
+            
+            doc.setTextColor(...colorDarkText);
+            doc.setFont("helvetica", "normal");
+            doc.text(`${p.nama}`, 120, alphaY + 4.2);
+            
+            doc.setFont("helvetica", "bold");
+            doc.setTextColor(214, 60, 94);
+            doc.text(`${p.totalAlpha} Hari`, 178, alphaY + 4.2);
+            
             alphaY += 7;
         });
     }
 
-    startY = Math.max(rowY, alphaY) + 10;
+    startY = Math.max(rowY, alphaY) + 8;
 
-    // --- BAGIAN 2: TABEL REKAPITULASI PENUH ---
+    // ==========================================
+    // 4. TABEL REKAPITULASI PENUH DENGAN WARNA DINAMIS
+    // ==========================================
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(11);
-    doc.setTextColor(...primaryColor);
+    doc.setFontSize(10);
+    doc.setTextColor(...colorPrimary);
     doc.text("Tabel Rekapitulasi Lengkap Kehadiran Staff", 14, startY);
     startY += 4;
 
-    // Siapkan data tabel untuk autoTable
-    const tableColumns = ["Nama Pegawai", "Hadir", "Kantor", "Lpngn", "Alpha", "Bolos Ibadah", "Cuti/Izin", "Tepat Wkt", "Terlambat", "Rasio"];
+    const tableColumns = ["Nama Pegawai", "Hadir", "Kantor", "Lpngn", "Alpha", "Bolos", "Cuti/Izin", "Tepat", "Telat", "Rasio"];
     const tableRows = globalData.map(p => [
         p.nama,
         p.totalHadir || 0,
@@ -941,30 +985,57 @@ function sortTable(key) {
         head: [tableColumns],
         body: tableRows,
         theme: 'grid',
-        headStyles: { fillColor: primaryColor, textColor: [255, 255, 255], fontSize: 8, fontStyle: 'bold', halign: 'center' },
-        bodyStyles: { fontSize: 8, textColor: textDark },
+        headStyles: { 
+            fillColor: colorPrimary, 
+            textColor: [255, 255, 255], 
+            fontSize: 7.5, 
+            fontStyle: 'bold', 
+            halign: 'center' 
+        },
+        bodyStyles: { 
+            fontSize: 7.5, 
+            textColor: colorDarkText,
+            cellPadding: 1.8
+        },
+        alternateRowStyles: {
+            fillColor: [248, 250, 252] // Efek garis selang-seling warna muda
+        },
         columnStyles: {
-            0: { cellWidth: 45, halign: 'left' },   // Nama Pegawai
-            1: { halign: 'center' },
+            0: { cellWidth: 46, halign: 'left', fontStyle: 'bold' },
+            1: { halign: 'center', textColor: [13, 159, 110] }, // Hadir (Hijau)
             2: { halign: 'center' },
             3: { halign: 'center' },
-            4: { halign: 'center' },
-            5: { halign: 'center' },
+            4: { halign: 'center', textColor: [214, 60, 94] },  // Alpha (Merah)
+            5: { halign: 'center', textColor: [142, 68, 173] }, // Bolos Ibadah (Ungu)
             6: { halign: 'center' },
             7: { halign: 'center' },
             8: { halign: 'center' },
-            9: { halign: 'center', fontStyle: 'bold' }
+            9: { halign: 'center', fontStyle: 'bold' }         // Rasio
+        },
+        // Memberi warna kustom otomatis pada sel Rasio berdasarkan persentase
+        didParseCell: function (data) {
+            if (data.section === 'body' && data.column.index === 9) {
+                let rasioVal = parseInt(data.cell.raw_value || data.cell.text);
+                if (rasioVal >= 80) {
+                    data.cell.styles.textColor = [13, 159, 110]; // Hijau
+                } else if (rasioVal >= 50) {
+                    data.cell.styles.textColor = [208, 138, 0];   // Kuning/Oranye
+                } else {
+                    data.cell.styles.textColor = [214, 60, 94];   // Merah
+                }
+            }
         },
         didDrawPage: function (data) {
-            // Footer Halaman Otomatis
-            doc.setFontSize(8);
+            // Footer Halaman Elegan
+            doc.setFont("helvetica", "italic");
+            doc.setFontSize(7.5);
             doc.setTextColor(150, 150, 150);
-            doc.text("Copyright by diovery — Executive Dashboard GKPI", 14, 290);
-            doc.text(`Halaman ${doc.internal.getNumberOfPages()}`, 180, 290);
+            doc.text("Executive Dashboard Sinode GKPI — Dokumen Resmi Dicetak Otomatis oleh Sistem", 14, 290);
+            doc.text(`Halaman ${doc.internal.getNumberOfPages()}`, 185, 290);
         }
     });
 
-    // Simpan file PDF yang dihasilkan
+    // Simpan file PDF
     doc.save(`Rekap_Absensi_GKPI_${bulanPeriode}.pdf`);
 }
     </script>

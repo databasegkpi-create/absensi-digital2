@@ -2,7 +2,7 @@ const CACHE_NAME = 'absen-gkpi-v1';
 const urlsToCache = [
   './',
   './index.html',
-  './admin.html',
+  './Admin.html',
   './manifest.json',
   './icon-192x192.png',
   './icon-512x512.png'

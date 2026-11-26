@@ -413,53 +413,7 @@
                         </div>
             </div>
 
-                <!-- TAB MONITORING LIVE HARI INI -->
-<div id="view-live" style="display:none;">
-    <div class="kpi-grid" style="margin-bottom: 20px;">
-        <div class="kpi-card green">
-            <div class="kpi-icon"><i class="fas fa-user-check"></i></div>
-            <div class="kpi-data"><h4>Sudah Absen Hari Ini</h4><h2 id="liveSudahAbsen">0</h2></div>
-        </div>
-        <div class="kpi-card red">
-            <div class="kpi-icon"><i class="fas fa-user-clock"></i></div>
-            <div class="kpi-data"><h4>Belum Absen</h4><h2 id="liveBelumAbsen">0</h2></div>
-        </div>
-        <div class="kpi-card blue">
-            <div class="kpi-icon"><i class="fas fa-map-marked-alt"></i></div>
-            <div class="kpi-data"><h4>Dinas Lapangan / Cuti</h4><h2 id="liveLapanganCuti">0</h2></div>
-        </div>
-    </div>
-
-    <div class="card-container">
-        <div class="table-controls">
-            <div class="card-title"><span class="card-title-icon blue"><i class="fas fa-broadcast-tower"></i></span> Status Kehadiran Real-Time (<span id="liveTanggal">-</span>)</div>
-            <button class="btn-action" onclick="muatDataLive()"><i class="fas fa-sync-alt"></i> Muat Ulang Live</button>
-        </div>
-        <div class="live-filter-group" id="liveFilterGroup">
-    <button type="button" class="filter-pill active" onclick="filterLive('ALL', this)">Semua</button>
-    <button type="button" class="filter-pill" onclick="filterLive('BELUM', this)">Belum Absen</button>
-    <button type="button" class="filter-pill" onclick="filterLive('TERLAMBAT', this)">Terlambat</button>
-    <button type="button" class="filter-pill" onclick="filterLive('HADIR', this)">Hadir</button>
-    </div>
-        <div class="table-responsive">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Nama Pegawai</th>
-                        <th>Jabatan</th>
-                        <th style="text-align:center;">Jam Masuk</th>
-                        <th style="text-align:center;">Status</th>
-                        <th style="text-align:center;">Ibadah Pagi</th>
-                        <th style="text-align:right;">Tindakan</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBodyLive">
-                    <tr><td colspan="6" style="text-align:center;padding:40px;">Memuat data live...</td></tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
+    
                                     <!-- GRAFIK ANALITIK -->
                     <div class="chart-grid">
                         <div class="card-container">
@@ -523,6 +477,55 @@
                 </div>
             </div>
 
+
+  <!-- TAB MONITORING LIVE HARI INI -->
+<div id="view-live" style="display:none;">
+    <div class="kpi-grid" style="margin-bottom: 20px;">
+        <div class="kpi-card green">
+            <div class="kpi-icon"><i class="fas fa-user-check"></i></div>
+            <div class="kpi-data"><h4>Sudah Absen Hari Ini</h4><h2 id="liveSudahAbsen">0</h2></div>
+        </div>
+        <div class="kpi-card red">
+            <div class="kpi-icon"><i class="fas fa-user-clock"></i></div>
+            <div class="kpi-data"><h4>Belum Absen</h4><h2 id="liveBelumAbsen">0</h2></div>
+        </div>
+        <div class="kpi-card blue">
+            <div class="kpi-icon"><i class="fas fa-map-marked-alt"></i></div>
+            <div class="kpi-data"><h4>Dinas Lapangan / Cuti</h4><h2 id="liveLapanganCuti">0</h2></div>
+        </div>
+    </div>
+
+    <div class="card-container">
+        <div class="table-controls">
+            <div class="card-title"><span class="card-title-icon blue"><i class="fas fa-broadcast-tower"></i></span> Status Kehadiran Real-Time (<span id="liveTanggal">-</span>)</div>
+            <button class="btn-action" onclick="muatDataLive()"><i class="fas fa-sync-alt"></i> Muat Ulang Live</button>
+        </div>
+        <div class="live-filter-group" id="liveFilterGroup">
+    <button type="button" class="filter-pill active" onclick="filterLive('ALL', this)">Semua</button>
+    <button type="button" class="filter-pill" onclick="filterLive('BELUM', this)">Belum Absen</button>
+    <button type="button" class="filter-pill" onclick="filterLive('TERLAMBAT', this)">Terlambat</button>
+    <button type="button" class="filter-pill" onclick="filterLive('HADIR', this)">Hadir</button>
+    </div>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nama Pegawai</th>
+                        <th>Jabatan</th>
+                        <th style="text-align:center;">Jam Masuk</th>
+                        <th style="text-align:center;">Status</th>
+                        <th style="text-align:center;">Ibadah Pagi</th>
+                        <th style="text-align:right;">Tindakan</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBodyLive">
+                    <tr><td colspan="6" style="text-align:center;padding:40px;">Memuat data live...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+            
             <div id="view-approval" style="display:none;">
                 <div class="card-container">
                     <div class="table-controls">
@@ -1306,8 +1309,8 @@ function sortTable(key) {
             });
         }
 
-        function generatePinIbadah() {
-    const pinAcak = Math.floor(100 + Math.random() * 999); // Angka acak 100 - 999
+       function generatePinIbadah() {
+    const pinAcak = Math.floor(100 + Math.random() * 900); // Selalu 100 - 999
     document.getElementById('inputPinIbadah').value = pinAcak;
 }
       async function generateExecutivePDF() {

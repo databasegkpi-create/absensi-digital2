@@ -11,6 +11,8 @@
     <!-- Tambahkan di dalam <head> Admin.html -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
@@ -150,6 +152,26 @@
         .progress-bar-bg { width: 100%; height: 6px; background: var(--border); border-radius: 99px; overflow: hidden; }
         .progress-bar-fill { height: 100%; border-radius: 99px; transition: width 0.8s; }
         .ibadah-control-panel { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+                /* LINK NAMA PEGAWAI & HALAMAN PROFIL */
+        .emp-link { color: var(--primary); font-weight: 700; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: var(--transition); }
+        .emp-link:hover { color: var(--gold); text-decoration: underline; }
+        
+        .profil-hero { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-mid) 100%); color: #fff; padding: 28px; border-radius: var(--radius); position: relative; overflow: hidden; }
+        .profil-avatar { width: 88px; height: 88px; border-radius: 50%; object-fit: cover; border: 3px solid var(--gold); background: var(--primary-light); display: flex; align-items: center; justify-content: center; font-family: 'Space Grotesk', sans-serif; font-size: 32px; font-weight: 700; color: var(--gold); flex-shrink: 0; }
+        .profil-meta h2 { font-family: 'Space Grotesk', sans-serif; font-size: 22px; margin-bottom: 4px; }
+        .profil-meta .jabatan-tag { display: inline-block; background: rgba(201,168,76,0.2); color: var(--gold-light); padding: 4px 12px; border-radius: 99px; font-size: 12px; font-weight: 700; margin-bottom: 10px; }
+        .profil-contact { display: flex; gap: 16px; flex-wrap: wrap; font-size: 12px; color: rgba(255,255,255,0.75); }
+        .profil-contact i { color: var(--gold); margin-right: 5px; }
+        .profil-grid-2 { display: grid; grid-template-columns: 1.4fr 1fr; gap: 20px; }
+        @media (max-width: 992px) { .profil-grid-2 { grid-template-columns: 1fr; } }
+
+        /* GRAFIK, TOMBOL EXCEL & BADGE SIDEBAR */
+        .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        .chart-box { position: relative; height: 240px; width: 100%; display: flex; justify-content: center; }
+        .btn-excel { color: var(--success); border-color: #a7f3d0; background: var(--success-bg); }
+        .nav-badge { margin-left: auto; background: var(--danger); color: #fff; font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 99px; }
+        @media (max-width: 900px) { .chart-grid { grid-template-columns: 1fr; } }
         
         @media (max-width: 1100px) { .middle-grid { grid-template-columns: 1fr; } }
         @media (max-width: 768px) {
@@ -278,11 +300,18 @@
 
             <nav class="sidebar-nav">
                 <div class="sidebar-section-label">Navigasi Utama</div>
-                <div class="nav-item active" id="nav-overview" onclick="switchTab('overview')">
+               <div class="nav-item active" id="nav-overview" onclick="switchTab('overview')">
                     <i class="fas fa-chart-pie fa-fw"></i> Overview Analitik
+                </div>
+                <div class="nav-item" id="nav-live" onclick="switchTab('live')">
+                    <i class="fas fa-broadcast-tower fa-fw"></i> Live Hari Ini
                 </div>
                 <div class="nav-item" id="nav-approval" onclick="switchTab('approval')">
                     <i class="fas fa-check-square fa-fw"></i> Persetujuan Cuti & Izin
+                    <span id="badgePendingCuti" class="nav-badge" style="display:none;">0</span>
+                </div>
+                <div class="nav-item" id="nav-pegawai" onclick="switchTab('pegawai')">
+                    <i class="fas fa-address-book fa-fw"></i> Direktori Pegawai
                 </div>
                 <!-- Navigasi ini diarahkan ke index.html yang satu server/folder di GitHub -->
                 <div class="nav-item" onclick="bukaLayarAbsen()">
@@ -335,6 +364,9 @@
                    <button class="btn-action btn-pdf" id="btnCetakPDF" onclick="generateExecutivePDF()">
                     <i class="fas fa-file-pdf"></i> Unduh PDF Profesional
                     </button>
+                    <button class="btn-action btn-excel" id="btnExportExcel" onclick="exportToExcel()">
+                    <i class="fas fa-file-excel"></i> Export Excel
+                    </button>    
                     <button class="btn-action" onclick="triggerDataLoad()">
                         <i class="fas fa-sync-alt"></i> Segarkan
                     </button>
@@ -375,6 +407,63 @@
                         <button class="btn-action" style="background: var(--danger); color: white; border: none; font-weight:700;" onclick="ubahSesiIbadah('TUTUP')">TUTUP SESI (REKAP ALPA)</button>
                         </div>
             </div>
+
+                <!-- TAB MONITORING LIVE HARI INI -->
+<div id="view-live" style="display:none;">
+    <div class="kpi-grid" style="margin-bottom: 20px;">
+        <div class="kpi-card green">
+            <div class="kpi-icon"><i class="fas fa-user-check"></i></div>
+            <div class="kpi-data"><h4>Sudah Absen Hari Ini</h4><h2 id="liveSudahAbsen">0</h2></div>
+        </div>
+        <div class="kpi-card red">
+            <div class="kpi-icon"><i class="fas fa-user-clock"></i></div>
+            <div class="kpi-data"><h4>Belum Absen</h4><h2 id="liveBelumAbsen">0</h2></div>
+        </div>
+        <div class="kpi-card blue">
+            <div class="kpi-icon"><i class="fas fa-map-marked-alt"></i></div>
+            <div class="kpi-data"><h4>Dinas Lapangan / Cuti</h4><h2 id="liveLapanganCuti">0</h2></div>
+        </div>
+    </div>
+
+    <div class="card-container">
+        <div class="table-controls">
+            <div class="card-title"><span class="card-title-icon blue"><i class="fas fa-broadcast-tower"></i></span> Status Kehadiran Real-Time (<span id="liveTanggal">-</span>)</div>
+            <button class="btn-action" onclick="muatDataLive()"><i class="fas fa-sync-alt"></i> Muat Ulang Live</button>
+        </div>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nama Pegawai</th>
+                        <th>Jabatan</th>
+                        <th style="text-align:center;">Jam Masuk</th>
+                        <th style="text-align:center;">Status</th>
+                        <th style="text-align:center;">Ibadah Pagi</th>
+                        <th style="text-align:right;">Tindakan</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBodyLive">
+                    <tr><td colspan="6" style="text-align:center;padding:40px;">Memuat data live...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+                                    <!-- GRAFIK ANALITIK -->
+                    <div class="chart-grid">
+                        <div class="card-container">
+                            <div class="card-header" style="margin-bottom:12px;">
+                                <div class="card-title"><span class="card-title-icon blue"><i class="fas fa-chart-pie"></i></span> Proporsi Kehadiran Bulan Ini</div>
+                            </div>
+                            <div class="chart-box"><canvas id="chartKehadiran"></canvas></div>
+                        </div>
+                        <div class="card-container">
+                            <div class="card-header" style="margin-bottom:12px;">
+                                <div class="card-title"><span class="card-title-icon gold"><i class="fas fa-chart-bar"></i></span> Kantor vs. Dinas Lapangan</div>
+                            </div>
+                            <div class="chart-box"><canvas id="chartLokasi"></canvas></div>
+                        </div>
+                    </div>
 
                 <div class="middle-grid">
                     <div class="card-container">
@@ -448,6 +537,118 @@
                     </div>
                 </div>
             </div>
+
+            <!-- TAB DIREKTORI PEGAWAI -->
+<div id="view-pegawai" style="display:none;">
+    <div class="card-container">
+        <div class="table-controls">
+            <div class="card-title"><span class="card-title-icon blue"><i class="fas fa-address-book"></i></span> Direktori & Manajemen Pegawai</div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+                <div class="search-box" style="width:240px;">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchPegawai" placeholder="Cari nama / jabatan..." onkeyup="filterPegawai()">
+                </div>
+                <button class="btn-action" style="background: var(--primary); color:#fff; border:none;" onclick="bukaModalPegawai()">
+                    <i class="fas fa-user-plus"></i> Tambah Pegawai
+                </button>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nama Pegawai</th>
+                        <th>Jabatan</th>
+                        <th>Username / PIN</th>
+                        <th>Kontak (WA & Email)</th>
+                        <th style="text-align:center;">Sisa Cuti</th>
+                        <th style="text-align:right;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBodyPegawai">
+                    <tr><td colspan="6" style="text-align:center;padding:40px;">Memuat data pegawai...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- HALAMAN PROFIL PEGAWAI TERPISAH -->
+<div id="view-profil" style="display:none;">
+    <div style="margin-bottom: 16px;">
+        <button class="btn-action" onclick="kembaliDariProfil()">
+            <i class="fas fa-arrow-left"></i> Kembali
+        </button>
+    </div>
+
+    <div class="profil-hero" style="margin-bottom: 20px;">
+        <div id="profAvatarWrap"></div>
+        <div class="profil-meta" style="flex:1;">
+            <span class="jabatan-tag" id="profJabatan">-</span>
+            <h2 id="profNama">-</h2>
+            <div class="profil-contact">
+                <span><i class="fas fa-id-badge"></i> <span id="profUsername">-</span></span>
+                <span><i class="fab fa-whatsapp"></i> <span id="profHp">-</span></span>
+                <span><i class="fas fa-envelope"></i> <span id="profEmail">-</span></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="kpi-grid" style="margin-bottom: 20px;">
+        <div class="kpi-card blue">
+            <div class="kpi-icon"><i class="fas fa-briefcase"></i></div>
+            <div class="kpi-data"><h4>Total Hari Aktif Bekerja</h4><h2 id="profHariAktif">0 Hari</h2></div>
+        </div>
+        <div class="kpi-card green">
+            <div class="kpi-icon"><i class="fas fa-calendar-check"></i></div>
+            <div class="kpi-data"><h4>Sisa Kuota Cuti</h4><h2 id="profSisaCuti">0 Hari</h2></div>
+        </div>
+        <div class="kpi-card" style="border-left:4px solid var(--gold);">
+            <div class="kpi-icon" style="background:var(--gold-dim); color:var(--gold);"><i class="fas fa-calendar-alt"></i></div>
+            <div class="kpi-data"><h4>Tanggal Mulai Masuk</h4><h2 id="profTglMasuk" style="font-size:20px;">-</h2></div>
+        </div>
+    </div>
+
+    <div class="profil-grid-2">
+        <div class="card-container">
+            <div class="card-header">
+                <div class="card-title"><span class="card-title-icon blue"><i class="fas fa-clock"></i></span> Log Absensi Bulan Terpilih</div>
+            </div>
+            <div class="table-responsive">
+                <table style="min-width:500px;">
+                    <thead>
+                        <tr>
+                            <th>Waktu</th>
+                            <th>Tipe</th>
+                            <th>Status</th>
+                            <th>Ibadah</th>
+                            <th>Foto</th>
+                        </tr>
+                    </thead>
+                    <tbody id="profLogAbsen"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card-container">
+            <div class="card-header">
+                <div class="card-title"><span class="card-title-icon orange"><i class="fas fa-file-signature"></i></span> Riwayat Cuti & Izin</div>
+            </div>
+            <div class="table-responsive">
+                <table style="min-width:340px;">
+                    <thead>
+                        <tr>
+                            <th>Tipe</th>
+                            <th>Tanggal</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="profRiwayatCuti"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
         </main>
     </div>
 
@@ -555,6 +756,7 @@
             document.getElementById('adminDashboardScreen').style.display = 'flex';
             triggerDataLoad();
             muatStatusIbadah();
+            cekNotifikasiCuti()
         }
 
         function logoutAdmin() {
@@ -576,29 +778,45 @@
             document.getElementById('sidebar').classList.toggle('active');
             document.querySelector('.sidebar-overlay').classList.toggle('active');
         }
+let globalPegawai = [];
+let previousTab = 'overview';
+let currentProfilNama = '';
 
-        function switchTab(tab) {
-            activeTab = tab;
-            document.getElementById('nav-overview').classList.remove('active');
-            document.getElementById('nav-approval').classList.remove('active');
-            document.getElementById('nav-' + tab).classList.add('active');
+function switchTab(tab) {
+    if (tab !== 'profil') previousTab = tab;
+    activeTab = tab;
 
-            if(tab === 'overview') {
-                document.getElementById('view-overview').style.display = 'block';
-                document.getElementById('view-approval').style.display = 'none';
-                document.getElementById('pageTitleText').innerText = 'Rekap Staff Bulan Ini';
-                document.getElementById('pageEyebrowText').innerText = 'Monitor Kehadiran';
-                document.getElementById('btnCetakPDF').style.display = 'inline-flex';
-            } else {
-                document.getElementById('view-overview').style.display = 'none';
-                document.getElementById('view-approval').style.display = 'block';
-                document.getElementById('pageTitleText').innerText = 'Manajemen Cuti & Izin';
-                document.getElementById('pageEyebrowText').innerText = 'Approval Pengajuan';
-                document.getElementById('btnCetakPDF').style.display = 'none';
-            }
-            if (window.innerWidth <= 768) toggleSidebar(); 
-            triggerDataLoad();
-        }
+    ['overview', 'live', 'approval', 'pegawai'].forEach(t => {
+        const nav = document.getElementById('nav-' + t);
+        if (nav) nav.classList.remove('active');
+        const view = document.getElementById('view-' + t);
+        if (view) view.style.display = 'none';
+    });
+    document.getElementById('view-profil').style.display = 'none';
+
+    const activeNav = document.getElementById('nav-' + tab);
+    if (activeNav) activeNav.classList.add('active');
+    document.getElementById('view-' + tab).style.display = 'block';
+
+    const isOverview = (tab === 'overview');
+    document.getElementById('btnCetakPDF').style.display = isOverview ? 'inline-flex' : 'none';
+    document.getElementById('btnExportExcel').style.display = isOverview ? 'inline-flex' : 'none';
+
+    const judulMap = {
+        overview: ['Monitor Kehadiran', 'Rekap Staff Bulan Ini'],
+        live:     ['Real-Time Attendance', 'Monitoring Live Hari Ini'],
+        approval: ['Approval Pengajuan', 'Manajemen Cuti & Izin'],
+        pegawai:  ['Database HR', 'Direktori Pegawai'],
+        profil:   ['Detail Personalia', 'Profil Pegawai']
+    };
+    if (judulMap[tab]) {
+        document.getElementById('pageEyebrowText').innerText = judulMap[tab][0];
+        document.getElementById('pageTitleText').innerText = judulMap[tab][1];
+    }
+
+    if (window.innerWidth <= 768 && document.getElementById('sidebar').classList.contains('active')) toggleSidebar();
+    if (tab !== 'profil') triggerDataLoad();
+}
 
         // =========================================================================
 // PANEL KENDALI IBADAH (MENGGUNAKAN fetchAPI)
@@ -659,7 +877,182 @@ function ubahSesiIbadah(action) {
     });
 }
 
-        function triggerDataLoad() { if(activeTab === 'overview') muatData(); else muatDataApproval(); }
+    function triggerDataLoad() {
+    if (activeTab === 'overview') muatData();
+    else if (activeTab === 'live') muatDataLive();
+    else if (activeTab === 'approval') muatDataApproval();
+    else if (activeTab === 'pegawai') muatDataPegawai();
+    else if (activeTab === 'profil' && currentProfilNama) bukaProfilPegawai(currentProfilNama);
+}
+
+// --- DIREKTORI PEGAWAI (TAMBAH & EDIT) ---
+function muatDataPegawai() {
+    document.getElementById('loader').style.display = 'flex';
+    fetchAPI("getDaftarPegawai")
+    .then(res => {
+        document.getElementById('loader').style.display = 'none';
+        if (res.sukses) {
+            globalPegawai = res.data;
+            renderTablePegawai(globalPegawai);
+        } else Swal.fire('Gagal', res.pesan, 'error');
+    })
+    .catch(() => {
+        document.getElementById('loader').style.display = 'none';
+        Swal.fire('Error', 'Gagal memuat direktori pegawai.', 'error');
+    });
+}
+
+function renderTablePegawai(data) {
+    const tbody = document.getElementById('tableBodyPegawai');
+    tbody.innerHTML = '';
+    if (!data.length) return tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:36px;">Belum ada data pegawai.</td></tr>`;
+
+    data.forEach(p => {
+        const namaEsc = p.nama.replace(/'/g, "\\'");
+        tbody.innerHTML += `
+            <tr>
+                <td>
+                    <span class="emp-link" onclick="bukaProfilPegawai('${namaEsc}')">
+                        ${p.nama} <i class="fas fa-external-link-alt" style="font-size:10px; opacity:0.5;"></i>
+                    </span>
+                </td>
+                <td><span style="background:var(--surface-2); border:1px solid var(--border); padding:4px 10px; border-radius:6px; font-size:12px; font-weight:600;">${p.jabatan}</span></td>
+                <td><div style="font-weight:700; font-size:12px;">${p.username}</div><div style="font-size:11px; color:var(--text-3);">PIN: ${p.pin}</div></td>
+                <td><div style="font-size:12px; font-weight:600;">${p.noHp || '-'}</div><div style="font-size:11px; color:var(--text-3);">${p.email || '-'}</div></td>
+                <td style="text-align:center;"><span class="badge badge-success">${p.sisaCuti} Hari</span></td>
+                <td style="text-align:right; white-space:nowrap;">
+                    <button class="btn-action" style="display:inline-flex; padding:6px 10px; font-size:12px;" onclick="bukaProfilPegawai('${namaEsc}')"><i class="fas fa-user"></i> Profil</button>
+                    <button class="btn-action" style="display:inline-flex; padding:6px 10px; font-size:12px; margin-left:4px; color:#1d6ed8;" onclick="bukaModalPegawai(${p.baris})"><i class="fas fa-edit"></i> Edit</button>
+                </td>
+            </tr>`;
+    });
+}
+
+function filterPegawai() {
+    const kw = document.getElementById('searchPegawai').value.toLowerCase();
+    renderTablePegawai(globalPegawai.filter(p => p.nama.toLowerCase().includes(kw) || p.jabatan.toLowerCase().includes(kw)));
+}
+
+function bukaModalPegawai(baris = null) {
+    const p = baris ? globalPegawai.find(x => x.baris === baris) : null;
+    Swal.fire({
+        title: p ? 'Edit Data Pegawai' : 'Tambah Pegawai Baru',
+        width: '520px',
+        html: `
+            <div style="text-align:left; display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:12px;">
+                <div style="grid-column:span 2;"><label>Nama Lengkap *</label><input id="swNama" class="form-control" value="${p ? p.nama : ''}"></div>
+                <div><label>Username / NIK *</label><input id="swUser" class="form-control" value="${p ? p.username : ''}"></div>
+                <div><label>PIN Absen *</label><input id="swPin" class="form-control" value="${p ? p.pin : ''}"></div>
+                <div><label>Jabatan</label><input id="swJabatan" class="form-control" value="${p ? p.jabatan : ''}" placeholder="Staf Biro..."></div>
+                <div><label>Tanggal Masuk</label><input id="swTglMasuk" type="date" class="form-control" value="${p ? p.tglMasuk : ''}"></div>
+                <div><label>No. WhatsApp</label><input id="swHp" class="form-control" value="${p ? p.noHp : ''}" placeholder="0812..."></div>
+                <div><label>Email</label><input id="swEmail" class="form-control" value="${p ? p.email : ''}"></div>
+                <div><label>Sisa Cuti (Hari)</label><input id="swCuti" type="number" class="form-control" value="${p ? p.sisaCuti : 12}"></div>
+                <div><label>Link Foto Profil (Opsional)</label><input id="swFoto" class="form-control" value="${p ? p.foto : ''}" placeholder="https://..."></div>
+            </div>
+        `,
+        showCancelButton: true,
+        confirmButtonText: 'Simpan Data',
+        confirmButtonColor: '#0c1e35',
+        cancelButtonText: 'Batal',
+        preConfirm: () => {
+            const payload = {
+                baris: p ? p.baris : null,
+                nama: document.getElementById('swNama').value.trim(),
+                username: document.getElementById('swUser').value.trim(),
+                pin: document.getElementById('swPin').value.trim(),
+                jabatan: document.getElementById('swJabatan').value.trim(),
+                tglMasuk: document.getElementById('swTglMasuk').value,
+                noHp: document.getElementById('swHp').value.trim(),
+                email: document.getElementById('swEmail').value.trim(),
+                sisaCuti: document.getElementById('swCuti').value,
+                foto: document.getElementById('swFoto').value.trim()
+            };
+            if (!payload.nama || !payload.username || !payload.pin) {
+                Swal.showValidationMessage('Nama, Username, dan PIN wajib diisi!');
+                return false;
+            }
+            return payload;
+        }
+    }).then(result => {
+        if (result.isConfirmed) {
+            document.getElementById('loader').style.display = 'flex';
+            fetchAPI("simpanPegawaiAdmin", result.value)
+            .then(res => {
+                document.getElementById('loader').style.display = 'none';
+                if (res.sukses) { Swal.fire('Berhasil!', res.pesan, 'success'); muatDataPegawai(); }
+                else Swal.fire('Gagal', res.pesan, 'error');
+            })
+            .catch(() => {
+                document.getElementById('loader').style.display = 'none';
+                Swal.fire('Error', 'Gagal menyimpan data.', 'error');
+            });
+        }
+    });
+}
+
+// --- HALAMAN PROFIL PEGAWAI TERPISAH ---
+function bukaProfilPegawai(nama) {
+    currentProfilNama = nama;
+    const bulanTahun = document.getElementById('filterBulan').value;
+    document.getElementById('loader').style.display = 'flex';
+
+    fetchAPI("getProfilPegawaiLengkap", { nama: nama, bulanTahun: bulanTahun })
+    .then(res => {
+        document.getElementById('loader').style.display = 'none';
+        if (!res.sukses) return Swal.fire('Gagal', res.pesan, 'error');
+
+        const pr = res.profil;
+        const avatarWrap = document.getElementById('profAvatarWrap');
+        if (pr.foto && pr.foto.startsWith('http')) {
+            avatarWrap.innerHTML = `<img src="${pr.foto}" class="profil-avatar" alt="${pr.nama}">`;
+        } else {
+            const inisial = pr.nama.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
+            avatarWrap.innerHTML = `<div class="profil-avatar">${inisial}</div>`;
+        }
+
+        document.getElementById('profNama').innerText = pr.nama;
+        document.getElementById('profJabatan').innerText = pr.jabatan;
+        document.getElementById('profUsername').innerText = pr.username;
+        document.getElementById('profHp').innerText = pr.noHp;
+        document.getElementById('profEmail').innerText = pr.email;
+        document.getElementById('profHariAktif').innerText = pr.totalHariAktif + ' Hari';
+        document.getElementById('profSisaCuti').innerText = pr.sisaCuti + ' Hari';
+        document.getElementById('profTglMasuk').innerText = pr.tglMasuk !== '-' ? pr.tglMasuk : 'Belum diisi';
+
+        // Render Log Absen
+        const logTbody = document.getElementById('profLogAbsen');
+        logTbody.innerHTML = res.logAbsen.length ? res.logAbsen.map(l => `
+            <tr>
+                <td><div style="font-weight:700; font-size:12px;">${l.hari}</div><div style="font-size:11px; color:var(--text-3);">${l.waktu}</div></td>
+                <td><span class="badge" style="background:var(--surface-2); color:var(--primary);">${l.tipe}</span></td>
+                <td><span class="badge ${l.status.toUpperCase().includes('TERLAMBAT') ? 'badge-danger' : 'badge-success'}">${l.status}</span></td>
+                <td style="font-size:12px; font-weight:600;">${l.ibadah}</td>
+                <td>${l.foto.includes('http') ? `<a href="${l.foto}" target="_blank" style="color:#1d6ed8; font-weight:700; font-size:12px;">Lihat</a>` : '-'}</td>
+            </tr>
+        `).join('') : `<tr><td colspan="5" style="text-align:center; padding:24px; color:var(--text-3);">Belum ada log absensi di bulan ini.</td></tr>`;
+
+        // Render Riwayat Cuti
+        const cutiTbody = document.getElementById('profRiwayatCuti');
+        cutiTbody.innerHTML = res.riwayatCuti.length ? res.riwayatCuti.map(c => `
+            <tr>
+                <td style="font-weight:700; font-size:12px;">${c.tipe} (${c.totalHari} Hr)</td>
+                <td style="font-size:11px;">${c.tglMulai} - ${c.tglSelesai}</td>
+                <td><span class="badge ${c.status === 'Disetujui' ? 'badge-success' : (c.status === 'Ditolak' ? 'badge-danger' : 'badge-warning')}">${c.status}</span></td>
+            </tr>
+        `).join('') : `<tr><td colspan="3" style="text-align:center; padding:24px; color:var(--text-3);">Belum ada riwayat cuti/izin.</td></tr>`;
+
+        switchTab('profil');
+    })
+    .catch(() => {
+        document.getElementById('loader').style.display = 'none';
+        Swal.fire('Error', 'Gagal memuat profil pegawai.', 'error');
+    });
+}
+
+function kembaliDariProfil() {
+    switchTab(previousTab || 'overview');
+}
 
         function hitungHariKerja(tahun, bulan, liburNasional = []) {
             let jumlahHari = new Date(tahun, bulan, 0).getDate();
@@ -717,6 +1110,7 @@ function ubahSesiIbadah(action) {
                         
                     renderTopStaff(stafPalingRajin);
                     renderAlerts(); 
+                    renderCharts(globalData)
 
                     currentSort = { key: 'rasio', dir: 'desc' };
                     sortTable('rasio');
@@ -765,7 +1159,11 @@ function ubahSesiIbadah(action) {
         
         tbody.innerHTML += `
             <tr>
-                <td style="font-weight:700; color:var(--primary);">${p.nama}</td>
+                <td>
+                    <span class="emp-link" onclick="bukaProfilPegawai('${p.nama.replace(/'/g, "\\'")}')">
+                    ${p.nama} <i class="fas fa-external-link-alt" style="font-size:10px; opacity:0.5;"></i>
+                    </span>
+                </td>
                 <td style="text-align:center; font-weight:700; color:var(--success);">${p.totalHadir}</td>
                 <td style="text-align:center; font-weight:700; color:#1d6ed8;">${kantor > 0 ? kantor : '-'}</td>
                 <td style="text-align:center; font-weight:700; color:var(--warning);">${lapangan > 0 ? lapangan : '-'}</td>
@@ -1122,6 +1520,168 @@ function sortTable(key) {
 
     // Simpan file PDF
     doc.save(`Rekap_Absensi_GKPI_${bulanPeriode}.pdf`);
+}
+
+        // --- 1. GRAFIK ANALITIK (CHART.JS) ---
+let chartKehadiranInst = null;
+let chartLokasiInst = null;
+
+function renderCharts(data) {
+    let totTepat = 0, totTelat = 0, totCuti = 0, totAlpha = 0, totKantor = 0, totLapangan = 0;
+    data.forEach(p => {
+        totTepat += parseInt(p.tepatWaktu) || 0;
+        totTelat += parseInt(p.terlambat) || 0;
+        totCuti += (parseInt(p.totalCuti) || 0) + (parseInt(p.totalIzin) || 0);
+        totAlpha += parseInt(p.totalAlpha) || 0;
+        totKantor += parseInt(p.hadirKantor) || 0;
+        totLapangan += parseInt(p.hadirLapangan) || 0;
+    });
+
+    if (chartKehadiranInst) chartKehadiranInst.destroy();
+    chartKehadiranInst = new Chart(document.getElementById('chartKehadiran'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Tepat Waktu', 'Terlambat', 'Cuti/Izin', 'Alpha'],
+            datasets: [{
+                data: [totTepat, totTelat, totCuti, totAlpha],
+                backgroundColor: ['#0d9f6e', '#d08a00', '#1d6ed8', '#d63c5e'],
+                borderWidth: 0
+            }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } } } }
+    });
+
+    if (chartLokasiInst) chartLokasiInst.destroy();
+    chartLokasiInst = new Chart(document.getElementById('chartLokasi'), {
+        type: 'bar',
+        data: {
+            labels: ['Hadir di Kantor', 'Dinas Lapangan'],
+            datasets: [{
+                label: 'Total Kehadiran (Hari)',
+                data: [totKantor, totLapangan],
+                backgroundColor: ['#153252', '#c9a84c'],
+                borderRadius: 8,
+                barThickness: 48
+            }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+    });
+}
+
+// --- 2. EXPORT EXCEL (.XLSX) ---
+function exportToExcel() {
+    if (!globalData || !globalData.length) return Swal.fire('Info', 'Belum ada data untuk diekspor.', 'info');
+    const bulanPeriode = document.getElementById('labelPeriode').innerText.replace('Periode: ', '').trim();
+    const rows = globalData.map((p, i) => ({
+        'No': i + 1,
+        'Nama Pegawai': p.nama,
+        'Total Hadir': p.totalHadir || 0,
+        'Kantor': p.hadirKantor || 0,
+        'Lapangan': p.hadirLapangan || 0,
+        'Alpha': p.totalAlpha || 0,
+        'Bolos Ibadah': p.alpaIbadah || 0,
+        'Cuti/Izin': (parseInt(p.totalCuti) || 0) + (parseInt(p.totalIzin) || 0),
+        'Tepat Waktu': p.tepatWaktu || 0,
+        'Terlambat': p.terlambat || 0,
+        'Rasio (%)': (p.rasio || 0) + '%'
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(rows);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Rekap Absensi");
+    XLSX.writeFile(wb, `Rekap_Absensi_GKPI_${bulanPeriode.replace(/\s+/g, '_')}.xlsx`);
+}
+
+// --- 3. BADGE NOTIFIKASI CUTI MENUNGGU ---
+function cekNotifikasiCuti() {
+    fetchAPI("getDataApprovalAdmin").then(res => {
+        if (res.sukses && res.data) {
+            const pending = res.data.filter(x => x.status === "Menunggu").length;
+            const badge = document.getElementById('badgePendingCuti');
+            if (pending > 0) {
+                badge.innerText = pending;
+                badge.style.display = 'inline-block';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+    }).catch(() => {});
+}
+
+// --- 4. TAB MONITORING LIVE HARI INI ---
+function muatDataLive() {
+    document.getElementById('loader').style.display = 'flex';
+    fetchAPI("getMonitoringLiveHariIni")
+    .then(res => {
+        document.getElementById('loader').style.display = 'none';
+        if (!res.sukses) return Swal.fire('Gagal', res.pesan, 'error');
+
+        document.getElementById('liveTanggal').innerText = res.tanggal;
+        const list = res.data || [];
+
+        const sudah = list.filter(x => x.status === 'Hadir Kantor' || x.status === 'Terlambat' || x.status === 'Dinas Lapangan').length;
+        const belum = list.filter(x => x.status === 'Belum Absen').length;
+        const lapCuti = list.filter(x => x.status === 'Dinas Lapangan' || x.status === 'CUTI' || x.status === 'IZIN').length;
+
+        document.getElementById('liveSudahAbsen').innerText = sudah;
+        document.getElementById('liveBelumAbsen').innerText = belum;
+        document.getElementById('liveLapanganCuti').innerText = lapCuti;
+
+        const tbody = document.getElementById('tableBodyLive');
+        if (!list.length) return tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:36px;">Belum ada data pegawai.</td></tr>`;
+
+        tbody.innerHTML = list.map(p => {
+            const namaEsc = p.nama.replace(/'/g, "\\'");
+            let badgeCls = 'badge-danger';
+            if (p.status === 'Hadir Kantor') badgeCls = 'badge-success';
+            else if (p.status === 'Terlambat' || p.status === 'Dinas Lapangan') badgeCls = 'badge-warning';
+            else if (p.status === 'CUTI' || p.status === 'IZIN') badgeCls = 'badge-success';
+
+            let aksiBtn = p.status === 'Belum Absen'
+                ? `<button class="btn-action" style="display:inline-flex; padding:6px 10px; font-size:11px; background:var(--success); color:#fff; border:none;" onclick="kirimPengingatLive('${namaEsc}', '${p.noHp}')"><i class="fab fa-whatsapp"></i> Ingatkan WA</button>`
+                : (p.fotoAbsen.includes('http') ? `<a href="${p.fotoAbsen}" target="_blank" style="color:#1d6ed8; font-weight:700; font-size:12px;">Lihat Foto</a>` : `<span style="color:var(--text-3); font-size:12px;">-</span>`);
+
+            return `
+                <tr>
+                    <td><span class="emp-link" onclick="bukaProfilPegawai('${namaEsc}')">${p.nama}</span></td>
+                    <td style="font-size:12px; color:var(--text-2);">${p.jabatan}</td>
+                    <td style="text-align:center; font-weight:700;">${p.jamMasuk}</td>
+                    <td style="text-align:center;"><span class="badge ${badgeCls}">${p.status}</span></td>
+                    <td style="text-align:center; font-size:12px; font-weight:600;">${p.ibadah}</td>
+                    <td style="text-align:right;">${aksiBtn}</td>
+                </tr>`;
+        }).join('');
+    })
+    .catch(() => {
+        document.getElementById('loader').style.display = 'none';
+        Swal.fire('Error', 'Gagal memuat monitoring live.', 'error');
+    });
+}
+
+function kirimPengingatLive(nama, noHp) {
+    if (!noHp) return Swal.fire('Info', `Nomor WA untuk ${nama} belum terdaftar di Data_Pegawai.`, 'warning');
+    Swal.fire({
+        title: 'Kirim Pengingat WA?',
+        text: `Kirim pesan pengingat absen ke ${nama} (${noHp})?`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#0d9f6e',
+        confirmButtonText: 'Ya, Kirim WA'
+    }).then(r => {
+        if (r.isConfirmed) {
+            document.getElementById('loader').style.display = 'flex';
+            fetchAPI("kirimPengingatWATunggal", { nama: nama, noHp: noHp })
+            .then(res => {
+                document.getElementById('loader').style.display = 'none';
+                if (res.sukses) Swal.fire('Terkirim!', res.pesan, 'success');
+                else Swal.fire('Gagal', res.pesan, 'error');
+            })
+            .catch(() => {
+                document.getElementById('loader').style.display = 'none';
+                Swal.fire('Error', 'Gagal menghubungi server.', 'error');
+            });
+        }
+    });
 }
     </script>
 </body>

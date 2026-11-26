@@ -171,6 +171,11 @@
         .chart-box { position: relative; height: 240px; width: 100%; display: flex; justify-content: center; }
         .btn-excel { color: var(--success); border-color: #a7f3d0; background: var(--success-bg); }
         .nav-badge { margin-left: auto; background: var(--danger); color: #fff; font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 99px; }
+                /* FILTER CEPAT LIVE MONITORING */
+        .live-filter-group { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+        .filter-pill { padding: 7px 14px; border-radius: 99px; border: 1.5px solid var(--border); background: var(--surface-2); color: var(--text-2); font-size: 12px; font-weight: 700; cursor: pointer; transition: var(--transition); }
+        .filter-pill:hover { border-color: var(--primary); color: var(--primary); }
+        .filter-pill.active { background: var(--primary); color: #fff; border-color: var(--primary); }
         @media (max-width: 900px) { .chart-grid { grid-template-columns: 1fr; } }
         
         @media (max-width: 1100px) { .middle-grid { grid-template-columns: 1fr; } }
@@ -430,6 +435,12 @@
             <div class="card-title"><span class="card-title-icon blue"><i class="fas fa-broadcast-tower"></i></span> Status Kehadiran Real-Time (<span id="liveTanggal">-</span>)</div>
             <button class="btn-action" onclick="muatDataLive()"><i class="fas fa-sync-alt"></i> Muat Ulang Live</button>
         </div>
+        <div class="live-filter-group" id="liveFilterGroup">
+    <button type="button" class="filter-pill active" onclick="filterLive('ALL', this)">Semua</button>
+    <button type="button" class="filter-pill" onclick="filterLive('BELUM', this)">Belum Absen</button>
+    <button type="button" class="filter-pill" onclick="filterLive('TERLAMBAT', this)">Terlambat</button>
+    <button type="button" class="filter-pill" onclick="filterLive('HADIR', this)">Hadir</button>
+    </div>
         <div class="table-responsive">
             <table>
                 <thead>
@@ -1608,7 +1619,9 @@ function cekNotifikasiCuti() {
     }).catch(() => {});
 }
 
-// --- 4. TAB MONITORING LIVE HARI INI ---
+let globalLiveData = [];
+let currentLiveFilter = 'ALL';
+
 function muatDataLive() {
     document.getElementById('loader').style.display = 'flex';
     fetchAPI("getMonitoringLiveHariIni")
@@ -1617,40 +1630,18 @@ function muatDataLive() {
         if (!res.sukses) return Swal.fire('Gagal', res.pesan, 'error');
 
         document.getElementById('liveTanggal').innerText = res.tanggal;
-        const list = res.data || [];
+        globalLiveData = res.data || [];
 
-        const sudah = list.filter(x => x.status === 'Hadir Kantor' || x.status === 'Terlambat' || x.status === 'Dinas Lapangan').length;
-        const belum = list.filter(x => x.status === 'Belum Absen').length;
-        const lapCuti = list.filter(x => x.status === 'Dinas Lapangan' || x.status === 'CUTI' || x.status === 'IZIN').length;
+        const sudah = globalLiveData.filter(x => x.status === 'Hadir Kantor' || x.status === 'Terlambat' || x.status === 'Dinas Lapangan').length;
+        const belum = globalLiveData.filter(x => x.status === 'Belum Absen').length;
+        const lapCuti = globalLiveData.filter(x => x.status === 'Dinas Lapangan' || x.status === 'CUTI' || x.status === 'IZIN').length;
 
         document.getElementById('liveSudahAbsen').innerText = sudah;
         document.getElementById('liveBelumAbsen').innerText = belum;
         document.getElementById('liveLapanganCuti').innerText = lapCuti;
 
-        const tbody = document.getElementById('tableBodyLive');
-        if (!list.length) return tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:36px;">Belum ada data pegawai.</td></tr>`;
-
-        tbody.innerHTML = list.map(p => {
-            const namaEsc = p.nama.replace(/'/g, "\\'");
-            let badgeCls = 'badge-danger';
-            if (p.status === 'Hadir Kantor') badgeCls = 'badge-success';
-            else if (p.status === 'Terlambat' || p.status === 'Dinas Lapangan') badgeCls = 'badge-warning';
-            else if (p.status === 'CUTI' || p.status === 'IZIN') badgeCls = 'badge-success';
-
-            let aksiBtn = p.status === 'Belum Absen'
-                ? `<button class="btn-action" style="display:inline-flex; padding:6px 10px; font-size:11px; background:var(--success); color:#fff; border:none;" onclick="kirimPengingatLive('${namaEsc}', '${p.noHp}')"><i class="fab fa-whatsapp"></i> Ingatkan WA</button>`
-                : (p.fotoAbsen.includes('http') ? `<a href="${p.fotoAbsen}" target="_blank" style="color:#1d6ed8; font-weight:700; font-size:12px;">Lihat Foto</a>` : `<span style="color:var(--text-3); font-size:12px;">-</span>`);
-
-            return `
-                <tr>
-                    <td><span class="emp-link" onclick="bukaProfilPegawai('${namaEsc}')">${p.nama}</span></td>
-                    <td style="font-size:12px; color:var(--text-2);">${p.jabatan}</td>
-                    <td style="text-align:center; font-weight:700;">${p.jamMasuk}</td>
-                    <td style="text-align:center;"><span class="badge ${badgeCls}">${p.status}</span></td>
-                    <td style="text-align:center; font-size:12px; font-weight:600;">${p.ibadah}</td>
-                    <td style="text-align:right;">${aksiBtn}</td>
-                </tr>`;
-        }).join('');
+        // Terapkan filter yang sedang aktif
+        terapkanFilterLive(currentLiveFilter);
     })
     .catch(() => {
         document.getElementById('loader').style.display = 'none';
@@ -1658,6 +1649,53 @@ function muatDataLive() {
     });
 }
 
+function filterLive(statusKey, btnEl) {
+    currentLiveFilter = statusKey;
+    document.querySelectorAll('#liveFilterGroup .filter-pill').forEach(b => b.classList.remove('active'));
+    if (btnEl) btnEl.classList.add('active');
+    terapkanFilterLive(statusKey);
+}
+
+function terapkanFilterLive(statusKey) {
+    let filtered = globalLiveData;
+    if (statusKey === 'BELUM') {
+        filtered = globalLiveData.filter(p => p.status === 'Belum Absen');
+    } else if (statusKey === 'TERLAMBAT') {
+        filtered = globalLiveData.filter(p => p.status === 'Terlambat');
+    } else if (statusKey === 'HADIR') {
+        filtered = globalLiveData.filter(p => p.status === 'Hadir Kantor' || p.status === 'Dinas Lapangan');
+    }
+    renderTableLive(filtered);
+}
+
+function renderTableLive(list) {
+    const tbody = document.getElementById('tableBodyLive');
+    if (!list.length) {
+        return tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:36px;color:var(--text-3);">Tidak ada pegawai pada kategori ini.</td></tr>`;
+    }
+
+    tbody.innerHTML = list.map(p => {
+        const namaEsc = p.nama.replace(/'/g, "\\'");
+        let badgeCls = 'badge-danger';
+        if (p.status === 'Hadir Kantor') badgeCls = 'badge-success';
+        else if (p.status === 'Terlambat' || p.status === 'Dinas Lapangan') badgeCls = 'badge-warning';
+        else if (p.status === 'CUTI' || p.status === 'IZIN') badgeCls = 'badge-success';
+
+        let aksiBtn = p.status === 'Belum Absen'
+            ? `<button class="btn-action" style="display:inline-flex; padding:6px 10px; font-size:11px; background:var(--success); color:#fff; border:none;" onclick="kirimPengingatLive('${namaEsc}', '${p.noHp}')"><i class="fab fa-whatsapp"></i> Ingatkan WA</button>`
+            : (p.fotoAbsen.includes('http') ? `<a href="${p.fotoAbsen}" target="_blank" style="color:#1d6ed8; font-weight:700; font-size:12px;">Lihat Foto</a>` : `<span style="color:var(--text-3); font-size:12px;">-</span>`);
+
+        return `
+            <tr>
+                <td><span class="emp-link" onclick="bukaProfilPegawai('${namaEsc}')">${p.nama}</span></td>
+                <td style="font-size:12px; color:var(--text-2);">${p.jabatan}</td>
+                <td style="text-align:center; font-weight:700;">${p.jamMasuk}</td>
+                <td style="text-align:center;"><span class="badge ${badgeCls}">${p.status}</span></td>
+                <td style="text-align:center; font-size:12px; font-weight:600;">${p.ibadah}</td>
+                <td style="text-align:right;">${aksiBtn}</td>
+            </tr>`;
+    }).join('');
+}
 function kirimPengingatLive(nama, noHp) {
     if (!noHp) return Swal.fire('Info', `Nomor WA untuk ${nama} belum terdaftar di Data_Pegawai.`, 'warning');
     Swal.fire({

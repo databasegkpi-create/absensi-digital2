@@ -149,6 +149,7 @@
         .progress-text { display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; }
         .progress-bar-bg { width: 100%; height: 6px; background: var(--border); border-radius: 99px; overflow: hidden; }
         .progress-bar-fill { height: 100%; border-radius: 99px; transition: width 0.8s; }
+        .ibadah-control-panel { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
         
         @media (max-width: 1100px) { .middle-grid { grid-template-columns: 1fr; } }
         @media (max-width: 768px) {
@@ -356,6 +357,25 @@
                     </div>
                 </div>
 
+                                    <!-- PANEL KENDALI SESI IBADAH PAGI -->
+                    <div class="card-container" style="margin-bottom: 20px; border-left: 4px solid var(--gold);">
+                        <div class="card-header" style="margin-bottom: 12px;">
+                            <div class="card-title"><span class="card-title-icon gold"><i class="fas fa-church"></i></span> Kendali Sesi Ibadah Pagi</div>
+                            <div id="badgeStatusIbadah" class="badge badge-warning">Memuat Status...</div>
+                        </div>
+                        <p style="font-size:12px; color:var(--text-3); margin-top:0; margin-bottom: 15px;">Fitur ini digunakan untuk membuat PIN baru setiap paginya dan mencatat otomatis pegawai yang bolos ibadah saat ditutup.</p>
+                      <div class="ibadah-control-panel">
+                            <div style="display: flex; gap: 6px; align-items: center;">
+                              <input type="text" id="inputPinIbadah" class="form-control" style="width: 170px;" placeholder="Buat PIN (Misal: 777)">
+                                <button type="button" class="btn-action" style="padding: 13px 14px;" onclick="generatePinIbadah()" title="Acak PIN 3 Digit">
+                                  <i class="fas fa-dice"></i>
+                            </button>
+                            </div>
+                        <button class="btn-action" style="background: var(--success); color: white; border: none; font-weight:700;" onclick="ubahSesiIbadah('BUKA')">BUKA SESI IBADAH</button>
+                        <button class="btn-action" style="background: var(--danger); color: white; border: none; font-weight:700;" onclick="ubahSesiIbadah('TUTUP')">TUTUP SESI (REKAP ALPA)</button>
+                        </div>
+            </div>
+
                 <div class="middle-grid">
                     <div class="card-container">
                         <div class="card-header">
@@ -534,6 +554,7 @@
             document.getElementById('adminLoginScreen').style.display = 'none';
             document.getElementById('adminDashboardScreen').style.display = 'flex';
             triggerDataLoad();
+            muatStatusIbadah();
         }
 
         function logoutAdmin() {
@@ -578,6 +599,65 @@
             if (window.innerWidth <= 768) toggleSidebar(); 
             triggerDataLoad();
         }
+
+        // =========================================================================
+// PANEL KENDALI IBADAH (MENGGUNAKAN fetchAPI)
+// =========================================================================
+function muatStatusIbadah() {
+    fetchAPI("getStatusSesiIbadah")
+    .then(res => {
+        const badge = document.getElementById('badgeStatusIbadah');
+        if (res.status === "BUKA") {
+            badge.className = "badge badge-success";
+            badge.innerHTML = `<i class="fas fa-unlock"></i> Sesi Terbuka (PIN: ${res.pin})`;
+            document.getElementById('inputPinIbadah').value = res.pin;
+        } else {
+            badge.className = "badge badge-danger";
+            badge.innerHTML = `<i class="fas fa-lock"></i> Sesi Tertutup`;
+            document.getElementById('inputPinIbadah').value = "";
+        }
+    })
+    .catch(err => {
+        console.error("Gagal memuat status ibadah:", err);
+    });
+}
+
+function ubahSesiIbadah(action) {
+    let pin = document.getElementById('inputPinIbadah').value;
+    
+    if (action === "BUKA" && !pin) {
+        return Swal.fire('Oops!', 'Silakan ketik PIN Ibadah yang baru terlebih dahulu sebelum membuka sesi.', 'warning');
+    }
+
+    let titleKonfirm = action === "BUKA" ? "Buka Sesi Ibadah?" : "Tutup Sesi Ibadah?";
+    let textKonfirm = action === "BUKA" 
+        ? `Pegawai akan bisa absen Ibadah menggunakan PIN: ${pin}` 
+        : "Sistem akan menutup absen Ibadah dan otomatis memberi cap 'Alpa Ibadah' bagi yang tidak mengisi.";
+
+    Swal.fire({
+        title: titleKonfirm, text: textKonfirm, icon: 'warning',
+        showCancelButton: true, confirmButtonColor: action === "BUKA" ? '#0d9f6e' : '#d63c5e', confirmButtonText: 'Ya, Lanjutkan'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('loader').style.display = 'flex';
+            fetchAPI("setSesiIbadah", { action: action, pin: pin })
+            .then(res => {
+                document.getElementById('loader').style.display = 'none';
+                if (res.sukses) {
+                    Swal.fire('Berhasil', res.pesan, 'success');
+                    muatStatusIbadah();
+                    if (action === "TUTUP") muatData();
+                } else {
+                    Swal.fire('Gagal', res.pesan, 'error');
+                }
+            })
+            .catch(err => {
+                document.getElementById('loader').style.display = 'none';
+                Swal.fire('Error', 'Terjadi kesalahan jaringan.', 'error');
+            });
+        }
+    });
+}
 
         function triggerDataLoad() { if(activeTab === 'overview') muatData(); else muatDataApproval(); }
 
@@ -816,6 +896,11 @@ function sortTable(key) {
                 }
             });
         }
+
+        function generatePinIbadah() {
+    const pinAcak = Math.floor(1000 + Math.random() * 9000); // Angka acak 100 - 999
+    document.getElementById('inputPinIbadah').value = pinAcak;
+}
       async function generateExecutivePDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
